@@ -22,7 +22,4 @@ export const posts = createTable(
       .notNull(),
     updatedAt: int("updatedAt", { mode: "timestamp" }),
   },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
-  })
 );

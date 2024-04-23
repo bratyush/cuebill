@@ -1,9 +1,8 @@
-import Link from "next/link";
-
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-[#15162c] text-white">
-        
-    </main>
+    <div>
+      <h1 className="text-4xl font-bold">Welcome to T3</h1>
+      <p className="text-lg">Get started by editing the files in <code>src/</code></p>
+    </div>
   );
 }
