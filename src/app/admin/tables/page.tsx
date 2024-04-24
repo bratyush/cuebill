@@ -1,12 +1,12 @@
 "use client"
 // a data table of available tables.
 
-import { DataTable } from '@/app/_components/dataTable';
 import { ColumnDef } from '@tanstack/react-table';
+import { DataTable } from '~/app/_components/dataTable';
 
-import { TableType } from '@/types/myTypes';
 import { useEffect, useState } from 'react';
-// import { deleteTable, getTables } from '@/utils/tauriFiles';
+import { TableType } from '~/types/myTypes';
+// import { deleteTable, getTables } from '~/utils/tauriFiles';
 import Link from 'next/link';
 
 export default function TablePage() {

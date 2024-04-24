@@ -1,11 +1,13 @@
-import { DataTable } from "@/components/dataTable";
-import { BillType } from "@/types/myTypes";
-import { formatElapsed, formatTime } from "@/utils/formatters";
-import { getBills } from "@/utils/tauriFiles";
+"use client"
+
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
+import { DataTable } from "~/app/_components/dataTable";
+import { BillType } from "~/types/myTypes";
+import { formatElapsed, formatTime } from "~/utils/formatters";
+import { getBills } from "~/utils/tauriFiles";
 
-export default function Revenue () {
+export default async function Revenue () {
   const [data, setData] = useState<BillType[]>([]);
 
   useEffect(() => {

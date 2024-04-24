@@ -1,5 +1,4 @@
-// import logo from '@/assets/8ballogo.png';
-import Image from "next/image";
+// import logo from '~/assets/8ballogo.png';
 import Link from 'next/link';
 
 const NavBar = () => {
