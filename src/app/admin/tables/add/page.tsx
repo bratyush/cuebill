@@ -2,18 +2,19 @@
 
 import { useEffect, useState } from 'react';
 
-import { useNavigate } from 'react-router-dom';
-import pool from '../assets/pool.jpg';
-import snooker from '../assets/snooker.jpg';
-import { addTable } from '../utils/tauriFiles';
+import pool from '@/public/pool.png';
+import snooker from '@/public/snooker.png';
+import { useRouter } from 'next/navigation';
+import Image, { StaticImageData } from 'next/image';
+// import { addTable } from '../utils/tauriFiles';
 
 export default function AddTable() {
   const [style, setStyle] = useState<string>('pool');
   const [tableName, setTableName] = useState<string>('');
   const [rate, setRate] = useState<string>('');
-  const [typeImg, setTypeImg] = useState<string>();
+  const [typeImg, setTypeImg] = useState<StaticImageData>(pool);
 
-  const navigate = useNavigate();
+  const router = useRouter()
 
   useEffect(() => {
     if (style === 'pool') {
@@ -24,9 +25,23 @@ export default function AddTable() {
   }, [style]);
 
   function addTableSubmit(tableName: string, rate: string, style:string) {
-    addTable({name:tableName, rate:rate, theme:style})
-    .then(()=>{
-      navigate('/')
+    // addTable({name:tableName, rate:rate, theme:style})
+
+    fetch('/api/tables', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({name:tableName, rate:rate, theme:style})
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }).then(data => {
+      router.push('/')
+    }).catch(error => {
+      console.error('Fetch error:', error);
     })
   }
 
@@ -90,7 +105,7 @@ export default function AddTable() {
         </div>
 
         <div className="grid gap-6 mb-6 md:grid-cols-2">
-          <img className="h-40" src={typeImg} />
+          <Image className="h-40" src={typeImg} alt='img'/>
 
           <div className='h-full w-full p-14'>
             <button

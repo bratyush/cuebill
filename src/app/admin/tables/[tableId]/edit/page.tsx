@@ -2,29 +2,37 @@
 
 import { useEffect, useState } from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
-import pool from '../assets/pool.jpg';
-import snooker from '../assets/snooker.jpg';
-import { editTable, getTable } from '../utils/tauriFiles';
+import pool from '@/public/pool.png';
+import snooker from '@/public/snooker.png';
+import { useParams, useRouter } from 'next/navigation';
+import Image, { StaticImageData } from 'next/image';
 
 export default function EditTable() {
   const [style, setStyle] = useState<string>('pool');
   const [tableName, setTableName] = useState<string>('');
   const [rate, setRate] = useState<string>('');
-  const [typeImg, setTypeImg] = useState<string>();
+  const [typeImg, setTypeImg] = useState<StaticImageData>(pool);
 
-  const navigate = useNavigate();
+  const router = useRouter()
 
-  const {tableId} = useParams();
+  const { tableId } = useParams();
 
   useEffect(() => {
     if (tableId) {
-      let id = parseInt(tableId);
-      getTable(id).then((table) => {
+      fetch('/api/tables/'+ tableId, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(res=>res.json())
+      .then((data) => {
+        let table = data.table;
+        console.log('data', table);
         setTableName(table.name);
-        setRate(table.rate.toString());
+        setRate(table.rate?.toString());
         setStyle(table.theme);
       });
+      
     }
   }, [tableId]);
 
@@ -38,9 +46,23 @@ export default function EditTable() {
 
   function addTableSubmit(tableName: string, rate: string, style:string) {
     if (tableId) {
-      editTable(parseInt(tableId), {name:tableName, rate:rate, theme:style})
-      .then(()=>{
-        navigate('/')
+      // editTable(parseInt(tableId), {name:tableName, rate:rate, theme:style})
+      
+      fetch('/api/tables/'+ tableId, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({name:tableName, rate:rate, theme:style})
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      }).then(data => {
+        router.push('/')
+      }).catch(error => {
+        console.error('Fetch error:', error);
       })
     }
   }
@@ -105,7 +127,7 @@ export default function EditTable() {
         </div>
 
         <div className="grid gap-6 mb-6 md:grid-cols-2">
-          <img className="h-40" src={typeImg} />
+          <Image className="h-40" src={typeImg} alt='img'/>
 
           <div className='h-full w-full p-14'>
             <button

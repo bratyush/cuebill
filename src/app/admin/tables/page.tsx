@@ -1,20 +1,24 @@
 "use client"
-// a data table of available tables.
 
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '~/app/_components/dataTable';
 
 import { useEffect, useState } from 'react';
 import { TableType } from '~/types/myTypes';
-// import { deleteTable, getTables } from '~/utils/tauriFiles';
 import Link from 'next/link';
 
 export default function TablePage() {
   const [data, setData] = useState<TableType[]>([]);
 
   useEffect(() => {
-    getTables().then((tables) => {
-      setData(tables);
+    fetch('/api/tables', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(res=>res.json())
+    .then((data) => {
+      setData(data.tables);
     });
   }, []);
 
@@ -71,13 +75,31 @@ export default function TablePage() {
               type="button"
               onClick={async () => {
                 if (
-                  await confirm('Are you sure you want to delete?')
+                  confirm('Are you sure you want to delete?')
                 ) {
-                  deleteTable(table.id).then(() => {
-                    getTables().then((tables) => {
-                      setData(tables);
+                  fetch('/api/tables', {
+                    method: 'DELETE',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({id: table.id})
+                  }).then(res=>{
+                    if (!res.ok) {
+                      throw new Error('Network response was not ok');
+                    }
+                  }).then(data=>{
+
+                    fetch('/api/tables', {
+                      method: 'GET',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                    }).then(res=>res.json())
+                    .then((data) => {
+                      setData(data.tables);
                     });
-                  });
+
+                  })
                 }
               }}
               className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
