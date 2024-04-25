@@ -5,15 +5,23 @@ import { useEffect, useState } from "react";
 import { DataTable } from "~/app/_components/dataTable";
 import { BillType } from "~/types/myTypes";
 import { formatElapsed, formatTime } from "~/utils/formatters";
-import { getBills } from "~/utils/tauriFiles";
 
-export default async function Revenue () {
+export default function Revenue () {
   const [data, setData] = useState<BillType[]>([]);
 
   useEffect(() => {
-    getBills().then((tables) => {
-      setData(tables.reverse());
+
+    fetch('/api/bills', {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(res=>res.json())
+    .then((data) => {
+      console.log('data', data.bills)
+      setData(data.bills);
     });
+
   }, []);
 
   const columns: ColumnDef<BillType>[] = [
@@ -22,28 +30,31 @@ export default async function Revenue () {
       header: '#',
     },
     {
-      accessorKey: "table",
       header: 'Table',
+      cell: ({ row }) => {
+        const bill = row.original;
+        return <div>{bill.table?.name}</div>
+      }
     },
     {
       header: 'rate',
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>&#8377;{bill.tableRate}/min</div>;
+        return <div>&#8377;{bill.table?.rate}/min</div>;
       }
     },
     {
       header: 'Date',
       cell: ({ row }) => {
         const bill = row.original;
-        return bill.checkIn ? <div>{new Date(bill.checkIn).toDateString()}</div> : <div>Not Checked In</div>;
+        return bill.check_in ? <div>{new Date(bill.check_in).toDateString()}</div> : <div>Not Checked In</div>;
       }
     },
     {
       header: 'Start Time',
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>{formatTime(bill.checkIn)}</div>;
+        return <div>{formatTime(bill.check_in)}</div>;
       }
     },
     // {
@@ -57,21 +68,21 @@ export default async function Revenue () {
       header: 'Time Played',
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>{formatElapsed(bill.timePlayed)}</div>;
+        return <div>{formatElapsed(bill.time_played)}</div>;
       }
     },
     {
       header: 'Total Revenue',
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>&#8377;{bill.totalAmount}</div>;
+        return <div>&#8377;{bill.total_amount}</div>;
       }
     },
     {
       header: 'Payment Mode',
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>{bill.mode == 'upi' ? 'UPI' : 'Cash'}</div>;
+        return <div>{bill.payment_mode == 'upi' ? 'UPI' : 'Cash'}</div>;
       }
     }
     // {

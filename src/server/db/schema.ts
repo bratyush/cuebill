@@ -52,7 +52,7 @@ export const bills = createTable(
 )
 
 export const tableRelations = relations(tables, ({many}) => ({
-  bills: many(bills),
+  bill: many(bills),
 }));
 
 export const billRelations = relations(bills, ({one}) => ({

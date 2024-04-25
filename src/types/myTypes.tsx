@@ -10,6 +10,7 @@ export type TableType = {
 export type BillType = {
     id?: number;
     table_id:number;
+    table?: TableType;
     check_in?: number;
     check_out?: number;
     time_played?: number;
