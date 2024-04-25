@@ -1,9 +1,9 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { DataTable } from "~/app/_components/dataTable";
-import { BillType } from "~/types/myTypes";
+import { type BillType } from "~/types/myTypes";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 
 export default function Revenue () {
@@ -17,9 +17,11 @@ export default function Revenue () {
         'Content-Type': 'application/json'
       },
     }).then(res=>res.json())
-    .then((data) => {
+    .then((data: {bills: BillType[]}) => {
       console.log('data', data.bills)
       setData(data.bills);
+    }).catch(error => {
+      console.error('Fetch error:', error);
     });
 
   }, []);

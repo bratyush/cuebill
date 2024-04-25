@@ -1,10 +1,10 @@
 "use client"
 
-import { ColumnDef } from '@tanstack/react-table';
+import { type ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '~/app/_components/dataTable';
 
 import { useEffect, useState } from 'react';
-import { TableType } from '~/types/myTypes';
+import { type TableType } from '~/types/myTypes';
 import Link from 'next/link';
 
 export default function TablePage() {
@@ -17,8 +17,10 @@ export default function TablePage() {
         'Content-Type': 'application/json'
       },
     }).then(res=>res.json())
-    .then((data) => {
+    .then((data:{tables: TableType[]}) => {
       setData(data.tables);
+    }).catch(error => {
+      console.error('Fetch error:', error);
     });
   }, []);
 
@@ -87,7 +89,7 @@ export default function TablePage() {
                     if (!res.ok) {
                       throw new Error('Network response was not ok');
                     }
-                  }).then(data=>{
+                  }).then(()=>{
 
                     fetch('/api/tables', {
                       method: 'GET',
@@ -95,11 +97,15 @@ export default function TablePage() {
                         'Content-Type': 'application/json'
                       },
                     }).then(res=>res.json())
-                    .then((data) => {
+                    .then((data:{tables: TableType[]}) => {
                       setData(data.tables);
+                    }).catch(error => {
+                      console.error('Fetch error:', error);
                     });
 
-                  })
+                  }).catch(error => {
+                    console.error('Fetch error:', error);
+                  });
                 }
               }}
               className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">

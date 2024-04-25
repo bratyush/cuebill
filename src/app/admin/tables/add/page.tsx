@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import pool from '@/public/pool.png';
 import snooker from '@/public/snooker.png';
 import { useRouter } from 'next/navigation';
-import Image, { StaticImageData } from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 // import { addTable } from '../utils/tauriFiles';
 
 export default function AddTable() {
@@ -38,7 +38,7 @@ export default function AddTable() {
         throw new Error('Network response was not ok');
       }
       return response.json();
-    }).then(data => {
+    }).then(() => {
       router.push('/')
     }).catch(error => {
       console.error('Fetch error:', error);

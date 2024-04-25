@@ -1,12 +1,12 @@
 import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
 import { tables } from "~/server/db/schema";
+import type { TableType } from "~/types/myTypes";
 
 // add table
 export async function POST(request: Request) {
 
-  const body = await request.json()
-  console.log('body', body)
+  const body = await request.json() as TableType
 
   await db.insert(tables).values(body);
 
@@ -24,8 +24,7 @@ export async function GET() {
 // delete table
 export async function DELETE(request: Request) {
 
-  const body = await request.json()
-  console.log('body', body)
+  const body = await request.json() as {id: number}
 
   await db.delete(tables).where(eq(tables.id, body.id));
 

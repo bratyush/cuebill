@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import pool from '@/public/pool.png';
 import snooker from '@/public/snooker.png';
 import { useParams, useRouter } from 'next/navigation';
-import Image, { StaticImageData } from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
+import { type TableType } from '~/types/myTypes';
 
 export default function EditTable() {
   const [style, setStyle] = useState<string>('pool');
@@ -15,7 +16,7 @@ export default function EditTable() {
 
   const router = useRouter()
 
-  const { tableId } = useParams();
+  const { tableId } = useParams<{tableId: string}>();
 
   useEffect(() => {
     if (tableId) {
@@ -25,12 +26,14 @@ export default function EditTable() {
           'Content-Type': 'application/json'
         },
       }).then(res=>res.json())
-      .then((data) => {
-        let table = data.table;
+      .then((data: {table:TableType}) => {
+        const table : TableType = data.table;
         console.log('data', table);
         setTableName(table.name);
         setRate(table.rate?.toString());
         setStyle(table.theme);
+      }).catch(error => {
+        console.error('Fetch error:', error);
       });
       
     }
@@ -59,7 +62,7 @@ export default function EditTable() {
           throw new Error('Network response was not ok');
         }
         return response.json();
-      }).then(data => {
+      }).then(() => {
         router.push('/')
       }).catch(error => {
         console.error('Fetch error:', error);
