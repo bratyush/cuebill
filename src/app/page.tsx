@@ -4,7 +4,7 @@
 // table name, rate, checkedIn time, live time, live revenue, checkout button, pause play.
 
 import { useEffect, useState } from 'react';
-import { BillType, TableType } from '../types/myTypes';
+import type { BillType, TableType } from '../types/myTypes';
 import Bill from '~/app/_components/billModal';
 import Link from 'next/link';
 import Table from './table';
@@ -23,9 +23,12 @@ export default function Pos() {
         'Content-Type': 'application/json'
       },
     }).then(res=>res.json())
-    .then((data) => {
+    .then((data: {tables: TableType[]}) => {
       setTables(data.tables);
+    }).catch(error => {
+      console.error('Fetch error:', error);
     });
+
   }, [trigger]);
 
   function closeBill() {
@@ -46,7 +49,7 @@ export default function Pos() {
         throw new Error('Network response was not ok');
       }
       return response.json();
-    }).then(data => {
+    }).then(() => {
       setShowBill(false)
       fetch('/api/tables/'+ bill.table_id, {
         method: 'PATCH',
@@ -61,7 +64,7 @@ export default function Pos() {
           throw new Error('Network response was not ok');
         }
         return response.json();
-      }).then(data => {
+      }).then(() => {
         setTrigger((prev) => !prev)
       }).catch(error => {
         console.error('Fetch error:', error);

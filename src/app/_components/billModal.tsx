@@ -1,4 +1,4 @@
-import { BillType, TableType } from "~/types/myTypes";
+import type { BillType, TableType } from "~/types/myTypes";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import { useState } from "react";
 

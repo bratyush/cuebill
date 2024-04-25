@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react';
-import { BillType, TableType } from '../types/myTypes';
+import type { BillType, TableType } from '../types/myTypes';
 import pool from '@/public/pool.png';
 import snooker from '@/public/snooker.png';
 import { calculateRevenue, formatElapsed, formatTime } from '~/utils/formatters';
@@ -42,7 +42,7 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
         throw new Error('Network response was not ok');
       }
       return response.json();
-    }).then(data => {
+    }).then(() => {
       setTrigger()
     }).catch(error => {
       console.error('Fetch error:', error);
@@ -85,7 +85,7 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
       setElapsedTime(0);
       setGeneratedRevenue('0.00');
     };
-  }, [table.checked_in_at]);
+  }, [table.checked_in_at, table.rate]);
 
   return (
 

@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
 import { tables } from "~/server/db/schema";
+import type { TableType } from "~/types/myTypes";
 
 
 export async function GET(
@@ -26,8 +27,7 @@ export async function PATCH(
   const tableId = params.tableId // 'a', 'b', or 'c'
   const id = parseInt(tableId);
   
-  const body = await request.json()
-  console.log('body', body)
+  const body : TableType = await request.json() as TableType
 
   await db.update(tables).set(body).where(eq(tables.id, id))
 
