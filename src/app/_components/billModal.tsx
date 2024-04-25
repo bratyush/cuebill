@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function Bill({ close, save, bill, table }: { close: () => void, save: (bill: BillType) => void ,bill: BillType | null, table: TableType|null }) {
 
-  const [mode, setMode] = useState<'cash' | 'upi'>('upi');
+  const [mode, setMode] = useState<'cash' | 'upi' | 'both'>('upi');
 
   return (
     <div className="bg-gray-800/70 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center">
@@ -100,7 +100,10 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
                         <input defaultChecked={true} onChange={(e)=>{if(e.target.checked){setMode('upi')}}} id="default-radio-2" type="radio" value="" name="default-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></input>
                         <label htmlFor="default-radio-2" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">UPI</label>
                     </div>
-
+                    <div className="flex items-center">
+                        <input onChange={(e)=>{if(e.target.checked){setMode('both')}}} id="default-radio-2" type="radio" value="" name="default-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></input>
+                        <label htmlFor="default-radio-2" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">UPI + Cash</label>
+                    </div>
                   </td>
                 </tr>
                 <tr>

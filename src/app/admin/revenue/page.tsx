@@ -82,7 +82,11 @@ export default function Revenue () {
       header: 'Payment Mode',
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>{bill.payment_mode == 'upi' ? 'UPI' : 'Cash'}</div>;
+        return <div>
+          {bill.payment_mode == 'upi' && 'UPI'}
+          {bill.payment_mode == 'cash' && 'Cash'}
+          {bill.payment_mode == 'both' && 'Cash + UPI'}
+        </div>;
       }
     }
     // {

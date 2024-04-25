@@ -17,6 +17,6 @@ export type BillType = {
     table_rate?: number;
     money?: number;
     // discount: number;
-    payment_mode: 'cash' | 'upi';
+    payment_mode: 'cash' | 'upi' | 'both';
     total_amount?: number;
 };
