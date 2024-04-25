@@ -63,7 +63,6 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
       check_out: Date.now(),
       time_played: elapsedTime,
       money: parseFloat(generatedRevenue),
-      discount: 0,
       payment_mode: 'upi',
       total_amount: parseFloat(generatedRevenue),
     })
