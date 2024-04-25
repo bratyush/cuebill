@@ -3,20 +3,19 @@ export type TableType = {
     name: string;
     rate: number;
     theme: 'pool' | 'snooker';
-    checkedIn: number;
+    checked_in_at: number;
     time: number;
 };
 
 export type BillType = {
     id?: number;
-    table?: string;
-    tableId:number;
-    checkIn?: number;
-    checkOut?: number;
-    timePlayed?: number;
-    tableRate?: number;
+    table_id:number;
+    check_in?: number;
+    check_out?: number;
+    time_played?: number;
+    table_rate?: number;
     money?: number;
     discount: number;
-    mode: 'cash' | 'upi';
-    totalAmount?: number;
+    payment_mode: 'cash' | 'upi';
+    total_amount?: number;
 };

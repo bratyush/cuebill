@@ -2,8 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "~/server/db";
 import { tables } from "~/server/db/schema";
 
-
-// for creating tables.
+// add table
 export async function POST(request: Request) {
 
   const body = await request.json()
@@ -14,6 +13,7 @@ export async function POST(request: Request) {
   return Response.json({status: "created"})
 }
 
+// get tables
 export async function GET() {
   
   const tables = await db.query.tables.findMany();
@@ -21,6 +21,7 @@ export async function GET() {
   return Response.json({tables: tables})
 }
 
+// delete table
 export async function DELETE(request: Request) {
 
   const body = await request.json()

@@ -31,8 +31,8 @@ export const tables = createTable(
     name: text("name", { length: 256 }),
     rate: real("rate"),
     theme: text("theme", { enum: ['pool', 'snooker']}),
-    checked_in_at: int("checkedInAt", { mode: 'timestamp' }),
-    time: int("time", { mode: 'timestamp' }),
+    checked_in_at: int("checkedInAt"),
+    time: int("time"),
   }
 )
 
@@ -41,10 +41,9 @@ export const bills = createTable(
   {
     id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
     table_id: int("tableId", { mode: "number"}).notNull(),
-    check_in: int("check_in", { mode: 'timestamp' }),
-    check_out: int("check_out", { mode: 'timestamp' }),
-    time_played: int("time_played", { mode: 'timestamp' }),
-    table_rate: real("table_rate"),
+    check_in: int("check_in"),
+    check_out: int("check_out"),
+    time_played: int("time_played"),
     money: real("money"),
     discount: real("discount").notNull().default(0),
     payment_mode: text("paymentMode", {enum: ['cash', 'upi']}),
