@@ -16,7 +16,7 @@ export type BillType = {
     time_played?: number;
     table_rate?: number;
     money?: number;
-    discount: number;
+    // discount: number;
     payment_mode: 'cash' | 'upi';
     total_amount?: number;
 };

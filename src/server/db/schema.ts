@@ -12,17 +12,17 @@ import { int, real, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
  */
 export const createTable = sqliteTableCreator((name) => `pool-rsc_${name}`);
 
-  // export const posts = createTable(
-  //   "post",
-  //   {
-  //     id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  //     name: text("name", { length: 256 }),
-  //     createdAt: int("created_at", { mode: "timestamp" })
-  //       .default(sql`CURRENT_TIMESTAMP`)
-  //       .notNull(),
-  //     updatedAt: int("updatedAt", { mode: "timestamp" }),
-  //   },
-  // );
+// export const posts = createTable(
+//   "post",
+//   {
+//     id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+//     name: text("name", { length: 256 }),
+//     createdAt: int("created_at", { mode: "timestamp" })
+//       .default(sql`CURRENT_TIMESTAMP`)
+//       .notNull(),
+//     updatedAt: int("updatedAt", { mode: "timestamp" }),
+//   },
+// );
 
 export const tables = createTable(
   "table",
@@ -45,7 +45,7 @@ export const bills = createTable(
     check_out: int("check_out"),
     time_played: int("time_played"),
     money: real("money"),
-    discount: real("discount").notNull().default(0),
+    // discount: real("discount").notNull().default(0),
     payment_mode: text("paymentMode", {enum: ['cash', 'upi']}),
     total_amount: real("total_amount"),
   }

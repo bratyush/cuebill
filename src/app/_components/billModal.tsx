@@ -4,7 +4,6 @@ import { useState } from "react";
 
 export default function Bill({ close, save, bill, table }: { close: () => void, save: (bill: BillType) => void ,bill: BillType | null, table: TableType|null }) {
 
-  const [discount, setDiscount] = useState<number>(0);
   const [mode, setMode] = useState<'cash' | 'upi'>('upi');
 
   return (
@@ -73,7 +72,7 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
                   <td className="border border-slate-300 p-2">Money</td>
                   <td className="border border-slate-300 p-2">&#8377;{bill?.money}</td>
                 </tr>
-                <tr>
+                {/* <tr>
                   <td className="border border-slate-300 p-2">Discount</td>
                   <td className="border border-slate-300 p-2">
                     <div className="relative z-0 w-full group">
@@ -88,7 +87,7 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
                       />
                     </div>
                   </td>
-                </tr>
+                </tr> */}
                 <tr>
                   <td className="border border-slate-300 p-2">Mode</td>
                   <td className="border-slate-300 p-2 flex justify-evenly">
@@ -107,7 +106,7 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
                 <tr>
                   <td className="border border-slate-300 p-2">Total Amount</td>
                   <td className="border border-slate-300 p-2">
-                    <span className="text-teal-700 font-semibold text-2xl">&#8377;{bill?.money ? bill?.money-discount: 0}</span>
+                    <span className="text-teal-700 font-semibold text-2xl">&#8377;{bill?.money ? bill?.money: 0}</span>
                   </td>
                 </tr>
               </tbody>
@@ -131,9 +130,8 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
                 time_played: bill?.time_played,
                 // table_rate: bill?.tableRate,
                 money: bill?.money,
-                discount: discount,
                 payment_mode: mode,
-                total_amount: bill?.money ? bill?.money-discount : 0
+                total_amount: bill?.money ? bill?.money : 0
               });}}
               type="button"
               className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
