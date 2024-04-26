@@ -68,13 +68,19 @@ export default function UserLoginForm() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const [error, setError] = useState<string>("");
+
   const router = useRouter();
   // start the sign In process.
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     if (!isLoaded) {
+      setIsLoading(true);
       return;
     }
+
+    setError("");
 
     try {
       setIsLoading(true);
@@ -93,8 +99,18 @@ export default function UserLoginForm() {
         console.log(result);
       }
 
-    } catch (err) {
+    } catch (err: any) {
+      setIsLoading(false);
       console.error("error", err)
+      console.log("error+++", err.errors[0].code)
+      const errorCode = err.errors[0].code;
+      if (errorCode === "form_password_incorrect") {
+        console.log("form_password_incorrect")
+        setError("Wrong password!")
+      } else if (errorCode === "form_identifier_not_found"){
+        console.log("form_identifier_not_found")
+        setError("Wrong username!")
+      }
     }
   };
 
@@ -112,6 +128,7 @@ export default function UserLoginForm() {
             <Label htmlFor="password">Password</Label>
             <Input onChange={(e) => setPassword(e.target.value)} id="password" name="password" type="password" placeholder="password" />
           </div>
+          { error && <div><span className="text-red-500">{error}</span></div>}
           <Button disabled={isLoading} onClick={handleSubmit}>
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
