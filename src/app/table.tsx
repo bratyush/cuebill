@@ -7,6 +7,9 @@ import snooker from '@/public/snooker.png';
 import { calculateRevenue, formatElapsed, formatTime } from '~/utils/formatters';
 import Image from 'next/image';
 
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from 'next/navigation';
+
 type TableProps = {
   table: TableType;
   setTrigger: () => void;
@@ -23,6 +26,20 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
   const [generatedRevenue, setGeneratedRevenue] = useState<string>('0.00');
 
   const imageUrl = table.theme == 'pool' ? pool : snooker;
+
+  const { isLoaded, isSignedIn, user } = useUser();
+
+  const router = useRouter()
+
+  useEffect(()=>{
+    if (isLoaded) {
+      if (!isSignedIn) {
+        router.push('/signIn')
+      } else {
+        console.log('signed In')
+      }
+    }
+  }, [isLoaded, isSignedIn])
 
   function checkIn() {
     // checkIn

@@ -8,6 +8,7 @@ import type { BillType, TableType } from '../types/myTypes';
 import Bill from '~/app/_components/billModal';
 import Link from 'next/link';
 import Table from './table';
+import NavBar from './_components/Navbar';
 
 export default function Pos() {
   const [tables, setTables] = useState<TableType[] | null>();
@@ -87,6 +88,8 @@ export default function Pos() {
 
   return (
     <>
+    <NavBar />
+
     { showBill && <Bill bill={bill} table={billTable} close={()=>{closeBill()}} save={(bill: BillType)=>saveBill(bill)}/>}
     <div className="text-white m-2 grid gap-3 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
       {tables?.map((table, index) => (

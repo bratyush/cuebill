@@ -1,4 +1,5 @@
 // import logo from '~/assets/8ballogo.png';
+import { UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
 
 const NavBar = () => {
@@ -24,6 +25,7 @@ const NavBar = () => {
         <Link href={'/'} className="px-3 py-2 text-lg font-semibold text-black rounded-md hover:bg-slate-300">POS</Link>
         <Link href={'/admin/tables'} className="px-3 py-2 text-lg font-semibold text-black rounded-md hover:bg-slate-300">Tables</Link>
         <Link href={'/admin/revenue'} className="px-3 py-2 text-lg font-semibold text-black rounded-md hover:bg-slate-300">Revenue</Link>
+        <UserButton />
       </div>
     </nav>
   );
