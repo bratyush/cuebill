@@ -11,9 +11,13 @@ import Table from './table';
 import NavBar from './_components/Navbar';
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
+import { TableSkeleton } from './_components/skeletons';
 
 
 export default function Pos() {
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const [tables, setTables] = useState<TableType[] | null>();
   const [trigger, setTrigger] = useState(false);
   const [showBill, setShowBill] = useState<boolean>(false);
@@ -22,7 +26,23 @@ export default function Pos() {
 
   const { isLoaded, isSignedIn, user } = useUser();
 
+  const numTables = parseInt(localStorage.getItem('tables') ?? '0');
+
   const router = useRouter()
+
+  useEffect(()=>{
+    const a = localStorage.getItem('tables');
+    if (!a) {
+      localStorage.setItem('tables', JSON.stringify(0));
+    } else {
+      console.log('ddddddddddddd')
+    }
+    const b = localStorage.getItem('bills');
+    if (!b) {
+      localStorage.setItem('bills', JSON.stringify(0));
+    }
+
+  }, [])
 
   useEffect(()=>{
     if (isLoaded) {
@@ -35,6 +55,7 @@ export default function Pos() {
   }, [isLoaded, isSignedIn])
 
   useEffect(() => {
+    setIsLoading(true);
     fetch('/api/tables', {
       method: 'GET',
       headers: {
@@ -42,7 +63,9 @@ export default function Pos() {
       },
     }).then(res=>res.json())
     .then((data: {tables: TableType[]}) => {
+      localStorage.setItem('tables', JSON.stringify((data.tables).length));
       setTables(data.tables);
+      // setIsLoading(false);
     }).catch(error => {
       console.error('Fetch error:', error);
     });
@@ -106,10 +129,13 @@ export default function Pos() {
   return (
     <>
     <NavBar />
+    {}
 
     { showBill && <Bill bill={bill} table={billTable} close={()=>{closeBill()}} save={(bill: BillType)=>saveBill(bill)}/>}
     <div className="text-white m-2 grid gap-3 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
-      {tables?.map((table, index) => (
+      
+      {isLoading ? Array(numTables).fill(<TableSkeleton />)
+      : tables?.map((table, index) => (
         <Table
           key={index}
           table={table}
@@ -119,6 +145,7 @@ export default function Pos() {
           setTrigger={() => setTrigger((prev) => !prev)}
         />
       ))}
+
       <div className="m-5 h-[222px] w-[290px] rounded-md bg-slate-400 flex items-center">
         <Link
           href={"/admin/tables/add"}
