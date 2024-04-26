@@ -9,6 +9,9 @@ import Bill from '~/app/_components/billModal';
 import Link from 'next/link';
 import Table from './table';
 import NavBar from './_components/Navbar';
+import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
+
 
 export default function Pos() {
   const [tables, setTables] = useState<TableType[] | null>();
@@ -16,6 +19,20 @@ export default function Pos() {
   const [showBill, setShowBill] = useState<boolean>(false);
   const [bill, setBill] = useState<BillType | null>(null);
   const [billTable, setBillTable] = useState<TableType | null>(null);
+
+  const { isLoaded, isSignedIn, user } = useUser();
+
+  const router = useRouter()
+
+  useEffect(()=>{
+    if (isLoaded) {
+      if (!isSignedIn) {
+        router.push('/signIn')
+      } else {
+        console.log('signed In')
+      }
+    }
+  }, [isLoaded, isSignedIn])
 
   useEffect(() => {
     fetch('/api/tables', {

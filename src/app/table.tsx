@@ -27,20 +27,6 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
 
   const imageUrl = table.theme == 'pool' ? pool : snooker;
 
-  const { isLoaded, isSignedIn, user } = useUser();
-
-  const router = useRouter()
-
-  useEffect(()=>{
-    if (isLoaded) {
-      if (!isSignedIn) {
-        router.push('/signIn')
-      } else {
-        console.log('signed In')
-      }
-    }
-  }, [isLoaded, isSignedIn])
-
   function checkIn() {
     // checkIn
 
