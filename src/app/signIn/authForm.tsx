@@ -93,8 +93,8 @@ export default function UserLoginForm() {
         console.log(result);
       }
 
-    } catch (err: any) {
-      console.error("error", err.errors[0].longMessage)
+    } catch (err) {
+      console.error("error", err)
     }
   };
 
