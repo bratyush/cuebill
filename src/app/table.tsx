@@ -7,8 +7,6 @@ import snooker from '@/public/snooker.png';
 import { calculateRevenue, formatElapsed, formatTime } from '~/utils/formatters';
 import Image from 'next/image';
 
-import { useUser } from "@clerk/nextjs";
-import { useRouter } from 'next/navigation';
 
 type TableProps = {
   table: TableType;
