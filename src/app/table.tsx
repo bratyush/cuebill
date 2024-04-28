@@ -89,7 +89,7 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
 
   return (
 
-    <div className="h-[222px] w-[290px] m-5 relative">
+    <div className="h-[268px] w-[350px] m-5 relative">
       <Image
         src={imageUrl}
         alt="bg"
@@ -128,13 +128,23 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
               </div>
             </div>
 
-            <button
-              className="py-3 px-5 my-1 bg-white/20 hover:bg-white/30 rounded-md shadow-sm mx-auto"
-              onClick={() => {
-                checkOut();
-              }}>
-              Check Out
-            </button>
+            <div className='flex flex-col mt-1'>
+              <div className='flex justify-evenly'>
+                <button>
+                  canteen
+                </button>
+                <button>
+                  info
+                </button>
+              </div>
+              <button
+                className="py-3 px-5 my-1 bg-white/20 hover:bg-white/30 rounded-md shadow-sm mx-auto"
+                onClick={() => {
+                  checkOut();
+                }}>
+                Check Out
+              </button>
+            </div>
           </div>
         ) : (
           <div className="flex">

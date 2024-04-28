@@ -146,7 +146,7 @@ export default function Pos() {
         />
       ))}
 
-      <div className="m-5 h-[222px] w-[290px] rounded-md bg-slate-400 flex items-center">
+      <div className="m-5 h-[268px] w-[350px] rounded-md bg-slate-400 flex items-center">
         <Link
           href={"/admin/tables/add"}
           className="mx-auto rounded-md bg-slate-500 p-3 hover:bg-slate-600">
