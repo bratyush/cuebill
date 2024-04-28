@@ -6,6 +6,7 @@ import pool from '@/public/pool.png';
 import snooker from '@/public/snooker.png';
 import { calculateRevenue, formatElapsed, formatTime } from '~/utils/formatters';
 import Image from 'next/image';
+import { Icons } from '~/components/icons';
 
 
 type TableProps = {
@@ -128,21 +129,19 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
               </div>
             </div>
 
-            <div className='flex flex-col mt-1'>
-              <div className='flex justify-evenly'>
-                <button>
-                  canteen
-                </button>
-                <button>
-                  info
-                </button>
-              </div>
+            <div className='flex flex-row mt-4 px-6'>
+              <button className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-green-400/70 hover:bg-green-400/90 rounded-md shadow-sm">
+                <Icons.food />
+              </button>
+              <button className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-orange-400/70 hover:bg-orange-400/90 rounded-md shadow-sm">
+                <Icons.note />
+              </button>
               <button
-                className="py-3 px-5 my-1 bg-white/20 hover:bg-white/30 rounded-md shadow-sm mx-auto"
+                className="my-1 py-3 basis-2/3 bg-white/30 hover:bg-white/40 rounded-md shadow-sm"
                 onClick={() => {
                   checkOut();
                 }}>
-                Check Out
+                <span className='font-semibold'>Check Out</span>
               </button>
             </div>
           </div>
