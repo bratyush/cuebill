@@ -65,7 +65,7 @@ export default function Pos() {
     .then((data: {tables: TableType[]}) => {
       localStorage.setItem('tables', JSON.stringify((data.tables).length));
       setTables(data.tables);
-      // setIsLoading(false);
+      setIsLoading(false);
     }).catch(error => {
       console.error('Fetch error:', error);
     });
