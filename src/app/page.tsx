@@ -12,6 +12,7 @@ import NavBar from './_components/Navbar';
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { TableSkeleton } from './_components/skeletons';
+import Note from './_components/noteModal';
 
 
 export default function Pos() {
@@ -21,6 +22,8 @@ export default function Pos() {
   const [tables, setTables] = useState<TableType[] | null>();
   const [trigger, setTrigger] = useState(false);
   const [showBill, setShowBill] = useState<boolean>(false);
+  const [showNote, setShowNote] = useState<boolean>(false);
+  const [showFood, setShowFood] = useState<boolean>(false);
   const [bill, setBill] = useState<BillType | null>(null);
   const [billTable, setBillTable] = useState<TableType | null>(null);
 
@@ -72,8 +75,8 @@ export default function Pos() {
 
   }, [trigger]);
 
-  function closeBill() {
-    setShowBill(false)
+  function saveNote(note: string) {
+    
   }
 
   function saveBill(bill: BillType) {
@@ -130,16 +133,21 @@ export default function Pos() {
     <>
     <NavBar />
     {}
+ 
+    { showBill && <Bill bill={bill} table={billTable} close={()=>{setShowBill(false)}} save={(bill: BillType)=>saveBill(bill)}/>}
+    { showNote && <Note note={''} close={()=>{setShowNote(false)}} save={(note: string)=>saveNote(note)}/>}
+    { showFood && <Bill bill={bill} table={billTable} close={()=>{setShowBill(false)}} save={(bill: BillType)=>saveBill(bill)}/>}
 
-    { showBill && <Bill bill={bill} table={billTable} close={()=>{closeBill()}} save={(bill: BillType)=>saveBill(bill)}/>}
     <div className="text-white m-2 grid gap-3 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
-      
+
       {isLoading ? Array(numTables).fill(<TableSkeleton />)
       : tables?.map((table, index) => (
         <Table
           key={index}
           table={table}
           showBill={()=>{setShowBill(true)}}
+          showNote={()=>{setShowNote(true)}}
+          showFood={()=>{setShowFood(true)}}
           setBill={(bill: BillType) => setBill(bill)}
           setBillTable={(table: TableType) => setBillTable(table)}
           setTrigger={() => setTrigger((prev) => !prev)}

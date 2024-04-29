@@ -13,12 +13,13 @@ type TableProps = {
   table: TableType;
   setTrigger: () => void;
   showBill:() => void;
+  showNote:() => void;
+  showFood:() => void;
   setBill: (bill: BillType) => void;
   setBillTable: (table: TableType) => void;
 };
 
-
-export default function Table({ table, setTrigger, showBill, setBill, setBillTable }: TableProps) {
+export default function Table({ table, setTrigger, showBill, showNote, showFood, setBill, setBillTable }: TableProps) {
   const [elapsedTime, setElapsedTime] = useState<number>(
     Date.now() - table.checked_in_at
   );
@@ -36,8 +37,6 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
       },
       body: JSON.stringify({
         checked_in_at: Date.now(),
-        // pausedAt: null,
-        // time: 0,
       })
     }).then(response => {
       if (!response.ok) {
@@ -133,7 +132,10 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
               <button className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-green-400/70 hover:bg-green-400/90 rounded-md shadow-sm">
                 <Icons.food />
               </button>
-              <button className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-orange-400/70 hover:bg-orange-400/90 rounded-md shadow-sm">
+              <button 
+                  className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-orange-400/70 hover:bg-orange-400/90 rounded-md shadow-sm"
+                  onClick={()=>{showNote()}} 
+                  >
                 <Icons.note />
               </button>
               <button
