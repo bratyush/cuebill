@@ -21,9 +21,9 @@ export type BillType = {
     total_amount?: number;
 };
 
-export type FoodType = {
+export type ItemType = {
     id? : number;
     name: string;
-    price?: number;
-    quantity: number;
+    price: number;
+    quantity?: number;
 };

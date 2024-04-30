@@ -10,10 +10,10 @@ import { useEffect, useState } from 'react';
 import Bill from '~/app/_components/billModal';
 import type { BillType, FoodType, TableType } from '../types/myTypes';
 import Food from './_components/foodModal';
-import NavBar from './_components/navbar';
 import Note from './_components/noteModal';
 import { TableSkeleton } from './_components/skeletons';
 import Table from './table';
+import NavBar from './_components/navbar';
 
 
 export default function Pos() {
@@ -24,7 +24,7 @@ export default function Pos() {
   const [trigger, setTrigger] = useState(false);
   const [showBill, setShowBill] = useState<boolean>(false);
   const [showNote, setShowNote] = useState<boolean>(false);
-  const [showFood, setShowFood] = useState<boolean>(true);
+  const [showFood, setShowFood] = useState<boolean>(false);
   const [bill, setBill] = useState<BillType | null>(null);
   const [billTable, setBillTable] = useState<TableType | null>(null);
 

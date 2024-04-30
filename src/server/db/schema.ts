@@ -45,9 +45,17 @@ export const bills = createTable(
     check_out: int("check_out"),
     time_played: int("time_played"),
     money: real("money"),
-    // discount: real("discount").notNull().default(0),
     payment_mode: text("paymentMode", {enum: ['cash', 'upi', 'both']}),
     total_amount: real("total_amount"),
+  }
+)
+
+export const items = createTable(
+  "item",
+  {
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    name: text("name", { length: 256 }),
+    price: real("price"),
   }
 )
 

@@ -1,30 +1,30 @@
 "use client"
 
-import { type ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '~/app/_components/dataTable';
 
 import { useEffect, useState } from 'react';
-import { type TableType } from '~/types/myTypes';
+import { type ItemType } from '~/types/myTypes';
 import Link from 'next/link';
+import { type ColumnDef } from '@tanstack/react-table';
 
-export default function TablePage() {
-  const [data, setData] = useState<TableType[]>([]);
+export default function ItemsPage() {
+  const [data, setData] = useState<ItemType[]>([]);
 
   useEffect(() => {
-    fetch('/api/tables', {
+    fetch('/api/items', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       },
     }).then(res=>res.json())
-    .then((data:{tables: TableType[]}) => {
-      setData(data.tables);
+    .then((data:{items: ItemType[]}) => {
+      setData(data.items);
     }).catch(error => {
       console.error('Fetch error:', error);
     });
   }, []);
 
-  const columns: ColumnDef<TableType>[] = [
+  const columns: ColumnDef<ItemType>[] = [
     {
       header: '#',
       cell: ({ row }) => {
@@ -35,52 +35,52 @@ export default function TablePage() {
       // accessorKey: "name",
       header: 'Item',
       cell: ({ row }) => {
-        const table = row.original;
+        const item = row.original;
         return (
           <div>
-            <div className="text-lg font-semibold">{table.name}</div>
-            <div className="text-sm text-gray-500">{table.theme}</div>
+            <div className="text-lg">{item.name}</div>
+            {/* <div className="text-sm text-gray-500">{item.theme}</div> */}
           </div>
         );
       },
     },
     {
       // accessorKey: "rate",
-      header: `Rate (₹)`,
+      header: `Price (₹)`,
       cell: ({ row }) => {
-        const table = row.original;
+        const item = row.original;
         return (
           <div>
-            <div className="text-md font-semibold">
-              &#8377;{table.rate * 60}/hour
+            <div className="text-lg">
+              &#8377;{item.price}
             </div>
-            <div className="text-sm text-gray-500">
-              &#8377;{table.rate}/min
-            </div>
+            {/* <div className="text-sm text-gray-500">
+              &#8377;{item.rate}/min
+            </div> */}
           </div>
         );
       },
     },
-    {
-      header: 'Quantity',
-      cell: ({ row }) => {
-        const table = row.original;
-        return (
-          <div>
-            <div className="text-md font-semibold">{table.quantity}</div>
-          </div>
-        );
-      }
-    },
+    // {
+    //   header: 'Quantity',
+    //   cell: ({ row }) => {
+    //     const item = row.original;
+    //     return (
+    //       <div>
+    //         <div className="text-md font-semibold">{item.quantity}</div>
+    //       </div>
+    //     );
+    //   }
+    // },
     {
       id: 'actions',
       cell: ({ row }) => {
-        const table = row.original;
+        const item = row.original;
 
         return (
           <div className='flex justify-end'>
             <Link
-              href={`/admin/tables/${table.id}/edit`}
+              href={`/admin/items/${item.id}/edit`}
               className="focus:outline-none text-white bg-yellow-500 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-2 me-2 mb-2 dark:focus:ring-yellow-900">
               Edit
             </Link>
@@ -90,26 +90,26 @@ export default function TablePage() {
                 if (
                   confirm('Are you sure you want to delete?')
                 ) {
-                  fetch('/api/tables', {
+                  fetch('/api/items', {
                     method: 'DELETE',
                     headers: {
                       'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({id: table.id})
+                    body: JSON.stringify({id: item.id})
                   }).then(res=>{
                     if (!res.ok) {
                       throw new Error('Network response was not ok');
                     }
                   }).then(()=>{
 
-                    fetch('/api/tables', {
+                    fetch('/api/items', {
                       method: 'GET',
                       headers: {
                         'Content-Type': 'application/json'
                       },
                     }).then(res=>res.json())
-                    .then((data:{tables: TableType[]}) => {
-                      setData(data.tables);
+                    .then((data:{items: ItemType[]}) => {
+                      setData(data.items);
                     }).catch(error => {
                       console.error('Fetch error:', error);
                     });
@@ -132,6 +132,10 @@ export default function TablePage() {
     <div className="container mx-auto py-10">
       <div className="bg-slate-100 rounded-md">
         <DataTable columns={columns} data={data} />
+      </div>
+      <div className='flex justify-end m-3'>
+        <Link href={'/admin/items/add'} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+          >Add Item</Link>
       </div>
     </div>
   );
