@@ -8,12 +8,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Bill from '~/app/_components/billModal';
-import type { BillType, FoodType, TableType } from '../types/myTypes';
+import type { BillType, ItemType, TableType } from '../types/myTypes';
 import Food from './_components/foodModal';
+import NavBar from './_components/navbar';
 import Note from './_components/noteModal';
 import { TableSkeleton } from './_components/skeletons';
 import Table from './table';
-import NavBar from './_components/navbar';
 
 
 export default function Pos() {
@@ -76,7 +76,7 @@ export default function Pos() {
 
   }, [trigger]);
 
-  function saveFoods(foods: FoodType[]) {
+  function saveFoods(foods: ItemType[]) {
     console.log('food', foods)
     setShowFood(false)
   }
@@ -143,7 +143,7 @@ export default function Pos() {
  
     { showBill && <Bill bill={bill} table={billTable} close={()=>{setShowBill(false)}} save={(bill: BillType)=>saveBill(bill)}/>}
     { showNote && <Note note={''} close={()=>{setShowNote(false)}} save={(note: string)=>saveNote(note)}/>}
-    { showFood && <Food foods={[{name:'adf', quantity:12}]} close={()=>{setShowFood(false)}} save={(foods: FoodType[])=>saveFoods(foods)}/>}
+    { showFood && <Food foods={[]} close={()=>{setShowFood(false)}} save={(foods: ItemType[])=>saveFoods(foods)}/>}
 
     <div className="text-white m-2 grid gap-3 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
 

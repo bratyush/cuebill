@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { FoodType } from "~/types/myTypes";
+import { ItemType } from "~/types/myTypes";
 
 
-export default function Food({ foods, close, save }: { foods:FoodType[], close: () => void, save: (foods: FoodType[]) => void }) {
+export default function Food({ foods, close, save }: { foods:ItemType[], close: () => void, save: (foods: ItemType[]) => void }) {
 
-  const [items, setItems] = useState<FoodType[]>(foods);
+  const [items, setItems] = useState<ItemType[]>(foods);
 
   return (
     <div className="bg-gray-800/70 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center">
@@ -51,7 +51,7 @@ export default function Food({ foods, close, save }: { foods:FoodType[], close: 
                 </tr>
               </thead>
               <tbody>
-                {items.map((food: FoodType, index) => (
+                {items.map((food: ItemType, index) => (
                   <tr key={index}>
                     <td className="border px-4 py-2">{food.name}</td>
                     <td className="border px-4 py-2">{food.quantity}</td>
