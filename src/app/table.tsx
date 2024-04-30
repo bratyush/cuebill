@@ -129,13 +129,16 @@ export default function Table({ table, setTrigger, showBill, showNote, showFood,
             </div>
 
             <div className='flex flex-row mt-4 px-6'>
-              <button className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-green-400/70 hover:bg-green-400/90 rounded-md shadow-sm">
+              <button 
+                className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-green-400/70 hover:bg-green-400/90 rounded-md shadow-sm"
+                onClick={()=>{showFood()}}
+                >
                 <Icons.food />
               </button>
               <button 
-                  className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-orange-400/70 hover:bg-orange-400/90 rounded-md shadow-sm"
-                  onClick={()=>{showNote()}} 
-                  >
+                className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-orange-400/70 hover:bg-orange-400/90 rounded-md shadow-sm"
+                onClick={()=>{showNote()}} 
+                >
                 <Icons.note />
               </button>
               <button

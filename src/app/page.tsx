@@ -3,16 +3,17 @@
 // tables, checkedIn,
 // table name, rate, checkedIn time, live time, live revenue, checkout button, pause play.
 
-import { useEffect, useState } from 'react';
-import type { BillType, TableType } from '../types/myTypes';
-import Bill from '~/app/_components/billModal';
-import Link from 'next/link';
-import Table from './table';
-import NavBar from './_components/Navbar';
 import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { TableSkeleton } from './_components/skeletons';
+import { useEffect, useState } from 'react';
+import Bill from '~/app/_components/billModal';
+import type { BillType, FoodType, TableType } from '../types/myTypes';
+import Food from './_components/foodModal';
+import NavBar from './_components/navbar';
 import Note from './_components/noteModal';
+import { TableSkeleton } from './_components/skeletons';
+import Table from './table';
 
 
 export default function Pos() {
@@ -23,7 +24,7 @@ export default function Pos() {
   const [trigger, setTrigger] = useState(false);
   const [showBill, setShowBill] = useState<boolean>(false);
   const [showNote, setShowNote] = useState<boolean>(false);
-  const [showFood, setShowFood] = useState<boolean>(false);
+  const [showFood, setShowFood] = useState<boolean>(true);
   const [bill, setBill] = useState<BillType | null>(null);
   const [billTable, setBillTable] = useState<TableType | null>(null);
 
@@ -75,8 +76,14 @@ export default function Pos() {
 
   }, [trigger]);
 
+  function saveFoods(foods: FoodType[]) {
+    console.log('food', foods)
+    setShowFood(false)
+  }
+
   function saveNote(note: string) {
-    
+    console.log('note', note)
+    setShowNote(false)
   }
 
   function saveBill(bill: BillType) {
@@ -136,7 +143,7 @@ export default function Pos() {
  
     { showBill && <Bill bill={bill} table={billTable} close={()=>{setShowBill(false)}} save={(bill: BillType)=>saveBill(bill)}/>}
     { showNote && <Note note={''} close={()=>{setShowNote(false)}} save={(note: string)=>saveNote(note)}/>}
-    { showFood && <Bill bill={bill} table={billTable} close={()=>{setShowBill(false)}} save={(bill: BillType)=>saveBill(bill)}/>}
+    { showFood && <Food foods={[{name:'adf', quantity:12}]} close={()=>{setShowFood(false)}} save={(foods: FoodType[])=>saveFoods(foods)}/>}
 
     <div className="text-white m-2 grid gap-3 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
 

@@ -20,3 +20,10 @@ export type BillType = {
     payment_mode: 'cash' | 'upi' | 'both';
     total_amount?: number;
 };
+
+export type FoodType = {
+    id? : number;
+    name: string;
+    price?: number;
+    quantity: number;
+};
