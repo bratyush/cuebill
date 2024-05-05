@@ -44,10 +44,10 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
           <div className="p-4 md:p-5 space-y-4">
             <table className="border-collapse border border-slate-300 w-full">
               <tbody>
-                <tr>
+                {/* <tr>
                   <td className="border border-slate-300 p-2">Bill No.</td>
                   <td className="border border-slate-300 p-2">{bill?.id}</td>
-                </tr>
+                </tr> */}
                 <tr>
                   <td className="border border-slate-300 p-2">Table</td>
                   <td className="border border-slate-300 p-2">{table?.name}</td>

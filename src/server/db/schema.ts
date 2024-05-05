@@ -48,6 +48,7 @@ export const bills = createTable(
     canteen_money: real("money").default(0),
     payment_mode: text("payment_mode", {enum: ['cash', 'upi', 'both']}),
     total_amount: real("total_amount"),
+    settled: int("settled", {mode: "boolean"}).default(false)
   }
 )
 

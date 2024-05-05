@@ -49,11 +49,6 @@ export default function Table({ table, setTrigger, showBill, showNote, showFood,
       console.error('Fetch error:', error);
     })
 
-    // editTable(table.id, {
-    //   checked_in_at: Date.now(),
-    //   pausedAt: null,
-    //   time: 0,
-    // }).then(() => setTrigger());
   }
 
   function checkOut() {
