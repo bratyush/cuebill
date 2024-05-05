@@ -124,16 +124,6 @@ export default function Pos() {
       console.error('Fetch error:', error);
     })
 
-    // addBill(bill).then(()=>{
-    //   setShowBill(false)
-    //   editTable(bill.tableId, {
-    //     checkedIn: null,
-    //     pausedAt: null,
-    //     time: 0,
-    //   }).then(() => {
-    //     setTrigger((prev) => !prev)
-    //   });
-    // })
   }
 
   return (
