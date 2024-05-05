@@ -44,8 +44,9 @@ export const bills = createTable(
     check_in: int("check_in"),
     check_out: int("check_out"),
     time_played: int("time_played"),
-    money: real("money"),
-    payment_mode: text("paymentMode", {enum: ['cash', 'upi', 'both']}),
+    table_money: real("money"),
+    canteen_money: real("money").default(0),
+    payment_mode: text("payment_mode", {enum: ['cash', 'upi', 'both']}),
     total_amount: real("total_amount"),
   }
 )
@@ -59,6 +60,18 @@ export const items = createTable(
   }
 )
 
+export const canteenBills = createTable(
+  "canteen_bill",
+  {
+    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    item_id: int("itemId", { mode: "number"}).notNull(),
+    bill_id: int("billId", { mode: "number"}).notNull(),
+    quantity: int("quantity"),
+    amount: real("amount"),
+  }
+)
+
+
 export const tableRelations = relations(tables, ({many}) => ({
   bill: many(bills),
 }));
@@ -67,5 +80,20 @@ export const billRelations = relations(bills, ({one}) => ({
   table: one(tables, {
     fields: [bills.table_id],
     references: [tables.id],
+  }),
+}))
+
+export const itemRelations = relations(items, ({many}) => ({
+  canteenBill: many(canteenBills),
+}));
+
+export const canteenBillRelations = relations(canteenBills, ({one}) => ({
+  item: one(items, {
+    fields: [canteenBills.item_id],
+    references: [items.id],
+  }),
+  bill: one(bills, {
+    fields: [canteenBills.bill_id],
+    references: [bills.id],
   })
 }))

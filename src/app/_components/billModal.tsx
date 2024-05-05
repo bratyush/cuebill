@@ -70,7 +70,7 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
                 </tr>
                 <tr>
                   <td className="border border-slate-300 p-2">Money</td>
-                  <td className="border border-slate-300 p-2">&#8377;{bill?.money}</td>
+                  <td className="border border-slate-300 p-2">&#8377;{bill?.table_money}</td>
                 </tr>
                 {/* <tr>
                   <td className="border border-slate-300 p-2">Discount</td>
@@ -109,7 +109,7 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
                 <tr>
                   <td className="border border-slate-300 p-2">Total Amount</td>
                   <td className="border border-slate-300 p-2">
-                    <span className="text-teal-700 font-semibold text-2xl">&#8377;{bill?.money ? bill?.money: 0}</span>
+                    <span className="text-teal-700 font-semibold text-2xl">&#8377;{(bill?.table_money ?? 0) + (bill?.canteen_money ?? 0)}</span>
                   </td>
                 </tr>
               </tbody>
@@ -132,9 +132,9 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
                 check_out: bill?.check_out,
                 time_played: bill?.time_played,
                 // table_rate: bill?.tableRate,
-                money: bill?.money,
+                table_money: bill?.table_money,
                 payment_mode: mode,
-                total_amount: bill?.money ? bill?.money : 0
+                total_amount: (bill?.table_money ?? 0) + (bill?.canteen_money ?? 0)
               });}}
               type="button"
               className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">

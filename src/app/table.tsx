@@ -63,7 +63,7 @@ export default function Table({ table, setTrigger, showBill, showNote, showFood,
       check_in: table.checked_in_at,
       check_out: Date.now(),
       time_played: elapsedTime,
-      money: parseFloat(generatedRevenue),
+      table_money: parseFloat(generatedRevenue),
       payment_mode: 'upi',
       total_amount: parseFloat(generatedRevenue),
     })

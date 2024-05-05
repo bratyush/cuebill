@@ -15,7 +15,8 @@ export type BillType = {
     check_out?: number;
     time_played?: number;
     table_rate?: number;
-    money?: number;
+    table_money?: number;
+    canteen_money?: number;
     // discount: number;
     payment_mode: 'cash' | 'upi' | 'both';
     total_amount?: number;
