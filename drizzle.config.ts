@@ -9,5 +9,6 @@ export default {
     url: env.DATABASE_URL,
     authToken: env.DATABASE_AUTH_TOKEN,
   },
-  tablesFilter: ["pool-rsc_*"],
+  dialect: "sqlite",
+  tablesFilter: ["pool_*"],
 } satisfies Config;

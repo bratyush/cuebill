@@ -56,7 +56,7 @@ export default function Food({ foods, close, save }: { foods:ItemType[], close: 
                   <tr key={index}>
                     <td className="border px-4 py-2">{food.name}</td>
                     <td className="border px-4 py-2">{food.quantity}</td>
-                    <td className="border px-4 py-2">{food.quantity*food.price}</td>
+                    {/* <td className="border px-4 py-2">{food.quantity*food.price}</td> */}
                   </tr>
                 ))}
               </tbody>

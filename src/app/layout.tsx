@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 
 import { ClerkProvider } from "@clerk/nextjs";
 
+import { Toaster } from "react-hot-toast";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -25,6 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
           <div>
+            <Toaster />
             {children}
           </div>
       </body>

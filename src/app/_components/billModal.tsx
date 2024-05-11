@@ -1,8 +1,10 @@
 import type { BillType, TableType } from "~/types/myTypes";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { Icons } from "~/components/icons";
 
-export default function Bill({ close, save, bill, table }: { close: () => void, save: (bill: BillType) => void ,bill: BillType | null, table: TableType|null }) {
+export default function Bill({ save, close, bill, table }: { save: (bill: BillType) => void, close: ()=>void, bill: BillType | null, table: TableType|null }) {
 
   const [mode, setMode] = useState<'cash' | 'upi' | 'both'>('upi');
 
@@ -16,29 +18,23 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
               Bill
             </h3>
-            <button
-              onClick={() => {
-                close();
-              }}
-              type="button"
-              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              data-modal-hide="default-modal">
-              <svg
-                className="w-3 h-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 14">
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                />
-              </svg>
-              <span className="sr-only">Close modal</span>
-            </button>
+              <button
+                onClick={() => {
+                  toast((t) => (
+                    <span>
+                      Please SETTLE the bill
+                      <button className="text-gray-400 bg-transparent ml-2" onClick={() => toast.dismiss(t.id)}>
+                        <Icons.close className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))
+                }}
+                type="button"
+                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-hide="default-modal">
+                  <Icons.close />
+                {/* <span className="sr-only">Close modal</span> */}
+              </button>
           </div>
           {/* <!-- Modal body --> */}
           <div className="p-4 md:p-5 space-y-4">
@@ -118,27 +114,36 @@ export default function Bill({ close, save, bill, table }: { close: () => void, 
           {/* <!-- Modal footer --> */}
           <div className="flex justify-between items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
             <button
-              onClick={()=>{close();}}
+              onClick={()=>{
+                toast((t) => (
+                  <span>
+                    Please SETTLE the bill
+                    <button className="text-gray-400 bg-transparent ml-2" onClick={() => toast.dismiss(t.id)}>
+                      <Icons.close className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))
+              }}
               type="button"
               className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-slate-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
               Close
             </button>
+
             <button
               onClick={()=>{save({
                 id: bill?.id,
-                // table: bill?.table,
                 table_id: bill ? bill.table_id : 0,
                 check_in: bill?.check_in,
                 check_out: bill?.check_out,
                 time_played: bill?.time_played,
-                // table_rate: bill?.tableRate,
                 table_money: bill?.table_money,
                 payment_mode: mode,
-                total_amount: (bill?.table_money ?? 0) + (bill?.canteen_money ?? 0)
+                total_amount: (bill?.table_money ?? 0) + (bill?.canteen_money ?? 0),
+                settled: 1
               });}}
               type="button"
               className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
-              Save Bill
+              Settle Bill
             </button>
           </div>
         </div>
