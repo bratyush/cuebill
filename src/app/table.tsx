@@ -7,6 +7,7 @@ import snooker from '@/public/snooker.png';
 import { calculateRevenue, formatElapsed, formatTime } from '~/utils/formatters';
 import Image from 'next/image';
 import { Icons } from '~/components/icons';
+import { checkInTable, createBill } from '~/utils/fetches';
 
 
 type TableProps = {
@@ -29,31 +30,29 @@ export default function Table({ table, setTrigger, showBill, showNote, showFood,
 
   function checkIn() {
     // checkIn
+    console.log('checkIn')
 
-    fetch('/api/tables/'+ table.id, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        checked_in_at: Date.now(),
+    createBill(table.id)
+    .then((data) => {
+      console.log('data', data)
+
+      localStorage.setItem('t'+table.id.toString()+'bill', data.bill.id.toString())
+
+      checkInTable(table.id)
+      .then(() => {
+        setTrigger()
+      }).catch(error => {
+        console.error('Fetch error:', error);
       })
-    }).then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    }).then(() => {
-      setTrigger()
-    }).catch(error => {
-      console.error('Fetch error:', error);
+      
     })
-
+    
   }
 
   function checkOut() {
     setBillTable(table);
-    setBill({
+    const billId = localStorage.getItem('t'+table.id.toString()+'bill')
+    let tempBill : BillType = {
       table_id: table.id,
       check_in: table.checked_in_at,
       check_out: Date.now(),
@@ -61,7 +60,11 @@ export default function Table({ table, setTrigger, showBill, showNote, showFood,
       table_money: parseFloat(generatedRevenue),
       payment_mode: 'upi',
       total_amount: parseFloat(generatedRevenue),
-    })
+    }
+    if (billId) {
+      tempBill.id = parseInt(billId)
+    }
+    setBill(tempBill)
     showBill()
   }
 

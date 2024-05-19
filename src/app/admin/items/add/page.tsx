@@ -6,19 +6,19 @@ import { useRouter } from 'next/navigation';
 
 export default function AddTable() {
   const [itemName, setItemName] = useState<string>('');
-  const [cost, setCost] = useState<number>();
+  const [price, setPrice] = useState<number>();
 
   const router = useRouter()
 
-  function addItemSubmit(itemName: string, cost?: number) {
-    console.log('item', itemName, cost)
+  function addItemSubmit(itemName: string, price?: number) {
+    console.log('item', itemName, price)
 
     fetch('/api/items', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({name:itemName, cost:cost})
+      body: JSON.stringify({name:itemName, price:price})
     }).then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -39,7 +39,7 @@ export default function AddTable() {
           e.preventDefault();
           addItemSubmit(
             itemName,
-            cost,
+            price,
           );
         }}
         className="max-w-md mx-auto">
@@ -66,17 +66,17 @@ export default function AddTable() {
 
         <div className="mb-5">
           <label
-            htmlFor="cost"
+            htmlFor="price"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Cost (&#8377;)
+            Price (&#8377;)
           </label>
           <input
             type="number"
-            id="cost"
+            id="price"
             className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
             required
-            value = {cost}
-            onChange={(e)=>{setCost(parseFloat(e.target.value))}}
+            value = {price}
+            onChange={(e)=>{setPrice(parseFloat(e.target.value))}}
           />
         </div>
 

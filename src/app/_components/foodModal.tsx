@@ -1,10 +1,18 @@
 import { useState } from "react";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { ItemType } from "~/types/myTypes";
+import useSWR from "swr";
+import { Input } from "~/components/ui/input";
 
+const fetcher = (url: string) => fetch(url).then(res => res.json())
 
 export default function Food({ foods, close, save }: { foods:ItemType[], close: () => void, save: (foods: ItemType[]) => void }) {
 
   const [items, setItems] = useState<ItemType[]>(foods);
+  const [selectedItem, setSelectedItem] = useState<ItemType>();
+  const [selectedQuant, setSelectedQuant] = useState<number>();
+
+  const { data, error, isLoading } = useSWR(`/api/items/`, fetcher)
 
   return (
     <div className="bg-gray-800/70 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen flex items-center">
@@ -47,6 +55,7 @@ export default function Food({ foods, close, save }: { foods:ItemType[], close: 
               <thead>
                 <tr>
                   <th className="px-4 py-2">Food</th>
+                  <th className="px-4 py-2">Price</th>
                   <th className="px-4 py-2">Quantity</th>
                   <th className="px-4 py-2">Cost</th>
                 </tr>
@@ -59,8 +68,72 @@ export default function Food({ foods, close, save }: { foods:ItemType[], close: 
                     {/* <td className="border px-4 py-2">{food.quantity*food.price}</td> */}
                   </tr>
                 ))}
+                <tr key='add'>
+                  <Select onValueChange={(e)=>{
+                    setSelectedItem(data.items.find((el:ItemType)=>el.id==parseInt(e)))
+                  }}>
+                    <SelectTrigger className="w-[150px]">
+                      <SelectValue placeholder="Select an item" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Items</SelectLabel>
+                        {!isLoading && data.items.map((item:ItemType)=>{
+                          return <SelectItem value={item.id.toString()}>{item.name}</SelectItem>
+                        })}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <td>
+                    <div className="flex justify-center">
+                      &#8377;{selectedItem && selectedItem.price}
+                    </div>
+                  </td>
+                  <td>
+                    <Input className="w-[100px]" type="number" placeholder="quantity"
+                      onChange={(e)=>{
+                        if (e.target.value == ''){
+                          setSelectedQuant(0);
+                        } else {
+                          setSelectedQuant(parseInt(e.target.value))
+                        }
+                      }} />
+                  </td>
+                  <td>
+                    <div className="flex justify-center">
+                      &#8377;{selectedItem && selectedQuant && selectedQuant*selectedItem.price}
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
+            <div className="flex justify-end mx-5">
+              <button
+                onClick={()=>{
+                  fetch('/api/bills/canteen/', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      
+                      item_id: selectedItem?.id,
+                      quantity: selectedQuant
+                    })
+                  })
+                  .then(res=>res.json())
+                  .then((data: {status: string}) => {
+                    console.log(data);
+                  }).catch(error => {
+                    console.error('Fetch error:', error);
+                  });
+                }}
+                type="button"
+                disabled={!!(!selectedItem || !selectedQuant)}
+                className="text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
+                Add
+              </button>
+            </div>
             <div className="flex justify-end mx-5">
               Total : {'asdf'}
             </div>

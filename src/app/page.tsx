@@ -14,6 +14,7 @@ import NavBar from './_components/navbar';
 import Note from './_components/noteModal';
 import { TableSkeleton } from './_components/skeletons';
 import Table from './table';
+import { checkOutTable, getTables, patchBill } from '~/utils/fetches';
 
 
 export default function Pos() {
@@ -60,12 +61,8 @@ export default function Pos() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch('/api/tables', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    }).then(res=>res.json())
+    
+    getTables()
     .then((data: {tables: TableType[]}) => {
       localStorage.setItem('tables', JSON.stringify((data.tables).length));
       setTables(data.tables);
@@ -89,37 +86,17 @@ export default function Pos() {
   function saveBill(bill: BillType) {
     console.log('bill', bill)
 
-    fetch('/api/bills', {
-      method:'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(bill)
-    }).then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    }).then(() => {
+    patchBill(bill)
+    .then(() => {
       setShowBill(false)
-      fetch('/api/tables/'+ bill.table_id, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          checked_in_at: null,
-        })
-      }).then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      }).then(() => {
+
+      checkOutTable(bill.table_id)
+      .then(() => {
         setTrigger((prev) => !prev)
       }).catch(error => {
         console.error('Fetch error:', error);
       })
+
     }).catch(error => {
       console.error('Fetch error:', error);
     })
@@ -129,7 +106,6 @@ export default function Pos() {
   return (
     <>
     <NavBar />
-    {}
  
     { showBill && <Bill bill={bill} table={billTable} close={()=>{setShowBill(false)}} save={(bill: BillType)=>saveBill(bill)}/>}
     { showNote && <Note note={''} close={()=>{setShowNote(false)}} save={(note: string)=>saveNote(note)}/>}

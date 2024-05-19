@@ -1,15 +1,14 @@
 import { db } from "~/server/db";
 import { bills } from "~/server/db/schema";
-import type { BillType } from "~/types/myTypes";
 
-// add bill
+// create bill
 export async function POST(request: Request) {
 
-  const body = await request.json() as BillType
+  const body = await request.json() as {table: number};
 
-  await db.insert(bills).values(body);
+  const bill = await db.insert(bills).values({table_id: body.table}).returning();
 
-  return Response.json({status: "created"})
+  return Response.json({status: "created", bill: bill[0]})
 }
 
 export async function GET() {

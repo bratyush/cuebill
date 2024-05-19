@@ -4,25 +4,7 @@
 import { relations } from "drizzle-orm";
 import { integer, real, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
 export const createTable = sqliteTableCreator((name) => `pool_${name}`);
-
-// export const posts = createTable(
-//   "post",
-//   {
-//     id: integer("id").primaryKey({ autoIncrement: true }),
-//     name: text("name", { length: 256 }),
-//     createdAt: integer("created_at", { mode: "timestamp" })
-//       .default(sql`CURRENT_TIMESTAMP`)
-//       .notNull(),
-//     updatedAt: integer("updatedAt", { mode: "timestamp" }),
-//   },
-// );
 
 export const tables = createTable(
   "table",
@@ -41,13 +23,13 @@ export const bills = createTable(
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
     table_id: integer("tableId").notNull(),
-    check_in: integer("check_in"),
-    check_out: integer("check_out"),
-    time_played: integer("time_played"),
-    table_money: real("money"),
+    check_in: integer("check_in").default(0),
+    check_out: integer("check_out").default(0),
+    time_played: integer("time_played").default(0),
+    table_money: real("money").default(0),
     canteen_money: real("money").default(0),
-    payment_mode: text("payment_mode", {enum: ['cash', 'upi', 'both']}),
-    total_amount: real("total_amount"),
+    payment_mode: text("payment_mode", {enum: ['cash', 'upi', 'both']}).default('upi'),
+    total_amount: real("total_amount").default(0),
   }
 )
 

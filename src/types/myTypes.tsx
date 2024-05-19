@@ -21,8 +21,16 @@ export type BillType = {
     total_amount?: number;
 };
 
+export type CanteenBillType = {
+    id:number;
+    item_id:number;
+    bill_id:number;
+    quantity:number;
+    amount:number;
+}
+
 export type ItemType = {
-    id? : number;
+    id : number;
     name: string;
     price: number;
     quantity?: number;

@@ -40,10 +40,10 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
           <div className="p-4 md:p-5 space-y-4">
             <table className="border-collapse border border-slate-300 w-full">
               <tbody>
-                {/* <tr>
+                <tr>
                   <td className="border border-slate-300 p-2">Bill No.</td>
                   <td className="border border-slate-300 p-2">{bill?.id}</td>
-                </tr> */}
+                </tr>
                 <tr>
                   <td className="border border-slate-300 p-2">Table</td>
                   <td className="border border-slate-300 p-2">{table?.name}</td>
@@ -139,7 +139,6 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
                 table_money: bill?.table_money,
                 payment_mode: mode,
                 total_amount: (bill?.table_money ?? 0) + (bill?.canteen_money ?? 0),
-                settled: 1
               });}}
               type="button"
               className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
