@@ -49,14 +49,14 @@ export default function Revenue () {
       header: 'Date',
       cell: ({ row }) => {
         const bill = row.original;
-        return bill.check_in ? <div>{new Date(bill.check_in).toDateString()}</div> : <div>Not Checked In</div>;
+        return bill.checkIn ? <div>{new Date(bill.checkIn).toDateString()}</div> : <div>Not Checked In</div>;
       }
     },
     {
       header: 'Start Time',
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>{formatTime(bill.check_in)}</div>;
+        return <div>{formatTime(bill.checkIn)}</div>;
       }
     },
     // {
@@ -70,14 +70,14 @@ export default function Revenue () {
       header: 'Time Played',
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>{formatElapsed(bill.time_played)}</div>;
+        return <div>{formatElapsed(bill.timePlayed)}</div>;
       }
     },
     {
       header: 'Total Revenue',
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>&#8377;{bill.total_amount}</div>;
+        return <div>&#8377;{bill.totalAmount}</div>;
       }
     },
     {
@@ -85,9 +85,9 @@ export default function Revenue () {
       cell: ({ row }) => {
         const bill = row.original;
         return <div>
-          {bill.payment_mode == 'upi' && 'UPI'}
-          {bill.payment_mode == 'cash' && 'Cash'}
-          {bill.payment_mode == 'both' && 'Cash + UPI'}
+          {bill.paymentMode == 'upi' && 'UPI'}
+          {bill.paymentMode == 'cash' && 'Cash'}
+          {bill.paymentMode == 'both' && 'Cash + UPI'}
         </div>;
       }
     }

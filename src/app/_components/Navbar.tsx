@@ -19,7 +19,7 @@ const NavBar = () => {
       </div>
       <div className="flex items-center">
         {/* <Image className="h-8 mr-2" src={logo} alt="Logo" /> */}
-        <span className="text-2xl font-bold">Pool Management Software</span>
+        <span className="text-2xl font-bold">Snooker Club</span>
       </div>
       <div className="flex items-center space-x-4">
         <Link href={'/'} className="px-3 py-2 text-lg font-semibold text-black rounded-md hover:bg-slate-300">POS</Link>

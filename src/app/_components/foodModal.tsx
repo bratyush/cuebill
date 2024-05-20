@@ -1,26 +1,51 @@
 import { useState } from "react";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { ItemType } from "~/types/myTypes";
 import useSWR from "swr";
 import { Input } from "~/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { CanteenBillType, ItemType, TableType } from "~/types/myTypes";
+import { createCanteenBill } from "~/utils/fetches";
 
-const fetcher = (url: string) => fetch(url).then(res => res.json())
+const fetcher = (url: string) =>
+  fetch(url).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
 
-export default function Food({ foods, close, save }: { foods:ItemType[], close: () => void, save: (foods: ItemType[]) => void }) {
-
-  const [items, setItems] = useState<ItemType[]>(foods);
+export default function Food({
+  table,
+  items,
+  close,
+}: {
+  table: TableType;
+  items: ItemType[];
+  close: () => void;
+}) {
   const [selectedItem, setSelectedItem] = useState<ItemType>();
   const [selectedQuant, setSelectedQuant] = useState<number>();
 
-  const { data, error, isLoading } = useSWR(`/api/items/`, fetcher)
+  const billId = localStorage.getItem("t" + table.id.toString() + "bill");
+
+  const { data, isLoading, mutate } = useSWR<{
+    bills: CanteenBillType[];
+  }>(`/api/bills/canteen/${billId?.toString()}`, fetcher);
 
   return (
-    <div className="bg-gray-800/70 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-screen flex items-center">
-      <div className="relative p-4 w-full max-w-lg max-h-full">
+    <div className="fixed left-0 right-0 top-0 z-50 flex h-[calc(100%-1rem)] max-h-screen w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800/70 md:inset-0">
+      <div className="relative max-h-full w-full max-w-lg p-4">
         {/* <!-- Modal content --> */}
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           {/* <!-- Modal header --> */}
-          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+          <div className="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
               Notes
             </h3>
@@ -29,14 +54,16 @@ export default function Food({ foods, close, save }: { foods:ItemType[], close: 
                 close();
               }}
               type="button"
-              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              data-modal-hide="default-modal">
+              className="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+              data-modal-hide="default-modal"
+            >
               <svg
-                className="w-3 h-3"
+                className="h-3 w-3"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 14 14">
+                viewBox="0 0 14 14"
+              >
                 <path
                   stroke="currentColor"
                   strokeLinecap="round"
@@ -50,8 +77,8 @@ export default function Food({ foods, close, save }: { foods:ItemType[], close: 
           </div>
 
           {/* <!-- Modal body --> */}
-          <div className="p-4 md:p-5 space-y-4">
-            <table className="table-auto w-full">
+          <div className="space-y-4 p-4 md:p-5">
+            <table className="w-full table-auto text-black">
               <thead>
                 <tr>
                   <th className="px-4 py-2">Food</th>
@@ -61,96 +88,141 @@ export default function Food({ foods, close, save }: { foods:ItemType[], close: 
                 </tr>
               </thead>
               <tbody>
-                {items.map((food: ItemType, index) => (
-                  <tr key={index}>
-                    <td className="border px-4 py-2">{food.name}</td>
-                    <td className="border px-4 py-2">{food.quantity}</td>
-                    {/* <td className="border px-4 py-2">{food.quantity*food.price}</td> */}
-                  </tr>
-                ))}
-                <tr key='add'>
-                  <Select onValueChange={(e)=>{
-                    setSelectedItem(data.items.find((el:ItemType)=>el.id==parseInt(e)))
-                  }}>
+                {data?.bills.map((item: CanteenBillType) => {
+                  const itemDetails = items.find(
+                    (val) => val.id == item.itemId,
+                  );
+                  const cost = itemDetails
+                    ? itemDetails.price * item.quantity
+                    : 0;
+                  return (
+                    <tr key={item.id}>
+                      <td className="border px-4 py-2">{itemDetails?.name}</td>
+                      <td className="border px-4 py-2">
+                        &#8377;{itemDetails?.price}
+                      </td>
+                      <td className="border px-4 py-2">{item.quantity}</td>
+                      <td className="border px-4 py-2">&#8377;{cost}</td>
+                    </tr>
+                  );
+                })}
+                <tr key="add">
+                  <Select
+                    onValueChange={(e) => {
+                      setSelectedItem(
+                        items.find((el: ItemType) => el.id == parseInt(e)),
+                      );
+                    }}
+                  >
                     <SelectTrigger className="w-[150px]">
                       <SelectValue placeholder="Select an item" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Items</SelectLabel>
-                        {!isLoading && data.items.map((item:ItemType)=>{
-                          return <SelectItem value={item.id.toString()}>{item.name}</SelectItem>
-                        })}
+                        {!isLoading &&
+                          items.map((item: ItemType) => {
+                            return (
+                              <SelectItem
+                                key={item.id}
+                                value={item.id.toString()}
+                              >
+                                {item.name}
+                              </SelectItem>
+                            );
+                          })}
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                   <td>
                     <div className="flex justify-center">
-                      &#8377;{selectedItem && selectedItem.price}
+                      &#8377;{selectedItem?.price}
                     </div>
                   </td>
                   <td>
-                    <Input className="w-[100px]" type="number" placeholder="quantity"
-                      onChange={(e)=>{
-                        if (e.target.value == ''){
+                    <Input
+                      className="w-[100px]"
+                      type="number"
+                      placeholder="quantity"
+                      onChange={(e) => {
+                        if (e.target.value == "") {
                           setSelectedQuant(0);
                         } else {
-                          setSelectedQuant(parseInt(e.target.value))
+                          setSelectedQuant(parseInt(e.target.value));
                         }
-                      }} />
+                      }}
+                    />
                   </td>
                   <td>
                     <div className="flex justify-center">
-                      &#8377;{selectedItem && selectedQuant && selectedQuant*selectedItem.price}
+                      &#8377;
+                      {selectedItem &&
+                        selectedQuant &&
+                        selectedQuant * selectedItem.price}
                     </div>
                   </td>
                 </tr>
               </tbody>
             </table>
-            <div className="flex justify-end mx-5">
+            <div className="mx-5 flex justify-end">
               <button
-                onClick={()=>{
-                  fetch('/api/bills/canteen/', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                      
-                      item_id: selectedItem?.id,
-                      quantity: selectedQuant
-                    })
-                  })
-                  .then(res=>res.json())
-                  .then((data: {status: string}) => {
-                    console.log(data);
-                  }).catch(error => {
-                    console.error('Fetch error:', error);
-                  });
+                onClick={() => {
+                  if (billId && selectedItem && selectedQuant) {
+                    createCanteenBill(
+                      parseInt(billId),
+                      selectedItem.id,
+                      selectedQuant,
+                      selectedQuant * selectedItem.price,
+                    )
+                      .then((dt: { status: string }) => {
+                        console.log(dt);
+                        mutate({
+                          bills: [
+                            ...(data?.bills ?? []),
+                            {
+                              billId: parseInt(billId),
+                              itemId: selectedItem?.id,
+                              quantity: selectedQuant,
+                              amount: selectedQuant * selectedItem?.price,
+                            },
+                          ],
+                        }).catch((err) => console.error(err));
+                      })
+                      .catch((error) => {
+                        console.error("Fetch error:", error);
+                      });
+                  } else {
+                    console.log("wrong");
+                  }
                 }}
                 type="button"
                 disabled={!!(!selectedItem || !selectedQuant)}
-                className="text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
+                className="rounded-lg bg-orange-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-300 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
+              >
                 Add
               </button>
             </div>
-            <div className="flex justify-end mx-5">
-              Total : {'asdf'}
-            </div>
+            <div className="mx-5 flex justify-end">Total : {"asdf"}</div>
           </div>
 
           {/* <!-- Modal footer --> */}
-          <div className="flex justify-between items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+          <div className="flex items-center justify-between rounded-b border-t border-gray-200 p-4 dark:border-gray-600 md:p-5">
             <button
-              onClick={()=>{close();}}
+              onClick={() => {
+                close();
+              }}
               type="button"
-              className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-slate-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+              className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-slate-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+            >
               Close
             </button>
             <button
-              onClick={()=>{save(foods)}}
+              onClick={() => {
+                close();
+              }}
               type="button"
-              className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
+              className="rounded-lg bg-sky-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-sky-600 focus:outline-none focus:ring-4 focus:ring-sky-300 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
+            >
               Save Canteen
             </button>
           </div>

@@ -14,6 +14,6 @@ export async function POST(request: Request) {
 
 export async function GET() {
   const canteenBills = await db.query.canteenBills.findMany()
-  
+
   return Response.json({canteenBills: canteenBills})
 }

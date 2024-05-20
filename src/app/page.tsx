@@ -8,13 +8,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Bill from '~/app/_components/billModal';
+import { checkOutTable, getTables, patchBill } from '~/utils/fetches';
 import type { BillType, ItemType, TableType } from '../types/myTypes';
-import Food from './_components/foodModal';
 import NavBar from './_components/navbar';
 import Note from './_components/noteModal';
 import { TableSkeleton } from './_components/skeletons';
 import Table from './table';
-import { checkOutTable, getTables, patchBill } from '~/utils/fetches';
 
 
 export default function Pos() {
@@ -84,15 +83,17 @@ export default function Pos() {
   }
 
   function saveBill(bill: BillType) {
-    console.log('bill', bill)
 
     patchBill(bill)
     .then(() => {
       setShowBill(false)
 
-      checkOutTable(bill.table_id)
+      checkOutTable(bill.tableId)
       .then(() => {
         setTrigger((prev) => !prev)
+
+        localStorage.removeItem('t'+bill.tableId.toString()+'bill')
+
       }).catch(error => {
         console.error('Fetch error:', error);
       })
@@ -109,7 +110,7 @@ export default function Pos() {
  
     { showBill && <Bill bill={bill} table={billTable} close={()=>{setShowBill(false)}} save={(bill: BillType)=>saveBill(bill)}/>}
     { showNote && <Note note={''} close={()=>{setShowNote(false)}} save={(note: string)=>saveNote(note)}/>}
-    { showFood && <Food foods={[]} close={()=>{setShowFood(false)}} save={(foods: ItemType[])=>saveFoods(foods)}/>}
+    {/* { showFood && <Food foods={[]} close={()=>{setShowFood(false)}} save={(foods: ItemType[])=>saveFoods(foods)}/>} */}
 
     <div className="text-white m-2 grid gap-3 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
 
@@ -120,7 +121,7 @@ export default function Pos() {
           table={table}
           showBill={()=>{setShowBill(true)}}
           showNote={()=>{setShowNote(true)}}
-          showFood={()=>{setShowFood(true)}}
+          // showFood={()=>{setShowFood(true)}}
           setBill={(bill: BillType) => setBill(bill)}
           setBillTable={(table: TableType) => setBillTable(table)}
           setTrigger={() => setTrigger((prev) => !prev)}

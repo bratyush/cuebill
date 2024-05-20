@@ -1,8 +1,8 @@
-import type { BillType, TableType } from "~/types/myTypes";
-import { formatElapsed, formatTime } from "~/utils/formatters";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Icons } from "~/components/icons";
+import type { BillType, TableType } from "~/types/myTypes";
+import { formatElapsed, formatTime } from "~/utils/formatters";
 
 export default function Bill({ save, close, bill, table }: { save: (bill: BillType) => void, close: ()=>void, bill: BillType | null, table: TableType|null }) {
 
@@ -50,15 +50,15 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
                 </tr>
                 <tr>
                   <td className="border border-slate-300 p-2">Check In</td>
-                  <td className="border border-slate-300 p-2">{formatTime(bill?.check_in)}</td>
+                  <td className="border border-slate-300 p-2">{formatTime(bill?.checkIn)}</td>
                 </tr>
                 <tr>
                   <td className="border border-slate-300 p-2">Check Out</td>
-                  <td className="border border-slate-300 p-2">{formatTime(bill?.check_out)}</td>
+                  <td className="border border-slate-300 p-2">{formatTime(bill?.checkOut)}</td>
                 </tr>
                 <tr>
                   <td className="border border-slate-300 p-2">Time Played</td>
-                  <td className="border border-slate-300 p-2">{formatElapsed(bill?.time_played)}</td>
+                  <td className="border border-slate-300 p-2">{formatElapsed(bill?.timePlayed)}</td>
                 </tr>
                 <tr>
                   <td className="border border-slate-300 p-2">Table Rate</td>
@@ -66,7 +66,7 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
                 </tr>
                 <tr>
                   <td className="border border-slate-300 p-2">Money</td>
-                  <td className="border border-slate-300 p-2">&#8377;{bill?.table_money}</td>
+                  <td className="border border-slate-300 p-2">&#8377;{bill?.tableMoney}</td>
                 </tr>
                 {/* <tr>
                   <td className="border border-slate-300 p-2">Discount</td>
@@ -105,7 +105,7 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
                 <tr>
                   <td className="border border-slate-300 p-2">Total Amount</td>
                   <td className="border border-slate-300 p-2">
-                    <span className="text-teal-700 font-semibold text-2xl">&#8377;{(bill?.table_money ?? 0) + (bill?.canteen_money ?? 0)}</span>
+                    <span className="text-teal-700 font-semibold text-2xl">&#8377;{(bill?.tableMoney ?? 0) + (bill?.canteenMoney ?? 0)}</span>
                   </td>
                 </tr>
               </tbody>
@@ -132,13 +132,13 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
             <button
               onClick={()=>{save({
                 id: bill?.id,
-                table_id: bill ? bill.table_id : 0,
-                check_in: bill?.check_in,
-                check_out: bill?.check_out,
-                time_played: bill?.time_played,
-                table_money: bill?.table_money,
-                payment_mode: mode,
-                total_amount: (bill?.table_money ?? 0) + (bill?.canteen_money ?? 0),
+                tableId: bill ? bill.tableId : 0,
+                checkIn: bill?.checkIn,
+                checkOut: bill?.checkOut,
+                timePlayed: bill?.timePlayed,
+                tableMoney: bill?.tableMoney,
+                paymentMode: mode,
+                totalAmount: (bill?.tableMoney ?? 0) + (bill?.canteenMoney ?? 0),
               });}}
               type="button"
               className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">

@@ -9,22 +9,22 @@ export type TableType = {
 
 export type BillType = {
     id?: number;
-    table_id:number;
+    tableId:number;
     table?: TableType;
-    check_in?: number;
-    check_out?: number;
-    time_played?: number;
+    checkIn?: number;
+    checkOut?: number;
+    timePlayed?: number;
     table_rate?: number;
-    table_money?: number;
-    canteen_money?: number;
-    payment_mode: 'cash' | 'upi' | 'both';
-    total_amount?: number;
+    tableMoney?: number;
+    canteenMoney?: number;
+    paymentMode: 'cash' | 'upi' | 'both';
+    totalAmount?: number;
 };
 
 export type CanteenBillType = {
-    id:number;
-    item_id:number;
-    bill_id:number;
+    id?:number;
+    itemId:number;
+    billId:number;
     quantity:number;
     amount:number;
 }

@@ -6,7 +6,7 @@ export async function POST(request: Request) {
 
   const body = await request.json() as {table: number};
 
-  const bill = await db.insert(bills).values({table_id: body.table}).returning();
+  const bill = await db.insert(bills).values({tableId: body.table}).returning();
 
   return Response.json({status: "created", bill: bill[0]})
 }

@@ -74,3 +74,22 @@ export const patchBill = (bill:BillType) =>
     }
     return response.json();
   })
+
+export const createCanteenBill = (billId: number, itemId: number, quantity: number, amount: number) =>
+  fetch('/api/bills/canteen/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      billId: billId,
+      itemId: itemId,
+      quantity: quantity,
+      amount: amount
+    })
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
