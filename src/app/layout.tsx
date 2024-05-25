@@ -1,15 +1,8 @@
 import "~/styles/globals.css";
 
-import { Inter } from "next/font/google";
-
 import { ClerkProvider } from "@clerk/nextjs";
 
 import { Toaster } from "react-hot-toast";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
 
 export const metadata = {
   title: "Create T3 App",
@@ -25,7 +18,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body className={`font-sans `}> 
           <div>
             <Toaster />
             {children}
