@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -6,58 +6,63 @@ import { DataTable } from "~/app/_components/dataTable";
 import { type BillType } from "~/types/myTypes";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 
-export default function Revenue () {
+export default function Revenue() {
   const [data, setData] = useState<BillType[]>([]);
 
   useEffect(() => {
-
-    fetch('/api/bills', {
+    fetch("/api/bills", {
       method: "GET",
       headers: {
-        'Content-Type': 'application/json'
+        "Cache-Control": "no-cache",
+        "Content-Type": "application/json",
       },
-    }).then(res=>res.json())
-    .then((data: {bills: BillType[]}) => {
-      console.log('data', data.bills)
-      setData(data.bills);
-    }).catch(error => {
-      console.error('Fetch error:', error);
-    });
-
+    })
+      .then((res) => res.json())
+      .then((data: { bills: BillType[] }) => {
+        console.log("data", data.bills);
+        setData(data.bills);
+      })
+      .catch((error) => {
+        console.error("Fetch error:", error);
+      });
   }, []);
 
   const columns: ColumnDef<BillType>[] = [
     {
       accessorKey: "id",
-      header: '#',
+      header: "#",
     },
     {
-      header: 'Table',
+      header: "Table",
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>{bill.table?.name}</div>
-      }
+        return <div>{bill.table?.name}</div>;
+      },
     },
     {
-      header: 'rate',
+      header: "rate",
       cell: ({ row }) => {
         const bill = row.original;
         return <div>&#8377;{bill.table?.rate}/min</div>;
-      }
+      },
     },
     {
-      header: 'Date',
+      header: "Date",
       cell: ({ row }) => {
         const bill = row.original;
-        return bill.checkIn ? <div>{new Date(bill.checkIn).toDateString()}</div> : <div>Not Checked In</div>;
-      }
+        return bill.checkIn ? (
+          <div>{new Date(bill.checkIn).toDateString()}</div>
+        ) : (
+          <div>Not Checked In</div>
+        );
+      },
     },
     {
-      header: 'Start Time',
+      header: "Start Time",
       cell: ({ row }) => {
         const bill = row.original;
         return <div>{formatTime(bill.checkIn)}</div>;
-      }
+      },
     },
     // {
     //   header: 'End Time',
@@ -67,30 +72,32 @@ export default function Revenue () {
     //   }
     // },
     {
-      header: 'Time Played',
+      header: "Time Played",
       cell: ({ row }) => {
         const bill = row.original;
         return <div>{formatElapsed(bill.timePlayed)}</div>;
-      }
+      },
     },
     {
-      header: 'Total Revenue',
+      header: "Total Revenue",
       cell: ({ row }) => {
         const bill = row.original;
         return <div>&#8377;{bill.totalAmount}</div>;
-      }
+      },
     },
     {
-      header: 'Payment Mode',
+      header: "Payment Mode",
       cell: ({ row }) => {
         const bill = row.original;
-        return <div>
-          {bill.paymentMode == 'upi' && 'UPI'}
-          {bill.paymentMode == 'cash' && 'Cash'}
-          {bill.paymentMode == 'both' && 'Cash + UPI'}
-        </div>;
-      }
-    }
+        return (
+          <div>
+            {bill.paymentMode == "upi" && "UPI"}
+            {bill.paymentMode == "cash" && "Cash"}
+            {bill.paymentMode == "both" && "Cash + UPI"}
+          </div>
+        );
+      },
+    },
     // {
     //   // accessorKey: "rate",
     //   header: `Rate (₹)`,
@@ -144,7 +151,7 @@ export default function Revenue () {
 
   return (
     <div className="container mx-auto py-10">
-      <div className="bg-slate-100 rounded-md">
+      <div className="rounded-md bg-slate-100">
         <DataTable columns={columns} data={data} />
       </div>
     </div>

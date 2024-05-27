@@ -14,7 +14,12 @@ import { CanteenBillType, ItemType, TableType } from "~/types/myTypes";
 import { createCanteenBill } from "~/utils/fetches";
 
 const fetcher = (url: string) =>
-  fetch(url).then((response) => {
+  fetch(url, {
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
