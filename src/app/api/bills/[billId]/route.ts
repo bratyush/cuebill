@@ -17,3 +17,17 @@ export async function PATCH(
 
   return Response.json({status: "created"})
 }
+
+export async function GET(
+  request: Request,
+  { params }: { params: { billId: string } }
+) {
+
+  const billId = params.billId // 'a', 'b', or 'c'
+  const id = parseInt(billId);
+
+  const bill = await db.select().from(bills).where(eq(bills.id, id));
+
+  return Response.json(bill[0])
+
+}

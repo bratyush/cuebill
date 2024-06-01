@@ -11,7 +11,6 @@ import Bill from '~/app/_components/billModal';
 import { checkOutTable, getTables, patchBill } from '~/utils/fetches';
 import type { BillType, ItemType, TableType } from '../types/myTypes';
 import NavBar from './_components/navbar';
-import Note from './_components/noteModal';
 import { TableSkeleton } from './_components/skeletons';
 import Table from './table';
 
@@ -23,8 +22,6 @@ export default function Pos() {
   const [tables, setTables] = useState<TableType[] | null>();
   const [trigger, setTrigger] = useState(false);
   const [showBill, setShowBill] = useState<boolean>(false);
-  const [showNote, setShowNote] = useState<boolean>(false);
-  const [showFood, setShowFood] = useState<boolean>(false);
   const [bill, setBill] = useState<BillType | null>(null);
   const [billTable, setBillTable] = useState<TableType | null>(null);
 
@@ -72,16 +69,6 @@ export default function Pos() {
 
   }, [trigger]);
 
-  function saveFoods(foods: ItemType[]) {
-    console.log('food', foods)
-    setShowFood(false)
-  }
-
-  function saveNote(note: string) {
-    console.log('note', note)
-    setShowNote(false)
-  }
-
   function saveBill(bill: BillType) {
 
     patchBill(bill)
@@ -109,8 +96,6 @@ export default function Pos() {
     <NavBar />
  
     { showBill && <Bill bill={bill} table={billTable} close={()=>{setShowBill(false)}} save={(bill: BillType)=>saveBill(bill)}/>}
-    { showNote && <Note note={''} close={()=>{setShowNote(false)}} save={(note: string)=>saveNote(note)}/>}
-    {/* { showFood && <Food foods={[]} close={()=>{setShowFood(false)}} save={(foods: ItemType[])=>saveFoods(foods)}/>} */}
 
     <div className="text-white m-2 grid gap-3 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
 
@@ -120,8 +105,6 @@ export default function Pos() {
           key={index}
           table={table}
           showBill={()=>{setShowBill(true)}}
-          showNote={()=>{setShowNote(true)}}
-          // showFood={()=>{setShowFood(true)}}
           setBill={(bill: BillType) => setBill(bill)}
           setBillTable={(table: TableType) => setBillTable(table)}
           setTrigger={() => setTrigger((prev) => !prev)}

@@ -1,7 +1,9 @@
 
 
-- [ ] add pool/snooker photo in tables page.
+- [x] add pool/snooker photo in tables page.
 - [ ] add more colour tables.
-- [ ] Menu pages.
-- [ ] Bill saving.
-- [ ] 
+- [x] Menu pages.
+- [x] Bill saving.
+- [ ] Notes.
+- [ ] Auth checks everywhere.
+- [ ] Loading state everywhere.

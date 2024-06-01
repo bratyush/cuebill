@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useSWR from "swr";
+import { Icons } from "~/components/icons";
 import { Input } from "~/components/ui/input";
 import {
   Select,
@@ -11,7 +12,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { CanteenBillType, ItemType, TableType } from "~/types/myTypes";
-import { createCanteenBill } from "~/utils/fetches";
+import { createCanteenBill, deleteCanteenBill } from "~/utils/fetches";
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -108,17 +109,34 @@ export default function Food({
                       </td>
                       <td className="border px-4 py-2">{item.quantity}</td>
                       <td className="border px-4 py-2">&#8377;{cost}</td>
+                      <td className="pl-2 pt-2">
+                        <button onClick={()=>{
+                          if (item.id) {
+                            deleteCanteenBill(item.id)
+                            .then((dt: { status: string }) => {
+                              console.log(dt);
+                              mutate({
+                                bills: data?.bills.filter((el) => el.id !== item.id),
+                              }).catch((err) => console.error(err));
+                            })
+                          }
+                        }}>
+                          <Icons.bin/>
+                        </button>
+                        </td>
                     </tr>
                   );
                 })}
+
                 <tr key="add">
+                  
+                  <td>
                   <Select
                     onValueChange={(e) => {
                       setSelectedItem(
                         items.find((el: ItemType) => el.id == parseInt(e)),
                       );
-                    }}
-                  >
+                    }}>
                     <SelectTrigger className="w-[150px]">
                       <SelectValue placeholder="Select an item" />
                     </SelectTrigger>
@@ -139,6 +157,8 @@ export default function Food({
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                  </td>
+
                   <td>
                     <div className="flex justify-center">
                       &#8377;{selectedItem?.price}
@@ -167,6 +187,7 @@ export default function Food({
                     </div>
                   </td>
                 </tr>
+
               </tbody>
             </table>
             <div className="mx-5 flex justify-end">

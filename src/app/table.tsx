@@ -10,13 +10,13 @@ import { checkInTable, createBill, createCanteenBill } from '~/utils/fetches';
 import { calculateRevenue, formatElapsed, formatTime } from '~/utils/formatters';
 import type { BillType, TableType } from '../types/myTypes';
 import Food from './_components/foodModal';
+import Note from './_components/noteModal';
 
 
 type TableProps = {
   table: TableType;
   setTrigger: () => void;
   showBill:() => void;
-  showNote:() => void;
   setBill: (bill: BillType) => void;
   setBillTable: (table: TableType) => void;
 };
@@ -33,8 +33,9 @@ const fetcher = (url: string) => fetch(url, {
   return response.json();
 })
 
-export default function Table({ table, setTrigger, showBill, showNote, setBill, setBillTable }: TableProps) {
+export default function Table({ table, setTrigger, showBill, setBill, setBillTable }: TableProps) {
 
+  // menu items fetch
   const {data, error, isLoading} = useSWR(`/api/items`, fetcher)
 
   const [elapsedTime, setElapsedTime] = useState<number>(
@@ -43,6 +44,7 @@ export default function Table({ table, setTrigger, showBill, showNote, setBill, 
   const [generatedRevenue, setGeneratedRevenue] = useState<string>('0.00');
 
   const [showFood, setShowFood] = useState<boolean>(false);
+  const [showNote, setShowNote] = useState<boolean>(false);
 
   const imageUrl = table.theme == 'pool' ? pool : snooker;
 
@@ -84,22 +86,6 @@ export default function Table({ table, setTrigger, showBill, showNote, setBill, 
     showBill()
   }
 
-  function saveFood(itemId: number, quantity: number, amount: number) {
-
-    const billId = localStorage.getItem('t'+table.id.toString()+'bill')
-
-    if (billId) {
-      createCanteenBill(parseInt(billId), itemId, quantity, amount)
-        .then((data: {status: string}) => {
-          console.log(data);
-        }).catch(error => {
-          console.error('Fetch error:', error);
-        });
-    } else {
-      console.error('canteen bill not created')
-    }
-  }
-
   useEffect(() => {
     let theTimer: NodeJS.Timeout;
     if (table.checked_in_at) {
@@ -119,7 +105,10 @@ export default function Table({ table, setTrigger, showBill, showNote, setBill, 
 
   return (
 
-    <> {showFood && <Food table={table} items={data.items} close={()=>{setShowFood(false)}} />}
+    <>
+    
+    {showFood && <Food table={table} items={data.items} close={()=>{setShowFood(false)}} />}
+    {showNote && <Note tableId={table.id.toString()} close={()=>{setShowNote(false)}} />}
 
     <div className="h-[268px] w-[350px] m-5 relative">
       <Image
@@ -169,7 +158,7 @@ export default function Table({ table, setTrigger, showBill, showNote, setBill, 
               </button>
               <button 
                 className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-orange-400/70 hover:bg-orange-400/90 rounded-md shadow-sm"
-                onClick={()=>{showNote()}} 
+                onClick={()=>{setShowNote(true)}} 
                 >
                 <Icons.note />
               </button>

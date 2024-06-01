@@ -30,6 +30,7 @@ export const bills = createTable(
     canteenMoney: real("canteenMoney").default(0),
     paymentMode: text("paymentMode", {enum: ['cash', 'upi', 'both']}).default('upi'),
     totalAmount: real("totalAmount").default(0),
+    note: text("note"),
   }
 )
 

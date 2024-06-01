@@ -19,6 +19,7 @@ export type BillType = {
     canteenMoney?: number;
     paymentMode: 'cash' | 'upi' | 'both';
     totalAmount?: number;
+    note?: string;
 };
 
 export type CanteenBillType = {

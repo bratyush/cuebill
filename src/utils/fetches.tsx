@@ -104,3 +104,17 @@ export const createCanteenBill = (
     }
     return response.json();
   });
+
+export const deleteCanteenBill = (billId: number) => 
+  fetch("/api/bills/canteen/" + billId, {
+    method: "DELETE",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });

@@ -1,9 +1,48 @@
 import { useState } from "react";
-import { Textarea } from "~/components/ui/textarea";
+import useSWR from "swr";
+import { BillType } from "~/types/myTypes";
+import { patchBill } from "~/utils/fetches";
 
-export default function Note({ note, close, save }: { note:string, close: () => void, save: (note: string) => void }) {
+const fetcher = (url: string) =>
+  fetch(url, {
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
 
-  const [noteText, setNote] = useState<string>(note);
+export default function Note({ tableId, close }: { tableId:string, close: () => void }) {
+
+  const billId = localStorage.getItem('t'+tableId+'bill');
+
+  const { data, isLoading } = useSWR<BillType>(`/api/bills/${billId?.toString()}`, fetcher);
+
+  const [noteText, setNote] = useState<string>();
+
+  const saveNote = (note: string | undefined) => {
+
+    const bill = data;
+
+    if (!note || note === data?.note){
+      close();
+    } else if (bill) {
+      bill.note = note;
+      if (billId) {
+        patchBill(bill)
+          .then((data) => {
+            close();
+          })
+          .catch((error) => {
+            console.error("There was an error!", error);
+          });
+      }
+    }
+  }
 
   return (
     <div className="bg-gray-800/70 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center">
@@ -41,8 +80,9 @@ export default function Note({ note, close, save }: { note:string, close: () => 
           </div>
 
           {/* <!-- Modal body --> */}
-          <div className="p-4 md:p-5 space-y-4">
-            <Textarea value={noteText} onChange={(e)=>{setNote(e.target.value)}} placeholder="Enter your note"/>
+          <div className="p-4 md:p-5 space-y-4 text-black">
+            {/* <Textarea value={noteText} onChange={(e)=>{setNote(e.target.value)}} placeholder="Enter your note"/> */}
+            <textarea defaultValue={data?.note} value={noteText} onChange={(e)=>{setNote(e.target.value)}} id="message" rows={4} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter Your Notes"></textarea>
           </div>
 
           {/* <!-- Modal footer --> */}
@@ -53,12 +93,15 @@ export default function Note({ note, close, save }: { note:string, close: () => 
               className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-slate-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
               Close
             </button>
-            <button
-              onClick={()=>{save(noteText)}}
-              type="button"
-              className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
-              Save Note
+            {isLoading ? <div>Loading...</div> : 
+              <button
+                onClick={()=>{saveNote(noteText)}}
+                type="button"
+                className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
+                Save Note
             </button>
+            }
+
           </div>
         </div>
       </div>
