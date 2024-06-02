@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "~/server/db";
-import { canteenBills } from "~/server/db/schema";
+import { db } from "~/db";
+import { canteenBills } from "~/db/schema";
 
 export async function GET(
   request: Request,

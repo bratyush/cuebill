@@ -1,13 +1,11 @@
-import { db } from "~/server/db";
+import { currentUser } from "@clerk/nextjs/server";
+import { db } from "~/db";
 
 export async function GET() {
-  
-  // const items = await db.select().from(bills).where(
-  //   and(
-  //     eq(bills.tableId, 1),
-  //     eq(bills.settled, false)
-  //   )
-  // )
+
+  // Get the Backend API User object when you need access to the user's information
+  const user = await currentUser();
+  console.log('user', user);
 
   const items = await db.query.bills.findMany({
     where: (bills, { eq }) => eq(bills.tableId, 1),

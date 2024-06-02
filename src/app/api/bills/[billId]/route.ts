@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "~/server/db";
-import { bills } from "~/server/db/schema";
+import { db } from "~/db";
+import { bills } from "~/db/schema";
 import { BillType } from "~/types/myTypes";
 
 export async function PATCH(

@@ -1,6 +1,6 @@
-import { db } from "~/server/db";
-import { bills, canteenBills } from "~/server/db/schema";
-import type { BillType, CanteenBillType } from "~/types/myTypes";
+import { db } from "~/db";
+import { canteenBills } from "~/db/schema";
+import type { CanteenBillType } from "~/types/myTypes";
 
 // add bill
 export async function POST(request: Request) {

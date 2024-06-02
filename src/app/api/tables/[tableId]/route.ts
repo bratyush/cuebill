@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "~/server/db";
-import { tables } from "~/server/db/schema";
+import { db } from "~/db";
+import { tables } from "~/db/schema";
 import type { TableType } from "~/types/myTypes";
 
 

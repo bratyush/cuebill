@@ -4,6 +4,6 @@
 - [x] Menu pages.
 - [x] Bill saving.
 - [x] Notes.
-- [ ] Auth checks everywhere.
+- [x] Auth on middleware.
 - [ ] Multi-tenet.
 - [ ] Loading state everywhere.
