@@ -16,7 +16,6 @@ export async function GET(
   })
 
   return Response.json({table: table})
-
 }
 
 export async function PATCH(

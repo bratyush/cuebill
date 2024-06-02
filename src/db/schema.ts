@@ -15,6 +15,7 @@ export const tables = createTable(
     theme: text("theme", { enum: ['pool', 'snooker']}),
     checked_in_at: integer("checkedInAt"),
     time: integer("time"),
+    club: text("club"),
   }
 )
 
@@ -31,6 +32,7 @@ export const bills = createTable(
     paymentMode: text("paymentMode", {enum: ['cash', 'upi', 'both']}).default('upi'),
     totalAmount: real("totalAmount").default(0),
     note: text("note"),
+    club: text("club"),
   }
 )
 
@@ -40,6 +42,7 @@ export const items = createTable(
     id: integer("id").primaryKey({ autoIncrement: true }),
     name: text("name", { length: 256 }),
     price: real("price"),
+    club: text("club"),
   }
 )
 
@@ -51,6 +54,7 @@ export const canteenBills = createTable(
     billId: integer("billId", { mode: "number"}).notNull(),
     quantity: integer("quantity"),
     amount: real("amount"),
+    club: text("club"),
   }
 )
 

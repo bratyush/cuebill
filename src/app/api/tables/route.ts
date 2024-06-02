@@ -1,3 +1,4 @@
+import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { db } from "~/db";
 import { tables } from "~/db/schema";
@@ -8,17 +9,25 @@ export async function POST(request: Request) {
 
   const body = await request.json() as TableType
 
-  await db.insert(tables).values(body);
+  const user = await currentUser();
+  const club = user?.username || '';
+
+  await db.insert(tables).values({...body, club:club});
 
   return Response.json({status: "created"})
 }
 
 // get tables
 export async function GET() {
-  
-  const tables = await db.query.tables.findMany();
 
-  return Response.json({tables: tables})
+  const user = await currentUser();
+
+  if (!user) return Response.json({tables: []})
+
+  const club = user.username || '';
+  const tbls = await db.select().from(tables).where(eq(tables.club, club));
+  return Response.json({tables: tbls});
+
 }
 
 // delete table

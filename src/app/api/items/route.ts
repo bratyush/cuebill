@@ -1,3 +1,4 @@
+import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { db } from "~/db";
 import { items } from "~/db/schema";
@@ -7,19 +8,26 @@ import type { ItemType } from "~/types/myTypes";
 export async function POST(request: Request) {
 
   const body = await request.json() as ItemType
-  console.log('asdf', body);
 
-  await db.insert(items).values(body);
+  const user = await currentUser();
+  const club = user?.username || '';
+
+  await db.insert(items).values({...body, club:club});
 
   return Response.json({status: "created"})
 }
 
 // get items
 export async function GET() {
-  
-  const items = await db.query.items.findMany();
 
-  return Response.json({items: items})
+  const user = await currentUser();
+  const club = user?.username || '';
+
+  const itms = await db.query.items.findMany({
+    where: eq(items.club, club)
+  });
+
+  return Response.json({items: itms})
 }
 
 // delete item
