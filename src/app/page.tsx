@@ -45,15 +45,15 @@ export default function Pos() {
 
   }, [])
 
-  useEffect(()=>{
-    if (isLoaded) {
-      if (!isSignedIn) {
-        router.push('/signIn')
-      } else {
-        console.log('signed In')
-      }
-    }
-  }, [isLoaded, isSignedIn])
+  // useEffect(()=>{
+  //   if (isLoaded) {
+  //     if (!isSignedIn) {
+  //       router.push('/signIn')
+  //     } else {
+  //       console.log('signed In')
+  //     }
+  //   }
+  // }, [isLoaded, isSignedIn])
 
   useEffect(() => {
     setIsLoading(true);
