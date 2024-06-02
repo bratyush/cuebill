@@ -118,7 +118,7 @@ export default function Food({
                               mutate({
                                 bills: data?.bills.filter((el) => el.id !== item.id),
                               }).catch((err) => console.error(err));
-                            })
+                            }).catch((err) => console.error(err));
                           }
                         }}>
                           <Icons.bin/>
