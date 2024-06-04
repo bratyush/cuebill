@@ -9,3 +9,13 @@
 - [ ] Loading state everywhere.
 - [x] show canteen bills.
 - [ ] make revenue page better.
+  - [x] pagination to bills.
+  - [x] sort to bills.
+
+
+### revenues
+
+1. should see all the bills.
+2. monthly total sales.
+3. table wise and item wise breakdown.
+4. 

@@ -1,8 +1,10 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DataTable } from "~/app/_components/dataTable";
+import { Button } from "~/components/ui/button";
 import { type BillType } from "~/types/myTypes";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 
@@ -30,7 +32,20 @@ export default function Revenue() {
   const columns: ColumnDef<BillType>[] = [
     {
       accessorKey: "id",
-      header: "#",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            #
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        return <div>{row.index + 1}</div>;
+      },
     },
     {
       header: "Table",
@@ -39,13 +54,13 @@ export default function Revenue() {
         return <div>{bill.table?.name}</div>;
       },
     },
-    {
-      header: "rate",
-      cell: ({ row }) => {
-        const bill = row.original;
-        return <div>&#8377;{bill.table?.rate}/min</div>;
-      },
-    },
+    // {
+    //   header: "rate",
+    //   cell: ({ row }) => {
+    //     const bill = row.original;
+    //     return <div>&#8377;{bill.table?.rate}/min</div>;
+    //   },
+    // },
     {
       header: "Date",
       cell: ({ row }) => {
@@ -72,17 +87,21 @@ export default function Revenue() {
     //   }
     // },
     {
-      header: "Time Played",
+      accessorKey: "timePlayed",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Time Played
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
       cell: ({ row }) => {
         const bill = row.original;
         return <div>{formatElapsed(bill.timePlayed)}</div>;
-      },
-    },
-    {
-      header: "Total Revenue",
-      cell: ({ row }) => {
-        const bill = row.original;
-        return <div>&#8377;{bill.totalAmount}</div>;
       },
     },
     {
@@ -98,6 +117,43 @@ export default function Revenue() {
         );
       },
     },
+    {
+      accessorKey: "canteenMoney",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Canteen
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const bill = row.original;
+        return <div>&#8377;{bill.canteenMoney}</div>;
+      },
+    },
+    {
+      accessorKey: "totalAmount",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Total Revenue
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const bill = row.original;
+        return <div>&#8377;{bill.totalAmount}</div>;
+      },
+    },
+
     // {
     //   // accessorKey: "rate",
     //   header: `Rate (₹)`,
@@ -151,9 +207,9 @@ export default function Revenue() {
 
   return (
     <div className="container mx-auto py-10">
-      <div className="rounded-md bg-slate-100">
+      {/* <div className="rounded-md bg-slate-100"> */}
         <DataTable columns={columns} data={data} />
-      </div>
+      {/* </div> */}
     </div>
   );
 }
