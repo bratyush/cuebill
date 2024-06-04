@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   const body = await request.json() as CanteenBillType
 
   const user = await currentUser();
-  const club = user?.username || '';
+  const club = user?.username ?? '';
 
   await db.insert(canteenBills).values({...body, club:club});
 
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 export async function GET() {
 
   const user = await currentUser();
-  const club = user?.username || '';
+  const club = user?.username ?? '';
 
   const ctnbls = await db.query.canteenBills.findMany({
     where: eq(canteenBills.club, club)

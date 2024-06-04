@@ -44,8 +44,12 @@ export default function Bill({ close, bill, table, showFood }: { close: ()=>void
       checkOutTable(bill.tableId)
       .then(() => {
         mutate('/api/tables')
-
-        localStorage.removeItem('t'+bill.tableId.toString()+'bill')
+        .then(() => {
+          console.log('Table checked out')
+          localStorage.removeItem('t'+bill.tableId.toString()+'bill')
+        }).catch(error => {
+          console.error('Fetch error:', error);
+        })
 
       }).catch(error => {
         console.error('Fetch error:', error);

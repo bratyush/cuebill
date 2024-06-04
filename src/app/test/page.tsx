@@ -4,7 +4,7 @@ import useSWR, { useSWRConfig } from 'swr';
 import { TableType } from '~/types/myTypes';
 import { getTables } from '~/utils/fetches';
 
-export default function asdf() {
+export default function Asdf() {
 
   const {data, error, isLoading} = useSWR<{tables: TableType[]}>('/api/tables', getTables)
 
@@ -21,12 +21,18 @@ export default function asdf() {
         .then(res=>res.json())
         .then(data=>{
           console.log(data)
+        }).catch(error => {
+          console.error('Fetch error:', error);
         })
       }}>
         fetch
       </button>
 
-      <button onClick={()=>{mutate('/api/tables')}}>
+      <button onClick={()=>{
+          mutate('/api/tables').catch(error => {
+            console.error('Fetch error:', error);
+          })
+        }}>
         mutate
       </button>
     </div>

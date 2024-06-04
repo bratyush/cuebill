@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   const body = await request.json() as {table: number};
 
   const user = await currentUser();
-  const club = user?.username || '';
+  const club = user?.username ?? '';
 
   const bl = await db.insert(bills).values({tableId: body.table, club:club}).returning();
 
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 export async function GET() {
 
   const user = await currentUser();
-  const club = user?.username || '';
+  const club = user?.username ?? '';
 
   const bls = await db.query.bills.findMany({
     with: {

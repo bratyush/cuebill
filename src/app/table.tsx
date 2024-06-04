@@ -56,7 +56,9 @@ export default function Table({ table}: TableProps) {
 
       checkInTable(table.id)
       .then(() => {
-        mutate('/api/tables')
+        mutate('/api/tables').catch(error => {
+          console.error('Fetch error:', error);
+        })
 
       }).catch(error => {
         console.error('Fetch error:', error);
