@@ -128,6 +128,14 @@ export default function TablePage() {
       <div className="rounded-md bg-slate-100">
         <DataTable columns={columns} data={data} />
       </div>
+      <div className="m-3 flex justify-end">
+        <Link
+          href={"/admin/tables/add"}
+          className="mb-2 me-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+        >
+          Add Table
+        </Link>
+      </div>
     </div>
   );
 }
