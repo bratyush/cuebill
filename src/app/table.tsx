@@ -4,21 +4,18 @@ import pool from '@/public/pool.png';
 import snooker from '@/public/snooker.png';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { Icons } from '~/components/icons';
-import { checkInTable, createBill, createCanteenBill } from '~/utils/fetches';
+import { checkInTable, createBill } from '~/utils/fetches';
 import { calculateRevenue, formatElapsed, formatTime } from '~/utils/formatters';
 import type { BillType, TableType } from '../types/myTypes';
 import Food from './_components/foodModal';
 import Note from './_components/noteModal';
+import Bill from './_components/billModal';
 
 
 type TableProps = {
   table: TableType;
-  setTrigger: () => void;
-  showBill:() => void;
-  setBill: (bill: BillType) => void;
-  setBillTable: (table: TableType) => void;
 };
 
 const fetcher = (url: string) => fetch(url, {
@@ -33,18 +30,20 @@ const fetcher = (url: string) => fetch(url, {
   return response.json();
 })
 
-export default function Table({ table, setTrigger, showBill, setBill, setBillTable }: TableProps) {
+export default function Table({ table}: TableProps) {
 
   // menu items fetch
   const {data, error, isLoading} = useSWR(`/api/items`, fetcher)
 
   const [elapsedTime, setElapsedTime] = useState<number>(
-    Date.now() - table.checked_in_at
+    // Date.now() - table.checked_in_at
   );
   const [generatedRevenue, setGeneratedRevenue] = useState<string>('0.00');
 
   const [showFood, setShowFood] = useState<boolean>(false);
   const [showNote, setShowNote] = useState<boolean>(false);
+  const [showBill, setShowBill] = useState<boolean>(false);
+  const [bill, setBill] = useState<BillType | null>(null);
 
   const imageUrl = table.theme == 'pool' ? pool : snooker;
 
@@ -57,7 +56,8 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
 
       checkInTable(table.id)
       .then(() => {
-        setTrigger()
+        mutate('/api/tables')
+
       }).catch(error => {
         console.error('Fetch error:', error);
       })
@@ -68,7 +68,6 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
   }
 
   function checkOut() {
-    setBillTable(table);
     const billId = localStorage.getItem('t'+table.id.toString()+'bill')
     const tempBill : BillType = {
       tableId: table.id,
@@ -82,17 +81,21 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
     if (billId) {
       tempBill.id = parseInt(billId)
     }
+    console.log(tempBill);
     setBill(tempBill)
-    showBill()
+    setShowBill(true);
   }
 
   useEffect(() => {
     let theTimer: NodeJS.Timeout;
+
     if (table.checked_in_at) {
       theTimer = setInterval(() => {
-        setElapsedTime(Date.now() - table.checked_in_at);
-        const et = Date.now() - table.checked_in_at;
-        setGeneratedRevenue(calculateRevenue(table.rate, et));
+        if (table.checked_in_at) {
+          setElapsedTime(Date.now() - table.checked_in_at);
+          const et = Date.now() - table.checked_in_at;
+          setGeneratedRevenue(calculateRevenue(table.rate, et));
+        }
       }, 1000);
     }
 
@@ -106,7 +109,8 @@ export default function Table({ table, setTrigger, showBill, setBill, setBillTab
   return (
 
     <>
-    
+
+    {showBill && <Bill bill={bill} table={table} close={()=>{setShowBill(false)}} showFood={()=>setShowFood(true)}/>}
     {showFood && <Food table={table} items={data.items} close={()=>{setShowFood(false)}} />}
     {showNote && <Note tableId={table.id.toString()} close={()=>{setShowNote(false)}} />}
 

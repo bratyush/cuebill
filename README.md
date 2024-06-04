@@ -5,5 +5,7 @@
 - [x] Bill saving.
 - [x] Notes.
 - [x] Auth on middleware.
-- [ ] Multi-tenet.
+- [x] Multi-tenancy.
 - [ ] Loading state everywhere.
+- [ ] show canteen bills.
+- [ ] make revenue page better.

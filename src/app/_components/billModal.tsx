@@ -1,12 +1,60 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Icons } from "~/components/icons";
-import type { BillType, TableType } from "~/types/myTypes";
+import type { BillType, CanteenBillType, TableType } from "~/types/myTypes";
+import { checkOutTable, patchBill } from "~/utils/fetches";
 import { formatElapsed, formatTime } from "~/utils/formatters";
+import useSWR, {mutate} from "swr";
 
-export default function Bill({ save, close, bill, table }: { save: (bill: BillType) => void, close: ()=>void, bill: BillType | null, table: TableType|null }) {
+const fetcher = (url: string) =>
+  fetch(url, {
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
+export default function Bill({ close, bill, table, showFood }: { close: ()=>void, bill: BillType | null, table: TableType, showFood: ()=>void}) {
+
+  const billId = localStorage.getItem("t" + table.id.toString() + "bill");
+
+  const { data, isLoading } = useSWR<{
+    bills: CanteenBillType[];
+  }>(`/api/bills/canteen/${billId?.toString()}`, fetcher);
+
+  let canteenTotal = 0;
+  for (const b of data?.bills ?? []) {
+    canteenTotal += b.amount;
+  }
 
   const [mode, setMode] = useState<'cash' | 'upi' | 'both'>('upi');
+
+  function saveBill(bill: BillType) {
+
+    console.log('bill', bill);
+    patchBill(bill)
+    .then(() => {
+      close()
+
+      checkOutTable(bill.tableId)
+      .then(() => {
+        mutate('/api/tables')
+
+        localStorage.removeItem('t'+bill.tableId.toString()+'bill')
+
+      }).catch(error => {
+        console.error('Fetch error:', error);
+      })
+
+    }).catch(error => {
+      console.error('Fetch error:', error);
+    })
+  }
 
   return (
     <div className="bg-gray-800/70 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex items-center">
@@ -20,14 +68,7 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
             </h3>
               <button
                 onClick={() => {
-                  toast((t) => (
-                    <span>
-                      Please SETTLE the bill
-                      <button className="text-gray-400 bg-transparent ml-2" onClick={() => toast.dismiss(t.id)}>
-                        <Icons.close className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))
+                  close()
                 }}
                 type="button"
                 className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -37,7 +78,7 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
               </button>
           </div>
           {/* <!-- Modal body --> */}
-          <div className="p-4 md:p-5 space-y-4">
+          <div className="p-4 md:p-5 space-y-4 text-black">
             <table className="border-collapse border border-slate-300 w-full">
               <tbody>
                 <tr>
@@ -65,8 +106,22 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
                   <td className="border border-slate-300 p-2">&#8377;{table?.rate}/min</td>
                 </tr>
                 <tr>
-                  <td className="border border-slate-300 p-2">Money</td>
+                  <td className="border border-slate-300 p-2">Table Money</td>
                   <td className="border border-slate-300 p-2">&#8377;{bill?.tableMoney}</td>
+                </tr>
+                <tr>
+                  <td className="border border-slate-300 p-2">Canteen Money</td>
+                  <td className="border border-slate-300 p-2">
+                    <div className="flex flex-row justify-between">
+                    &#8377;{canteenTotal}
+                   <button 
+                className="mr-1 py-1 basis-1/6 w-full flex items-center justify-center bg-green-400/70 hover:bg-green-400/90 rounded-md shadow-sm"
+                onClick={()=>{showFood()}}
+                >
+                <Icons.food />
+              </button>
+              </div>
+              </td>
                 </tr>
                 {/* <tr>
                   <td className="border border-slate-300 p-2">Discount</td>
@@ -105,7 +160,7 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
                 <tr>
                   <td className="border border-slate-300 p-2">Total Amount</td>
                   <td className="border border-slate-300 p-2">
-                    <span className="text-teal-700 font-semibold text-2xl">&#8377;{(bill?.tableMoney ?? 0) + (bill?.canteenMoney ?? 0)}</span>
+                    <span className="text-teal-700 font-semibold text-2xl">&#8377;{(bill?.tableMoney ?? 0) + (bill?.canteenMoney ?? 0) + canteenTotal}</span>
                   </td>
                 </tr>
               </tbody>
@@ -130,15 +185,16 @@ export default function Bill({ save, close, bill, table }: { save: (bill: BillTy
             </button>
 
             <button
-              onClick={()=>{save({
+              onClick={()=>{saveBill({
                 id: bill?.id,
                 tableId: bill ? bill.tableId : 0,
                 checkIn: bill?.checkIn,
                 checkOut: bill?.checkOut,
                 timePlayed: bill?.timePlayed,
                 tableMoney: bill?.tableMoney,
+                canteenMoney: canteenTotal,
                 paymentMode: mode,
-                totalAmount: (bill?.tableMoney ?? 0) + (bill?.canteenMoney ?? 0),
+                totalAmount: (bill?.tableMoney ?? 0) + (bill?.canteenMoney ?? 0) + canteenTotal,
               });}}
               type="button"
               className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800">
