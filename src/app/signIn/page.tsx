@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 
 export default function AuthenticationPage() {
 
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
 
   const router = useRouter()
 

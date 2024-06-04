@@ -17,14 +17,14 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-    <html lang="en">
-      <body className={`font-sans `}> 
+      <html lang="en">
+        <body className={`font-sans `}>
           <div>
             <Toaster />
             {children}
           </div>
-      </body>
-    </html>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
