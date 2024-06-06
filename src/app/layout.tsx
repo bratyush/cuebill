@@ -19,7 +19,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`font-sans `}>
-          <div>
+          <div className="">
             <Toaster />
             {children}
           </div>

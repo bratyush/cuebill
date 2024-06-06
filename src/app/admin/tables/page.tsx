@@ -6,6 +6,8 @@ import { DataTable } from "~/app/_components/dataTable";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { type TableType } from "~/types/myTypes";
+import { Button } from "~/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
 
 export default function TablePage() {
   const [data, setData] = useState<TableType[]>([]);
@@ -29,7 +31,18 @@ export default function TablePage() {
 
   const columns: ColumnDef<TableType>[] = [
     {
-      header: "#",
+      accessorKey: "id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            #
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
       cell: ({ row }) => {
         return <div>{row.index + 1}</div>;
       },
@@ -48,8 +61,18 @@ export default function TablePage() {
       },
     },
     {
-      // accessorKey: "rate",
-      header: `Rate (₹)`,
+      accessorKey: "rate",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Rate (₹)
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
       cell: ({ row }) => {
         const table = row.original;
         return (
@@ -125,9 +148,7 @@ export default function TablePage() {
 
   return (
     <div className="container mx-auto py-10">
-      <div className="rounded-md bg-slate-100">
-        <DataTable columns={columns} data={data} />
-      </div>
+      <DataTable columns={columns} data={data} />
       <div className="m-3 flex justify-end">
         <Link
           href={"/admin/tables/add"}
