@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import useSWR, { mutate } from "swr";
 import { Icons } from '~/components/icons';
-import { checkInTable, createBill } from '~/utils/fetches';
+import { checkInTable, createBill, getItems } from '~/utils/fetches';
 import { calculateRevenue, formatElapsed, formatTime } from '~/utils/formatters';
 import type { BillType, TableType } from '../types/myTypes';
 import Food from './_components/foodModal';
@@ -18,22 +18,11 @@ type TableProps = {
   table: TableType;
 };
 
-const fetcher = (url: string) => fetch(url, {
-  headers: {
-    "Cache-Control": "no-cache",
-    "Content-Type": "application/json",
-  },
-}).then(response => {
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
-})
 
-export default function Table({ table}: TableProps) {
+export default function Table({table}: TableProps) {
 
   // menu items fetch
-  const {data, error, isLoading} = useSWR(`/api/items`, fetcher)
+  const {data, error, isLoading} = useSWR(`/api/items`, getItems)
 
   const [elapsedTime, setElapsedTime] = useState<number>(
     // Date.now() - table.checked_in_at

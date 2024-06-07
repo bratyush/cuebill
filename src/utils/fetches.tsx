@@ -48,6 +48,20 @@ export const getTables = () =>
     return response.json();
   });
 
+export const getBills = () =>
+  fetch("/api/bills", {
+    method: "GET",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
 export const createBill = (tableId: number) =>
   fetch("/api/bills", {
     method: "POST",
@@ -108,6 +122,34 @@ export const createCanteenBill = (
 export const deleteCanteenBill = (billId: number) => 
   fetch("/api/bills/canteen/" + billId, {
     method: "DELETE",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
+export const getItems = () =>
+  fetch("/api/items", {
+    method: "GET",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
+export const getData = () =>
+  fetch("/api/data", {
+    method: "GET",
     headers: {
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",

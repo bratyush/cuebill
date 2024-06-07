@@ -7,27 +7,14 @@ import { DataTable } from "~/app/_components/dataTable";
 import { Button } from "~/components/ui/button";
 import { type BillType } from "~/types/myTypes";
 import { formatElapsed, formatTime } from "~/utils/formatters";
+import Charts from "./charts";
+import useSWR from "swr";
+import { getBills, getData } from "~/utils/fetches";
+
 
 export default function Revenue() {
-  const [data, setData] = useState<BillType[]>([]);
 
-  useEffect(() => {
-    fetch("/api/bills", {
-      method: "GET",
-      headers: {
-        "Cache-Control": "no-cache",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data: { bills: BillType[] }) => {
-        console.log("data", data.bills);
-        setData(data.bills);
-      })
-      .catch((error) => {
-        console.error("Fetch error:", error);
-      });
-  }, []);
+  const {data, error, isLoading} = useSWR<{bills: BillType[], canteen: any}>(`/api/data`, getData)
 
   const columns: ColumnDef<BillType>[] = [
     {
@@ -205,11 +192,15 @@ export default function Revenue() {
     // },
   ];
 
+  console.log(data);
   return (
     <div className="container mx-auto py-10">
-      {/* <div className="rounded-md bg-slate-100"> */}
-        <DataTable columns={columns} data={data} />
-      {/* </div> */}
+      {error && <div>Error: {error.message}</div>}
+      {isLoading && <div>Loading...</div>}
+      {data && <>
+        <Charts bills={data.bills} canteen={data.canteen} />
+        <DataTable columns={columns} data={data.bills} />
+      </>}
     </div>
   );
 }

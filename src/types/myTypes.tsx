@@ -10,15 +10,15 @@ export type TableType = {
 export type BillType = {
     id?: number;
     tableId:number;
-    table?: TableType;
+    table: TableType;
     checkIn?: number;
     checkOut?: number;
     timePlayed?: number;
     table_rate?: number;
     tableMoney?: number;
-    canteenMoney?: number;
+    canteenMoney: number;
     paymentMode: 'cash' | 'upi' | 'both';
-    totalAmount?: number;
+    totalAmount: number;
     note?: string;
 };
 
