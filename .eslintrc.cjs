@@ -58,7 +58,9 @@ const config = {
           "db"
         ]
       }
-    ]
+    ],
+    // @ts-ignore
+    ignorePatterns: ['lib/**']
   }
 }
 module.exports = config;

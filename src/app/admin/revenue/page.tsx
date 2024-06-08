@@ -6,7 +6,7 @@ import useSWR from "swr";
 import { TabNavigation, TabNavigationLink } from "~/components/tremor/tabNav";
 import { DataTable } from "~/components/ui/dataTable";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { CanteenBillType, type BillType } from "~/types/myTypes";
+import { ctnBllInt, type BillType } from "~/types/myTypes";
 import { getData } from "~/utils/fetches";
 import Charts from "./charts";
 import { columns } from "./columns";
@@ -14,7 +14,7 @@ import { columns } from "./columns";
 
 export default function Revenue() {
 
-  const {data, error, isLoading} = useSWR<{bills: BillType[], canteen: CanteenBillType[]}>(`/api/data`, getData)
+  const {data, error, isLoading} = useSWR<{bills: BillType[], canteen: ctnBllInt[]}>(`/api/data`, getData)
 
 	const [tab, setTab] = useState<boolean>(true);
 
@@ -23,7 +23,7 @@ export default function Revenue() {
 	const [timeframe, setTimeframe] = useState<string>("tm");
 
 	let filterBills: BillType[] = [];
-	let filterCanteen: CanteenBillType[] = [];
+	let filterCanteen: ctnBllInt[] = [];
 
 	if (data) {
 		// filter data based on timeframe

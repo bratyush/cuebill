@@ -147,8 +147,8 @@ export default function Food({
                           items.map((item: ItemType) => {
                             return (
                               <SelectItem
-                                key={item.id}
-                                value={item.id.toString()}
+                                key={item?.id}
+                                value={item?.id ? item?.id?.toString() : ''}
                               >
                                 {item.name}
                               </SelectItem>
@@ -207,7 +207,7 @@ export default function Food({
                             ...(data?.bills ?? []),
                             {
                               billId: parseInt(billId),
-                              itemId: selectedItem?.id,
+                              itemId: selectedItem.id??0,
                               quantity: selectedQuant,
                               amount: selectedQuant * selectedItem?.price,
                             },

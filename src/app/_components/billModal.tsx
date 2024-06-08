@@ -1,36 +1,19 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Icons } from "~/components/icons";
-import type { BillType, CanteenBillType, TableType } from "~/types/myTypes";
-import { checkOutTable, patchBill } from "~/utils/fetches";
+import type { BillType, TableType } from "~/types/myTypes";
+import { checkOutTable, getCanteenTotal, patchBill } from "~/utils/fetches";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import useSWR, {mutate} from "swr";
 
-const fetcher = (url: string) =>
-  fetch(url, {
-    headers: {
-      "Cache-Control": "no-cache",
-      "Content-Type": "application/json",
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
 
 export default function Bill({ close, bill, table, showFood }: { close: ()=>void, bill: BillType | null, table: TableType, showFood: ()=>void}) {
 
   const billId = localStorage.getItem("t" + table.id.toString() + "bill");
 
-  const { data, isLoading } = useSWR<{
-    bills: CanteenBillType[];
-  }>(`/api/bills/canteen/${billId?.toString()}`, fetcher);
+  const { data, isLoading } = useSWR<{total: number}>(`/api/bills/canteen/total/${billId?.toString()}`, async ()=>getCanteenTotal(billId?.toString()));
 
-  let canteenTotal = 0;
-  for (const b of data?.bills ?? []) {
-    canteenTotal += b.amount;
-  }
+  const canteenTotal = data?.total ?? 0;
 
   const [mode, setMode] = useState<'cash' | 'upi' | 'both'>('upi');
 

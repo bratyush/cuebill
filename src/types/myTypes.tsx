@@ -14,7 +14,6 @@ export type BillType = {
     checkIn?: number;
     checkOut?: number;
     timePlayed?: number;
-    table_rate?: number;
     tableMoney?: number;
     canteenMoney?: number;
     paymentMode: 'cash' | 'upi' | 'both';
@@ -22,15 +21,18 @@ export type BillType = {
     note?: string;
 };
 
-export type CanteenBillType = {
+export interface CanteenBillType {
     id?:number;
-    itemId?:number;
-    item?: ItemType;
-    billId?:number;
-    bill?: BillType;
+    itemId:number;
+    billId:number;
     quantity:number;
     amount:number;
 }
+
+export interface ctnBllInt extends CanteenBillType {
+    item: ItemType;
+    bill: BillType;
+  }
 
 export type ItemType = {
     id?: number;

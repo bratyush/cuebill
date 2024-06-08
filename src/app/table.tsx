@@ -14,15 +14,10 @@ import Note from './_components/noteModal';
 import Bill from './_components/billModal';
 
 
-type TableProps = {
-  table: TableType;
-};
-
-
-export default function Table({table}: TableProps) {
+export default function Table({table}: {table: TableType}) {
 
   // menu items fetch
-  const {data, error, isLoading} = useSWR(`/api/items`, getItems)
+  const {data} = useSWR(`/api/items`, getItems)
 
   const [elapsedTime, setElapsedTime] = useState<number>(
     // Date.now() - table.checked_in_at

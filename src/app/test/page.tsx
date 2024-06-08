@@ -1,6 +1,7 @@
 "use client";
 
 import useSWR, { useSWRConfig } from 'swr';
+import { bills } from '~/db/schema';
 import { TableType } from '~/types/myTypes';
 import { getTables } from '~/utils/fetches';
 
@@ -10,7 +11,7 @@ export default function Asdf() {
 
   const { mutate }  = useSWRConfig()
 
-  console.log(data, error, isLoading)
+  console.log(typeof bills, bills);
 
   return (
     <div className='flex flex-col justify-between'>

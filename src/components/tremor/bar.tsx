@@ -3,7 +3,7 @@
 "use client"
 
 import React from "react"
-import { Icons } from "~/components/icons"
+// import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react"
 import {
   Bar,
   CartesianGrid,
@@ -22,8 +22,7 @@ import {
   AvailableChartColorsKeys,
   constructCategoryColors,
   getColorClassName,
-  getYAxisDomain,
-  hasOnlyOneValueForKey,
+  getYAxisDomain
 } from "~/lib/chartUtils"
 import { useOnWindowResize } from "~/lib/useOnWindowResize"
 import { cx } from "~/lib/utils"
@@ -342,8 +341,8 @@ const Legend = React.forwardRef<HTMLOListElement, LegendProps>((props, ref) => {
               "bg-white dark:bg-gray-950",
             )}
           >
-            <ScrollButton
-              icon={Icons.RiArrowLeftSLine}
+            {/* <ScrollButton
+              icon={RiArrowLeftSLine}
               onClick={() => {
                 setIsKeyDowned(null)
                 scrollToTest("left")
@@ -351,13 +350,13 @@ const Legend = React.forwardRef<HTMLOListElement, LegendProps>((props, ref) => {
               disabled={!hasScroll?.left}
             />
             <ScrollButton
-              icon={Icons.RiArrowRightSLine}
+              icon={RiArrowRightSLine}
               onClick={() => {
                 setIsKeyDowned(null)
                 scrollToTest("right")
               }}
               disabled={!hasScroll?.right}
-            />
+            /> */}
           </div>
         </>
       ) : null}
@@ -707,9 +706,9 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                     },
                     dataKey: index,
                     interval: startEndOnly ? "preserveStartEnd" : intervalType,
-                    ticks: startEndOnly
-                      ? [data[0][index], data[data.length - 1][index]]
-                      : undefined,
+                    // ticks: startEndOnly
+                    //   ? [data[0][index], data[data.length - 1][index]]
+                    //   : undefined,
                   }
                 : {
                     type: "number",
@@ -758,9 +757,9 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                   }
                 : {
                     dataKey: index,
-                    ticks: startEndOnly
-                      ? [data[0][index], data[data.length - 1][index]]
-                      : undefined,
+                    // ticks: startEndOnly
+                    //   ? [data[0][index], data[data.length - 1][index]]
+                    //   : undefined,
                     type: "category",
                     interval: "equidistantPreserveStart",
                   })}

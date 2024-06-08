@@ -2,12 +2,14 @@ import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { db } from "~/db";
 import { canteenBills } from "~/db/schema";
-import type { CanteenBillType } from "~/types/myTypes";
+import { CanteenBillType } from "~/types/myTypes";
 
 // add bill
 export async function POST(request: Request) {
 
-  const body = await request.json() as CanteenBillType
+  const body: CanteenBillType = await request.json()
+
+  console.log('body', body);
 
   const user = await currentUser();
   const club = user?.username ?? '';

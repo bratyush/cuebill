@@ -1,33 +1,51 @@
-import { Card } from "~/components/tremor/card";
-import { BarChart } from "~/components/tremor/bar";
-import { BillType } from "~/types/myTypes";
 import PieChart from "~/components/nivo/pie";
+import { BarChart } from "~/components/tremor/bar";
+import { Card } from "~/components/tremor/card";
+import { BillType, ctnBllInt } from "~/types/myTypes";
 import { formatElapsedRound } from "~/utils/formatters";
 
 
-export default function Charts({bills, canteen}: {bills: BillType[], canteen: any}) {
+export default function Charts({bills, canteen}: {bills: BillType[], canteen: ctnBllInt[]}) {
 
   const totalRevenue = bills.reduce((acc, bill) => acc + bill.totalAmount, 0).toFixed(2)
 
-  const canteenRevenue = bills.reduce((acc, bill) => acc + bill.canteenMoney, 0).toFixed(2)
+  const canteenRevenue = bills.reduce((acc, bill) => acc + (bill.canteenMoney ?? 0), 0).toFixed(2)
 
   const tableRevenue = bills.reduce((acc: { [key: string]: number }, bill: BillType) => {
-    if (!acc[bill.table.name]) {
-      acc[bill.table.name] = 0;
+    if (!acc[bill?.table?.name??0]) {
+      acc[bill?.table?.name??0] = 0;
     }
-    acc[bill.table.name] += bill.totalAmount;
+    acc[bill?.table?.name??0] += bill.totalAmount;
     return acc;
   }, {});
   
   const tableRevenueList = Object.entries(tableRevenue).map(([name, revenue]) => ({ name, revenue }));
 
-  const canteenRevenueList = canteen;
+  const ctn = canteen.reduce((acc: { [key: string]: number }, bill: ctnBllInt) => {
+      if (!acc[bill?.item?.name??0]) {
+        acc[bill?.item?.name??0] = 0;
+      }
+      acc[bill?.item?.name??0] += bill.amount;
+    return acc;
+  }, {});
+
+  const canteenRevenueList = Object.entries(ctn).map(([name, revenue]) => ({ name, revenue }));
+
+  const canteenQuantity = canteen.reduce((acc: { [key: string]: number }, bill: ctnBllInt) => {
+    if (!acc[bill?.item?.name??0]) {
+      acc[bill?.item?.name??0] = 0;
+    }
+    acc[bill?.item?.name??0] += bill.quantity;
+    return acc;
+  }, {});
+
+  const canteenQuantityList = Object.entries(canteenQuantity).map(([name, quantity]) => ({ name, quantity }));
 
   const tableTime = bills.reduce((acc: { [key: string]: number }, bill: BillType) => {
-    if (!acc[bill.table.name]) {
-      acc[bill.table.name] = 0;
+    if (!acc[bill?.table?.name??0]) {
+      acc[bill?.table?.name??0] = 0;
     }
-    acc[bill.table.name] += bill.timePlayed??0;
+    acc[bill?.table?.name??0] += bill.timePlayed??0;
     return acc;
   }, {});
   
@@ -83,10 +101,6 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: an
         <PieChart data={payModeList}/>
       </Card>
 
-
-      <Card className="mx-auto max-w-xs col-span-4">
-
-      </Card>
 
       {/* table revenues */}
       <Card className="mx-auto w-md max-w-sm col-span-3">
@@ -147,7 +161,7 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: an
           </p>
         <BarChart
           className="h-60"
-          data={canteenRevenueList}
+          data={canteenQuantityList}
           index="name"
           categories={["quantity"]}
           colors={['emerald']}

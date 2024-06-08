@@ -96,7 +96,7 @@ export const patchBill = (bill: BillType) =>
 
 export const createCanteenBill = (
   billId: number,
-  itemId: number,
+  itemId: number | undefined,
   quantity: number,
   amount: number,
 ) =>
@@ -135,6 +135,20 @@ export const deleteCanteenBill = (billId: number) =>
 
 export const getItems = () =>
   fetch("/api/items", {
+    method: "GET",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
+export const getCanteenTotal = (billId?: string) =>
+  fetch("/api/bills/canteen/total/" + billId, {
     method: "GET",
     headers: {
       "Cache-Control": "no-cache",

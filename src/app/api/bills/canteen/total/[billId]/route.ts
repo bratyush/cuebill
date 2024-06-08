@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "~/db";
 import { canteenBills } from "~/db/schema";
 
+
 export async function GET(
   request: Request,
   { params }: { params: { billId: string } }
@@ -16,20 +17,10 @@ export async function GET(
     where: eq(canteenBills.billId, id)
   })
 
-  return Response.json({bills: bills})
-}
+  let canteenTotal = 0;
+  for (const b of bills ?? []) {
+    canteenTotal += b.amount??0;
+  }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { billId: string } }
-) {
-  const billId = params.billId
-  const id = parseInt(billId);
-
-  await db.delete(canteenBills).where(eq(canteenBills.id, id));
-  // await db.query.canteenBills.deleteMany({
-  //   where: eq(canteenBills.billId, id)
-  // })
-
-  return Response.json({status: "success"})
+  return Response.json({total: canteenTotal})
 }
