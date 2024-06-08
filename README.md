@@ -11,6 +11,10 @@
 - [ ] make revenue page better.
   - [x] pagination to bills.
   - [x] sort to bills.
+  - [x] charts
+  - [ ] daterange filter
+  - [ ] put charts togethor.
+  - [ ] 
 
 
 ### revenues

@@ -21,9 +21,12 @@ export default function Revenue() {
 	const [showCustom, setShowCustom] = useState<boolean>(false);
 
 	const [timeframe, setTimeframe] = useState<string>("tm");
+	const [startDate, setStartDate] = useState<string>("");
+	const [endDate, setEndDate] = useState<string>("");
 
 	let filterBills: BillType[] = [];
 	let filterCanteen: ctnBllInt[] = [];
+
 
 	if (data) {
 		// filter data based on timeframe
@@ -43,7 +46,12 @@ export default function Revenue() {
 					return date.getFullYear() == now.getFullYear();
 				} else if (timeframe == 'ly') {
 					return date.getFullYear() == now.getFullYear()-1;
+				} else if (timeframe == 'c') {
+					const start = new Date(startDate);
+					const end = new Date(endDate);
+					return date >= start && date <= end;
 				}
+
 				return true;
 			}
 		});
@@ -63,7 +71,12 @@ export default function Revenue() {
 					return date.getFullYear() == now.getFullYear();
 				} else if (timeframe == 'ly') {
 					return date.getFullYear() == now.getFullYear()-1;
+				} else if (timeframe == 'c') {
+					const start = new Date(startDate);
+					const end = new Date(endDate);
+					return date >= start && date <= end;
 				}
+
 				return true;
 			}
 		});
@@ -81,8 +94,11 @@ export default function Revenue() {
           
           <div className="ml-auto flex flex-row m-2 gap-4">
 
-						{showCustom && <div>
-							<input type="date"></input> - <input type="date"></input>
+						{showCustom && <div className="flex flex-row border border-gray-200 rounded-md px-2">
+							<p className="my-auto mr-4">from :</p>
+							<input value={startDate} onChange={(e)=>setStartDate(e.target.value)} type="date"></input>
+							<p className="my-auto mx-4">to :</p>
+							<input value={endDate} onChange={(e)=>setEndDate(e.target.value)} type="date"></input>
 						</div>}
 
             <Select onValueChange={(e)=>{

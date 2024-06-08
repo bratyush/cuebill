@@ -73,12 +73,12 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: ct
   return (
     <div className="grid grid-cols-10 gap-4">
 
-      <div className="flex flex-col col-span-3">
+      <div className="grid grid-rows-2 col-span-2 gap-4">
         <Card className="mx-auto max-w-xs">
           <p className="text-gray-500">
             Total Revenue
           </p>
-          <p className="text-3xl font-semibold">
+          <p className="my-2 text-4xl font-semibold">
             &#8377;{totalRevenue}
           </p>
         </Card>
@@ -87,20 +87,56 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: ct
           <p className="text-gray-500">
             Canteen Revenue
           </p>
-          <p className="text-3xl font-semibold">
+          <p className="my-2 text-4xl font-semibold">
             &#8377;{canteenRevenue}
           </p>
         </Card>
       </div>
+      
+      {/* item revenues */}
+      <Card className="mx-auto w-md max-w-sm col-span-2">
+          <p className="text-gray-500">
+            Canteen Item Revenue
+          </p>
+        <BarChart
+          className="h-60"
+          data={canteenRevenueList}
+          index="name"
+          categories={["revenue"]}
+          valueFormatter={(number: number) =>
+            `₹${Intl.NumberFormat("en-In").format(number).toString()}`
+          }
+          onValueChange={(v) => console.log(v)}
+        />
+      </Card>
+
+      {/* item quantity */}
+      <Card className="mx-auto w-md max-w-sm col-span-2">
+          <p className="text-gray-500">
+            Canteen Item Quantity
+          </p>
+        <BarChart
+          className="h-60"
+          data={canteenQuantityList}
+          index="name"
+          categories={["quantity"]}
+          colors={['emerald']}
+          valueFormatter={(number: number) =>
+            `${Intl.NumberFormat("en-In").format(number).toString()}`
+          }
+          onValueChange={(v) => console.log(v)}
+        />
+      </Card>
 
       {/* Payment Modes */}
-      <Card className="mx-auto w-md max-w-sm h-60 col-span-2">
+      <Card className="mx-auto w-md max-w-sm col-span-3">
         <p className="text-gray-500">
           Payment Mode
         </p>
-        <PieChart data={payModeList}/>
+        <div className="h-60">
+          <PieChart data={payModeList}/>
+        </div>
       </Card>
-
 
       {/* table revenues */}
       <Card className="mx-auto w-md max-w-sm col-span-3">
@@ -133,41 +169,6 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: ct
             `${formatElapsedRound(number)}`
           }
           colors={['emerald']}
-          onValueChange={(v) => console.log(v)}
-        />
-      </Card>
-
-      {/* item revenues */}
-      <Card className="mx-auto w-md max-w-sm col-span-2">
-          <p className="text-gray-500">
-            Canteen Item Revenue
-          </p>
-        <BarChart
-          className="h-60"
-          data={canteenRevenueList}
-          index="name"
-          categories={["revenue"]}
-          valueFormatter={(number: number) =>
-            `₹${Intl.NumberFormat("en-In").format(number).toString()}`
-          }
-          onValueChange={(v) => console.log(v)}
-        />
-      </Card>
-
-      {/* item quantity */}
-      <Card className="mx-auto w-md max-w-sm col-span-2">
-          <p className="text-gray-500">
-            Canteen Item Quantity
-          </p>
-        <BarChart
-          className="h-60"
-          data={canteenQuantityList}
-          index="name"
-          categories={["quantity"]}
-          colors={['emerald']}
-          valueFormatter={(number: number) =>
-            `${Intl.NumberFormat("en-In").format(number).toString()}`
-          }
           onValueChange={(v) => console.log(v)}
         />
       </Card>
