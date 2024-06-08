@@ -24,6 +24,7 @@ export async function GET() {
   const club = user?.username ?? '';
 
   const itms = await db.query.items.findMany({
+    columns: {club:false, active:false},
     where: and(eq(items.club, club),eq(items.active, true)),
   });
 

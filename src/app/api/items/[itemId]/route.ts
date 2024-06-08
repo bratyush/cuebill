@@ -10,7 +10,6 @@ export async function GET(
 ) {
   const itemId = params.itemId // 'a', 'b', or 'c'
   const id = parseInt(itemId);
-  console.log('adsf', itemId)
 
   const item = await db.query.items.findFirst({
     where: eq(items.id, id)
