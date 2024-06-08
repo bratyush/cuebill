@@ -1,8 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { db } from "~/db";
-import { bills } from "~/db/schema";
-import { CanteenBillType } from "~/types/myTypes";
+import { bills, canteenBills } from "~/db/schema";
 
 export async function GET() {
 
@@ -10,42 +9,37 @@ export async function GET() {
   const club = user?.username ?? '';
 
   const bls = await db.query.bills.findMany({
-    with: {
-      table: true
+    columns: {
+      tableId: false,
+      checkOut: false,
+      note: false,
+      club: false,
     },
-    where: eq(bills.club, club)
-  })
+    with: {
+      table: {
+        columns: {name:true, rate:true}
+      },
+    },
+    where: eq(bills.club, club),
+  });
 
   const ctnBls = await db.query.canteenBills.findMany({
-    where: eq(bills.club, club)
-  })
+    columns: {
+      billId: false,
+      club: false,
+      itemId: false,
+    },
+    where: eq(canteenBills.club, club),
+    with: {
+      bill: {
+        columns: { checkIn: true },
+      },
+      item: {
+        columns: { name: true, price: true},
+      },
+    },
+  });
 
-  const ctnItems = await db.query.items.findMany({
-    where: eq(bills.club, club)
-  })
-
-  const ctnRev = ctnBls.reduce((acc: {[key:string]: number}, bill) => {
-    if (!acc[bill.itemId]) {
-      acc[bill.itemId] = 0;
-    }
-    acc[bill.itemId] += bill.amount ?? 0;
-    return acc;
-  }, {});
-
-  const ctnQua = ctnBls.reduce((acc: {[key:string]: number}, bill) => {
-    if (!acc[bill.itemId]) {
-      acc[bill.itemId] = 0;
-    }
-    acc[bill.itemId] += bill.quantity ?? 0;
-    return acc;
-  }, {});
-
-  const ctnRevList = Object.entries(ctnRev).map(([name, revenue]) => {
-      const item = ctnItems.find(i => i.id === parseInt(name));
-      return ({ id: name, name: item?.name, revenue, quantity: ctnQua[name]});
-    }
-  );
-
-  return Response.json({bills: bls, canteen: ctnRevList})
+  return Response.json({bills: bls, canteen: ctnBls})
 
 }

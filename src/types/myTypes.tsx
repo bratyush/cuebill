@@ -24,14 +24,16 @@ export type BillType = {
 
 export type CanteenBillType = {
     id?:number;
-    itemId:number;
-    billId:number;
+    itemId?:number;
+    item?: ItemType;
+    billId?:number;
+    bill?: BillType;
     quantity:number;
     amount:number;
 }
 
 export type ItemType = {
-    id : number;
+    id?: number;
     name: string;
     price: number;
     quantity?: number;

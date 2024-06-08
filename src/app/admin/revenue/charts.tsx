@@ -1,7 +1,8 @@
 import { Card } from "~/components/tremor/card";
 import { BarChart } from "~/components/tremor/bar";
 import { BillType } from "~/types/myTypes";
-import PieChart from "./pie";
+import PieChart from "~/components/nivo/pie";
+import { formatElapsedRound } from "~/utils/formatters";
 
 
 export default function Charts({bills, canteen}: {bills: BillType[], canteen: any}) {
@@ -30,7 +31,7 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: an
     return acc;
   }, {});
   
-  const tableTimeList = Object.entries(tableTime).map(([name, timePlayed]) => ({ name, timePlayed }));
+  const tableTimeList = Object.entries(tableTime).map(([name, timePlayed]) => ({ name, time: timePlayed }));
   
   const payMode = bills.reduce((acc: { [key: string]: number }, bill: BillType) => {
     if (!acc[bill.paymentMode]) {
@@ -50,16 +51,11 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: an
       mode.color = '#f59e0b';
     }
   });
-  console.log(payModeList);
 
   return (
-    <div className="flex flex-row">
+    <div className="grid grid-cols-10 gap-4">
 
-      <Card className="mx-auto max-w-sm h-80">
-        <PieChart data={payModeList}/>
-      </Card>
-
-      <div className="flex flex-col">
+      <div className="flex flex-col col-span-3">
         <Card className="mx-auto max-w-xs">
           <p className="text-gray-500">
             Total Revenue
@@ -79,42 +75,82 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: an
         </Card>
       </div>
 
+      {/* Payment Modes */}
+      <Card className="mx-auto w-md max-w-sm h-60 col-span-2">
+        <p className="text-gray-500">
+          Payment Mode
+        </p>
+        <PieChart data={payModeList}/>
+      </Card>
+
+
+      <Card className="mx-auto max-w-xs col-span-4">
+
+      </Card>
 
       {/* table revenues */}
-      <Card className="mx-auto max-w-sm">
+      <Card className="mx-auto w-md max-w-sm col-span-3">
+          <p className="text-gray-500">
+            Tables Revenue
+          </p>
         <BarChart
-          className="h-80"
+          className="h-60"
           data={tableRevenueList}
           index="name"
           categories={["revenue"]}
           valueFormatter={(number: number) =>
-            `${Intl.NumberFormat("en-In").format(number).toString()}`
-          }
-          onValueChange={(v) => console.log(v)}
-        />
-      </Card>
-
-      {/* item revenues */}
-      <Card className="mx-auto max-w-sm">
-        <BarChart
-          className="h-80"
-          data={canteenRevenueList}
-          index="name"
-          categories={["revenue", "quantity"]}
-          valueFormatter={(number: number) =>
-            `${Intl.NumberFormat("en-In").format(number).toString()}`
+            `₹${Intl.NumberFormat("en-In").format(number).toString()}`
           }
           onValueChange={(v) => console.log(v)}
         />
       </Card>
 
       {/* table times */}
-      <Card className="mx-auto max-w-sm">
+      <Card className="mx-auto w-xl max-w-sm col-span-3">
+        <p className="text-gray-500">
+            Table Time
+          </p>
         <BarChart
-          className="h-80"
+          className="h-60"
           data={tableTimeList}
           index="name"
-          categories={["timePlayed"]}
+          categories={["time"]}
+          valueFormatter={(number: number) =>
+            `${formatElapsedRound(number)}`
+          }
+          colors={['emerald']}
+          onValueChange={(v) => console.log(v)}
+        />
+      </Card>
+
+      {/* item revenues */}
+      <Card className="mx-auto w-md max-w-sm col-span-2">
+          <p className="text-gray-500">
+            Canteen Item Revenue
+          </p>
+        <BarChart
+          className="h-60"
+          data={canteenRevenueList}
+          index="name"
+          categories={["revenue"]}
+          valueFormatter={(number: number) =>
+            `₹${Intl.NumberFormat("en-In").format(number).toString()}`
+          }
+          onValueChange={(v) => console.log(v)}
+        />
+      </Card>
+
+      {/* item quantity */}
+      <Card className="mx-auto w-md max-w-sm col-span-2">
+          <p className="text-gray-500">
+            Canteen Item Quantity
+          </p>
+        <BarChart
+          className="h-60"
+          data={canteenRevenueList}
+          index="name"
+          categories={["quantity"]}
+          colors={['emerald']}
           valueFormatter={(number: number) =>
             `${Intl.NumberFormat("en-In").format(number).toString()}`
           }

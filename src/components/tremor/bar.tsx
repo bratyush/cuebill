@@ -3,7 +3,7 @@
 "use client"
 
 import React from "react"
-import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react"
+import { Icons } from "~/components/icons"
 import {
   Bar,
   CartesianGrid,
@@ -343,7 +343,7 @@ const Legend = React.forwardRef<HTMLOListElement, LegendProps>((props, ref) => {
             )}
           >
             <ScrollButton
-              icon={RiArrowLeftSLine}
+              icon={Icons.RiArrowLeftSLine}
               onClick={() => {
                 setIsKeyDowned(null)
                 scrollToTest("left")
@@ -351,7 +351,7 @@ const Legend = React.forwardRef<HTMLOListElement, LegendProps>((props, ref) => {
               disabled={!hasScroll?.left}
             />
             <ScrollButton
-              icon={RiArrowRightSLine}
+              icon={Icons.RiArrowRightSLine}
               onClick={() => {
                 setIsKeyDowned(null)
                 scrollToTest("right")

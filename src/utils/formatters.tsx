@@ -10,7 +10,7 @@ export const formatTime = (ms: number | undefined) => {
 };
 
 export const formatElapsed = (ms: number | undefined) => {
-  if (!ms) return '00m 00s';
+  if (!ms) return '00s';
   const seconds = Math.floor((ms / 1000) % 60);
   const minutes = Math.floor((ms / (1000 * 60)) % 60);
   const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
@@ -28,6 +28,22 @@ export const formatElapsed = (ms: number | undefined) => {
       .padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
   }
 };
+
+export const formatElapsedRound = (ms: number | undefined) => {
+  if (!ms) return '00s';
+  const seconds = Math.floor((ms / 1000) % 60);
+  const minutes = Math.floor((ms / (1000 * 60)) % 60);
+  const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+
+  if (hours === 0 && minutes === 0) {
+    return `${seconds.toString().padStart(2, '0')}s`;
+  } else
+  if (hours === 0) {
+    return `${minutes.toString().padStart(2, '0')}m`;
+  } else { 
+    return `${hours.toString().padStart(2, '0')}h`;
+  }
+}
 
 export const calculateRevenue = (rate: number | undefined, ms: number | undefined) => {
   if (!rate || !ms) return (0).toFixed(2);

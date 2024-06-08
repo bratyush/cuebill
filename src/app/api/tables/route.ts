@@ -25,7 +25,11 @@ export async function GET() {
   if (!user) return Response.json({tables: []})
 
   const club = user.username ?? '';
-  const tbls = await db.select().from(tables).where(eq(tables.club, club));
+  const tbls = await db.query.tables.findMany({
+    columns: {club:false},
+    where: eq(tables.club, club)
+  });
+
   return Response.json({tables: tbls});
 
 }

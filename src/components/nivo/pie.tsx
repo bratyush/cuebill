@@ -11,10 +11,10 @@ export default function PieChart({data}: {data: any[]}) {
         // height={500}
         legends={[]}
         margin={{
-          bottom: 20,
+          bottom: 40,
           left: 0,
           right: 0,
-          top: 20,
+          top: 40,
         }}
         colors={{
           datum: 'data.color'

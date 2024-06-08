@@ -1,205 +1,118 @@
 "use client";
 
-import { type ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
-import { useEffect, useState } from "react";
+
 import { DataTable } from "~/app/_components/dataTable";
-import { Button } from "~/components/ui/button";
-import { type BillType } from "~/types/myTypes";
-import { formatElapsed, formatTime } from "~/utils/formatters";
-import Charts from "./charts";
+import { CanteenBillType, type BillType } from "~/types/myTypes";
 import useSWR from "swr";
-import { getBills, getData } from "~/utils/fetches";
+import { getData } from "~/utils/fetches";
+import { TabNavigation, TabNavigationLink } from "~/components/tremor/tabNav";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { columns } from "./columns";
+import { useState } from "react";
+import Charts from "./charts";
 
 
 export default function Revenue() {
 
-  const {data, error, isLoading} = useSWR<{bills: BillType[], canteen: any}>(`/api/data`, getData)
+  const {data, error, isLoading} = useSWR<{bills: BillType[], canteen: CanteenBillType[]}>(`/api/data`, getData)
 
-  const columns: ColumnDef<BillType>[] = [
-    {
-      accessorKey: "id",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            #
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        )
-      },
-      cell: ({ row }) => {
-        return <div>{row.index + 1}</div>;
-      },
-    },
-    {
-      header: "Table",
-      cell: ({ row }) => {
-        const bill = row.original;
-        return <div>{bill.table?.name}</div>;
-      },
-    },
-    // {
-    //   header: "rate",
-    //   cell: ({ row }) => {
-    //     const bill = row.original;
-    //     return <div>&#8377;{bill.table?.rate}/min</div>;
-    //   },
-    // },
-    {
-      header: "Date",
-      cell: ({ row }) => {
-        const bill = row.original;
-        return bill.checkIn ? (
-          <div>{new Date(bill.checkIn).toDateString()}</div>
-        ) : (
-          <div>Not Checked In</div>
-        );
-      },
-    },
-    {
-      header: "Start Time",
-      cell: ({ row }) => {
-        const bill = row.original;
-        return <div>{formatTime(bill.checkIn)}</div>;
-      },
-    },
-    // {
-    //   header: 'End Time',
-    //   cell: ({ row }) => {
-    //     const bill = row.original;
-    //     return <div>{formatTime(bill.checkOut)}</div>;
-    //   }
-    // },
-    {
-      accessorKey: "timePlayed",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Time Played
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        )
-      },
-      cell: ({ row }) => {
-        const bill = row.original;
-        return <div>{formatElapsed(bill.timePlayed)}</div>;
-      },
-    },
-    {
-      header: "Payment Mode",
-      cell: ({ row }) => {
-        const bill = row.original;
-        return (
-          <div>
-            {bill.paymentMode == "upi" && "UPI"}
-            {bill.paymentMode == "cash" && "Cash"}
-            {bill.paymentMode == "both" && "Cash + UPI"}
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "canteenMoney",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Canteen
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        )
-      },
-      cell: ({ row }) => {
-        const bill = row.original;
-        return <div>&#8377;{bill.canteenMoney}</div>;
-      },
-    },
-    {
-      accessorKey: "totalAmount",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Total Revenue
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        )
-      },
-      cell: ({ row }) => {
-        const bill = row.original;
-        return <div>&#8377;{bill.totalAmount}</div>;
-      },
-    },
+	const [tab, setTab] = useState<boolean>(true);
 
-    // {
-    //   // accessorKey: "rate",
-    //   header: `Rate (₹)`,
-    //   cell: ({ row }) => {
-    //     const table = row.original;
-    //     return (
-    //       <div>
-    //         <div className="text-md font-semibold">
-    //           &#8377;{table.rate * 60}/hour
-    //         </div>
-    //         <div className="text-sm text-gray-500">
-    //           &#8377;{table.rate}/min
-    //         </div>
-    //       </div>
-    //     );
-    //   },
-    // },
-    // {
-    //   id: 'actions',
-    //   cell: ({ row }) => {
-    //     const table = row.original;
+	const [showCustom, setShowCustom] = useState<boolean>(false);
 
-    //     return (
-    //       <div>
-    //         <Link
-    //           to={`/admin/tables/${table.id}/edit`}
-    //           className="focus:outline-none text-white bg-yellow-500 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-2 me-2 mb-2 dark:focus:ring-yellow-900">
-    //           Edit
-    //         </Link>
-    //         {/* <button
-    //           type="button"
-    //           onClick={async () => {
-    //             if (
-    //               await confirm('Are you sure you want to delete?')
-    //             ) {
-    //               deleteTable(table.id).then(() => {
-    //                 getTables().then((tables) => {
-    //                   setData(tables);
-    //                 });
-    //               });
-    //             }
-    //           }}
-    //           className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-    //           Delete
-    //         </button> */}
-    //       </div>
-    //     );
-    //   },
-    // },
-  ];
+	const [timeframe, setTimeframe] = useState<string>("tm");
 
-  console.log(data);
+	let filterBills: BillType[] = [];
+	let filterCanteen: CanteenBillType[] = [];
+
+	if (data) {
+		// filter data based on timeframe
+
+		filterBills = data.bills.filter((bill) => {
+			if (bill.checkIn) {
+				const date = new Date(bill.checkIn);
+				const now = new Date();
+				if (timeframe == 'tm') {
+					return date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear();
+				} else if (timeframe == 'lm') {
+					if (now.getMonth() == 0) {
+						return date.getMonth() == 11 && date.getFullYear() == now.getFullYear()-1;
+					}
+					return date.getMonth() == now.getMonth()-1 && date.getFullYear() == now.getFullYear();
+				} else if (timeframe == 'ty') {
+					return date.getFullYear() == now.getFullYear();
+				} else if (timeframe == 'ly') {
+					return date.getFullYear() == now.getFullYear()-1;
+				}
+				return true;
+			}
+		});
+
+		filterCanteen = data.canteen.filter((canteen) => {
+			if (canteen.bill?.checkIn) {
+				const date = new Date(canteen.bill.checkIn);
+				const now = new Date();
+				if (timeframe == 'tm') {
+					return date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear();
+				} else if (timeframe == 'lm') {
+					if (now.getMonth() == 0) {
+						return date.getMonth() == 11 && date.getFullYear() == now.getFullYear()-1;
+					}
+					return date.getMonth() == now.getMonth()-1 && date.getFullYear() == now.getFullYear();
+				} else if (timeframe == 'ty') {
+					return date.getFullYear() == now.getFullYear();
+				} else if (timeframe == 'ly') {
+					return date.getFullYear() == now.getFullYear()-1;
+				}
+				return true;
+			}
+		});
+	}
+
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto py-2">
       {error && <div>Error: {error.message}</div>}
       {isLoading && <div>Loading...</div>}
       {data && <>
-        <Charts bills={data.bills} canteen={data.canteen} />
-        <DataTable columns={columns} data={data.bills} />
+
+        <TabNavigation>
+          <TabNavigationLink onClick={()=>setTab(true)} active={tab}>Charts</TabNavigationLink>
+          <TabNavigationLink onClick={()=>setTab(false)} active={!tab}>Bills</TabNavigationLink>
+          
+          <div className="ml-auto flex flex-row m-2 gap-4">
+
+						{showCustom && <div>
+							<input type="date"></input> - <input type="date"></input>
+						</div>}
+
+            <Select onValueChange={(e)=>{
+								if (e == 'c') setShowCustom(true)
+								else setShowCustom(false)
+								setTimeframe(e)}
+							} value={timeframe}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Timeframe" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="tm">This Month</SelectItem>
+                <SelectItem value="lm">Last Month</SelectItem>
+                <SelectItem value="ty">This Year</SelectItem>
+                <SelectItem value="ly">Last Year</SelectItem>
+                <SelectItem value="c">Custom</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+        </TabNavigation>
+
+        <div className="mt-5">
+					{tab ?
+						<Charts bills={filterBills} canteen={filterCanteen} />
+					:
+						<DataTable columns={columns} data={filterBills} />
+					}
+        </div>
+
       </>}
     </div>
   );
