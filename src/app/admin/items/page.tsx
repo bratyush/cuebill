@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { type ItemType } from "~/types/myTypes";
+import toast from "react-hot-toast";
 
 export default function ItemsPage() {
   const [data, setData] = useState<ItemType[]>([]);
@@ -127,6 +128,7 @@ export default function ItemsPage() {
                       }
                     })
                     .then(() => {
+                      toast.success("Item deleted");
                       fetch("/api/items", {
                         method: "GET",
                         headers: {

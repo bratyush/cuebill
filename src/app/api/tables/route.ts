@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "~/db";
 import { tables } from "~/db/schema";
 import type { TableType } from "~/types/myTypes";
@@ -26,8 +26,8 @@ export async function GET() {
 
   const club = user.username ?? '';
   const tbls = await db.query.tables.findMany({
-    columns: {club:false},
-    where: eq(tables.club, club)
+    columns: {club:false, active:false},
+    where: and(eq(tables.club, club),eq(tables.active, true)),
   });
 
   return Response.json({tables: tbls});
@@ -39,7 +39,9 @@ export async function DELETE(request: Request) {
 
   const body = await request.json() as {id: number}
 
-  await db.delete(tables).where(eq(tables.id, body.id));
+  // await db.delete(tables).where(eq(tables.id, body.id));
+  
+  await db.update(tables).set({active:false}).where(eq(tables.id, body.id))
 
   return Response.json({status: "deleted"})
 }

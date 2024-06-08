@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { type TableType } from "~/types/myTypes";
+import toast from "react-hot-toast";
 
 export default function TablePage() {
   const [data, setData] = useState<TableType[]>([]);
@@ -116,6 +117,7 @@ export default function TablePage() {
                       }
                     })
                     .then(() => {
+                      toast.success("Table deleted");
                       fetch("/api/tables", {
                         method: "GET",
                         headers: {
