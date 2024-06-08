@@ -10,7 +10,8 @@ export async function POST(request: Request) {
   const body = await request.json() as TableType
 
   const user = await currentUser();
-  const club = user?.username ?? '';
+
+  const club: string = user?.privateMetadata?.org ?? '';
 
   await db.insert(tables).values({...body, club:club});
 
@@ -25,6 +26,7 @@ export async function GET() {
   if (!user) return Response.json({tables: []})
 
   const club = user.username ?? '';
+
   const tbls = await db.query.tables.findMany({
     columns: {club:false, active:false},
     where: and(eq(tables.club, club),eq(tables.active, true)),

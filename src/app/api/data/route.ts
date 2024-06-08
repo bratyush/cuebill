@@ -6,7 +6,7 @@ import { bills, canteenBills } from "~/db/schema";
 export async function GET() {
 
   const user = await currentUser();
-  const club = user?.username ?? '';
+  const club = user?.privateMetadata.org?? '';
 
   const bls = await db.query.bills.findMany({
     columns: {

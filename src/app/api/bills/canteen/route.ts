@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   console.log('body', body);
 
   const user = await currentUser();
-  const club = user?.username ?? '';
+  const club = user?.privateMetadata.org?? '';
 
   await db.insert(canteenBills).values({...body, club:club});
 
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 export async function GET() {
 
   const user = await currentUser();
-  const club = user?.username ?? '';
+  const club = user?.privateMetadata.org?? '';
 
   const ctnbls = await db.query.canteenBills.findMany({
     where: eq(canteenBills.club, club)

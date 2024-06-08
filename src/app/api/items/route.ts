@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   const body = await request.json() as ItemType
 
   const user = await currentUser();
-  const club = user?.username ?? '';
+  const club = user?.privateMetadata.org?? '';
 
   await db.insert(items).values({...body, club:club});
 
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 export async function GET() {
 
   const user = await currentUser();
-  const club = user?.username ?? '';
+  const club = user?.privateMetadata.org?? '';
 
   const itms = await db.query.items.findMany({
     columns: {club:false, active:false},
