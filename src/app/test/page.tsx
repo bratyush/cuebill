@@ -11,7 +11,7 @@ export default function Asdf() {
 
   const { mutate }  = useSWRConfig()
 
-  console.log(typeof bills, bills);
+  
 
   return (
     <div className='flex flex-col justify-between'>

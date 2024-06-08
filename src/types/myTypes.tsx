@@ -40,3 +40,9 @@ export type ItemType = {
     price: number;
     quantity?: number;
 };
+
+declare global {
+    interface UserPrivateMetadata {
+      org: string;
+    }
+  }
