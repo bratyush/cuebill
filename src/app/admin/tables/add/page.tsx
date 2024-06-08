@@ -6,6 +6,7 @@ import pool from "@/public/pool.png";
 import snooker from "@/public/snooker.png";
 import Image, { type StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 // import { addTable } from '../utils/tauriFiles';
 
 export default function AddTable() {
@@ -42,9 +43,11 @@ export default function AddTable() {
         return response.json();
       })
       .then(() => {
+        toast.success("Table added");
         router.push("/");
       })
       .catch((error) => {
+        toast.error("There was an error!");
         console.error("Fetch error:", error);
       });
   }

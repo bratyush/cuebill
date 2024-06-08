@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function AddTable() {
   const [itemName, setItemName] = useState<string>("");
@@ -28,9 +29,11 @@ export default function AddTable() {
         return response.json();
       })
       .then(() => {
+        toast.success("Item added");
         router.push("/admin/items");
       })
       .catch((error) => {
+        toast.error("There was an error!");
         console.error("Fetch error:", error);
       });
   }

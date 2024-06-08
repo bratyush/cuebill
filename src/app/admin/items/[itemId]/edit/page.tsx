@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useParams, useRouter } from "next/navigation";
 import { type ItemType } from "~/types/myTypes";
+import toast from "react-hot-toast";
 
 export default function EditTable() {
   const [itemName, setItemName] = useState<string>("");
@@ -12,8 +13,6 @@ export default function EditTable() {
   const router = useRouter();
 
   const { itemId } = useParams<{ itemId: string }>();
-
-  console.log("fdsa", typeof itemId, itemId);
 
   useEffect(() => {
     if (itemId) {
@@ -54,9 +53,11 @@ export default function EditTable() {
           return response.json();
         })
         .then(() => {
+          toast.success("Item updated");
           router.push("/admin/items");
         })
         .catch((error) => {
+          toast.error("There was an error!");
           console.error("Fetch error:", error);
         });
     }

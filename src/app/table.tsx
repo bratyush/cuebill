@@ -12,6 +12,7 @@ import type { BillType, TableType } from '../types/myTypes';
 import Food from './_components/foodModal';
 import Note from './_components/noteModal';
 import Bill from './_components/billModal';
+import toast from 'react-hot-toast';
 
 
 export default function Table({table}: {table: TableType}) {
@@ -40,15 +41,19 @@ export default function Table({table}: {table: TableType}) {
 
       checkInTable(table.id)
       .then(() => {
+        toast.success('Table checked in')
         mutate('/api/tables').catch(error => {
+          toast.error('Table check in failed')
           console.error('Fetch error:', error);
         })
 
       }).catch(error => {
+        toast.error('Table check in failed')
         console.error('Fetch error:', error);
       })
     })
     .catch(error => {
+      toast.error('Table check in failed')
       console.error('Fetch error:', error);
     })
   }

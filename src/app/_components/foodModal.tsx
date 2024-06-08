@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import useSWR from "swr";
 import { Icons } from "~/components/icons";
 import { Input } from "~/components/ui/input";
@@ -244,6 +245,7 @@ export default function Food({
             </button>
             <button
               onClick={() => {
+                toast.success("Canteen Saved");
                 close();
               }}
               type="button"

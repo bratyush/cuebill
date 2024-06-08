@@ -7,6 +7,7 @@ import snooker from "@/public/snooker.png";
 import Image, { type StaticImageData } from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { type TableType } from "~/types/myTypes";
+import toast from "react-hot-toast";
 
 export default function EditTable() {
   const [style, setStyle] = useState<string>("pool");
@@ -68,9 +69,11 @@ export default function EditTable() {
           return response.json();
         })
         .then(() => {
+          toast.success("Table updated");
           router.push("/");
         })
         .catch((error) => {
+          toast.error("There was an error!");
           console.error("Fetch error:", error);
         });
     }

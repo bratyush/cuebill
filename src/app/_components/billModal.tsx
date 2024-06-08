@@ -26,19 +26,23 @@ export default function Bill({ close, bill, table, showFood }: { close: ()=>void
 
       checkOutTable(bill.tableId)
       .then(() => {
+        toast.success('Bill settled')
         mutate('/api/tables')
         .then(() => {
           console.log('Table checked out')
           localStorage.removeItem('t'+bill.tableId.toString()+'bill')
         }).catch(error => {
+          toast.error('Table check out failed')
           console.error('Fetch error:', error);
         })
 
       }).catch(error => {
+        toast.error('Table check out failed')
         console.error('Fetch error:', error);
       })
 
     }).catch(error => {
+      toast.error('Table check out failed')
       console.error('Fetch error:', error);
     })
   }

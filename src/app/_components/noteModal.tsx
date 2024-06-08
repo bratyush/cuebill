@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import useSWR from "swr";
 import { BillType } from "~/types/myTypes";
 import { patchBill } from "~/utils/fetches";
@@ -35,9 +36,11 @@ export default function Note({ tableId, close }: { tableId:string, close: () => 
       if (billId) {
         patchBill(bill)
           .then((data) => {
+            toast.success("Note saved");
             close();
           })
           .catch((error) => {
+            toast.error("There was an error!");
             console.error("There was an error!", error);
           });
       }
