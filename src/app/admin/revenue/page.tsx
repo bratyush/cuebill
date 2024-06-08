@@ -1,15 +1,15 @@
 "use client";
 
 
-import { DataTable } from "~/app/_components/dataTable";
-import { CanteenBillType, type BillType } from "~/types/myTypes";
-import useSWR from "swr";
-import { getData } from "~/utils/fetches";
-import { TabNavigation, TabNavigationLink } from "~/components/tremor/tabNav";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { columns } from "./columns";
 import { useState } from "react";
+import useSWR from "swr";
+import { TabNavigation, TabNavigationLink } from "~/components/tremor/tabNav";
+import { DataTable } from "~/components/ui/dataTable";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { CanteenBillType, type BillType } from "~/types/myTypes";
+import { getData } from "~/utils/fetches";
 import Charts from "./charts";
+import { columns } from "./columns";
 
 
 export default function Revenue() {

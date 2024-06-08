@@ -1,13 +1,13 @@
 "use client";
 
-import { DataTable } from "~/app/_components/dataTable";
+import { DataTable } from "~/components/ui/dataTable";
 
 import { type ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { type ItemType } from "~/types/myTypes";
 import { Button } from "~/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+import { type ItemType } from "~/types/myTypes";
 
 export default function ItemsPage() {
   const [data, setData] = useState<ItemType[]>([]);

@@ -1,12 +1,9 @@
 "use client"
 
-// tables, checkedIn,
-// table name, rate, checkedIn time, live time, live revenue, checkout button, pause play.
-
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { checkOutTable, getTables, patchBill } from '~/utils/fetches';
-import type { BillType, TableType } from '../types/myTypes';
+import { useEffect } from 'react';
+import { getTables } from '~/utils/fetches';
+import type { TableType } from '../types/myTypes';
 import NavBar from './_components/navbar';
 import { TableSkeleton } from './_components/skeletons';
 import Table from './table';

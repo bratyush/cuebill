@@ -1,13 +1,13 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "~/app/_components/dataTable";
+import { DataTable } from "~/components/ui/dataTable";
 
+import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { type TableType } from "~/types/myTypes";
 import { Button } from "~/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+import { type TableType } from "~/types/myTypes";
 
 export default function TablePage() {
   const [data, setData] = useState<TableType[]>([]);
