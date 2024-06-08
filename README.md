@@ -8,6 +8,7 @@
 - [x] Multi-tenancy.
 - [ ] Loading state everywhere.
 - [ ] use swr snappy mutate.
+- [x] delete.
 - [x] show canteen bills.
 - [x] make revenue page better.
   - [x] pagination to bills.
