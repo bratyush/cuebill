@@ -7,13 +7,16 @@
 - [x] Auth on middleware.
 - [x] Multi-tenancy.
 - [ ] Loading state everywhere.
+- [ ] use swr snappy mutate.
 - [x] show canteen bills.
-- [ ] make revenue page better.
+- [x] make revenue page better.
   - [x] pagination to bills.
   - [x] sort to bills.
   - [x] charts
-  - [ ] daterange filter
-  - [ ] put charts togethor.
+  - [x] daterange filter
+  - [x] put charts togethor.
+- [ ] Testing:
+  - [ ] date range filter.
   - [ ] 
 
 

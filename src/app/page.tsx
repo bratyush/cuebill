@@ -12,8 +12,9 @@ import useSWR from 'swr';
 
 export default function Pos() {
 
-  const {data, error, isLoading, mutate} = useSWR<{tables: TableType[]}>('/api/tables', getTables)
-  console.log('data', data, isLoading);
+  const {data, isLoading} = useSWR<{tables: TableType[]}>('/api/tables', getTables, {onSuccess: (data) => {
+    localStorage.setItem('tables', JSON.stringify(data.tables.length));
+  }})
 
   const numTables = parseInt(localStorage.getItem('tables') ?? '0');
 
@@ -35,10 +36,11 @@ export default function Pos() {
     <div>
       <NavBar />
 
-      <div className="text-white m-2 grid gap-3 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="text-white m-2 grid gap-2 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
 
-        {!data ? Array(numTables).fill(<TableSkeleton />)
-        : data.tables.map((table, index) => (
+        {isLoading && Array(numTables).fill(<TableSkeleton />)}
+
+        {data && data.tables.map((table, index) => (
           <Table
             key={table.id}
             table={table}
