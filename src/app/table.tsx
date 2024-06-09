@@ -2,12 +2,16 @@
 
 import pool from '@/public/pool.png';
 import snooker from '@/public/snooker.png';
+import violet from '@/public/violet.svg';
+import amber from '@/public/amber.svg';
+import stone from '@/public/stone.svg';
+import red from '@/public/red.svg';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import useSWR, { mutate } from "swr";
 import { Icons } from '~/components/icons';
 import { checkInTable, createBill, getItems } from '~/utils/fetches';
-import { calculateRevenue, formatElapsed, formatTime } from '~/utils/formatters';
+import { calculateRevenue, formatElapsed, formatTime, tableTheme } from '~/utils/formatters';
 import type { BillType, TableType } from '../types/myTypes';
 import Food from './_components/foodModal';
 import Note from './_components/noteModal';
@@ -30,7 +34,7 @@ export default function Table({table}: {table: TableType}) {
   const [showBill, setShowBill] = useState<boolean>(false);
   const [bill, setBill] = useState<BillType | null>(null);
 
-  const imageUrl = table.theme == 'pool' ? pool : snooker;
+  const imageUrl = tableTheme(table.theme);
 
   function checkIn() {
     createBill(table.id)

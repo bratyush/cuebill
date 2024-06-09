@@ -55,3 +55,29 @@ export const calculateRevenue = (rate: number | undefined, ms: number | undefine
 
   return revenue.toFixed(2);
 };
+
+import pool from '@/public/pool.png';
+import snooker from '@/public/snooker.png';
+import violet from '@/public/violet.svg';
+import amber from '@/public/amber.svg';
+import stone from '@/public/stone.svg';
+import red from '@/public/red.svg';
+
+export const tableTheme = (theme: string) => {
+  switch (theme) {
+    case 'pool':
+      return pool;
+    case 'snooker':
+      return snooker;
+    case 'violet':
+      return violet;
+    case 'amber':
+      return amber;
+    case 'red':
+      return red;
+    case 'stone':
+      return stone;
+    default:
+      return pool;
+  }
+}

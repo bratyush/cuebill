@@ -12,7 +12,7 @@ export const tables = createTable(
     id: integer("id").primaryKey({ autoIncrement: true }),
     name: text("name", { length: 256 }),
     rate: real("rate"),
-    theme: text("theme", { enum: ['pool', 'snooker']}),
+    theme: text("theme", { enum: ['pool', 'snooker', 'violet', 'amber', 'stone', 'red']}),
     checked_in_at: integer("checkedInAt"),
     active: integer("active", {mode: 'boolean'}).default(true),
     club: text("club"),

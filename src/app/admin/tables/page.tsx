@@ -9,9 +9,13 @@ import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { type TableType } from "~/types/myTypes";
 import toast from "react-hot-toast";
+import Image from "next/image";
+import { tableTheme } from "~/utils/formatters";
 
 export default function TablePage() {
   const [data, setData] = useState<TableType[]>([]);
+
+  const typeImg = "/pool.png";
 
   useEffect(() => {
     fetch("/api/tables", {
@@ -57,6 +61,17 @@ export default function TablePage() {
           <div>
             <div className="text-lg font-semibold">{table.name}</div>
             <div className="text-sm text-gray-500">{table.theme}</div>
+          </div>
+        );
+      },
+    },
+    {
+      header: "Type",
+      cell: ({ row }) => {
+        const table = row.original;
+        return (
+          <div>
+            <Image className="h-16 w-24" src={tableTheme(table.theme)} alt="img" />
           </div>
         );
       },

@@ -2,7 +2,7 @@ export type TableType = {
     id: number;
     name: string;
     rate: number;
-    theme: 'pool' | 'snooker';
+    theme: 'pool' | 'snooker' | 'violet' | 'amber' | 'red' | 'stone';
     checked_in_at: number;
     time: number;
 };

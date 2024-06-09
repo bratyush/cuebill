@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-import pool from "@/public/pool.png";
-import snooker from "@/public/snooker.png";
+import pool from '@/public/pool.png';
 import Image, { type StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { tableTheme } from "~/utils/formatters";
 // import { addTable } from '../utils/tauriFiles';
 
 export default function AddTable() {
@@ -18,11 +18,7 @@ export default function AddTable() {
   const router = useRouter();
 
   useEffect(() => {
-    if (style === "pool") {
-      setTypeImg(pool);
-    } else {
-      setTypeImg(snooker);
-    }
+    setTypeImg(tableTheme(style))
   }, [style]);
 
   function addTableSubmit(tableName: string, rate: string, style: string) {
@@ -113,6 +109,11 @@ export default function AddTable() {
           >
             <option value="pool">Pool</option>
             <option value="snooker">Snooker</option>
+            <option value="violet">Violet</option>
+            <option value="amber">Amber</option>
+            <option value="red">Red</option>
+            <option value="stone">Stone</option>
+
           </select>
         </div>
 
