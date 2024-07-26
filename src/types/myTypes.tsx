@@ -14,9 +14,11 @@ export type BillType = {
     checkIn?: number;
     checkOut?: number;
     timePlayed?: number;
-    tableMoney?: number;
+    tableMoney: number;
     canteenMoney?: number;
     paymentMode: 'cash' | 'upi' | 'both';
+    cashPaid?: number;
+    upiPaid: number;
     totalAmount: number;
     note?: string;
 };

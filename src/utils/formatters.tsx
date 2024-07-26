@@ -1,8 +1,10 @@
 export const formatTime = (ms: number | undefined) => {
   if (!ms) return '00:00:00';
-  const seconds = Math.floor((ms / 1000) % 60);
-  const minutes = Math.floor((ms / (1000 * 60)) % 60);
-  const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+  // Add 5 hours and 30 minutes (in milliseconds)
+  const istMs = ms + (5 * 60 * 60 * 1000) + (30 * 60 * 1000);
+  const seconds = Math.floor((istMs / 1000) % 60);
+  const minutes = Math.floor((istMs / (1000 * 60)) % 60);
+  const hours = Math.floor((istMs / (1000 * 60 * 60)) % 24);
 
   return `${hours.toString().padStart(2, '0')}:${minutes
     .toString()

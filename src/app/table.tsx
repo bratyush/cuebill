@@ -1,11 +1,5 @@
 "use client"
 
-import pool from '@/public/pool.png';
-import snooker from '@/public/snooker.png';
-import violet from '@/public/violet.svg';
-import amber from '@/public/amber.svg';
-import stone from '@/public/stone.svg';
-import red from '@/public/red.svg';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import useSWR, { mutate } from "swr";
@@ -71,6 +65,7 @@ export default function Table({table}: {table: TableType}) {
       timePlayed: elapsedTime,
       tableMoney: parseFloat(generatedRevenue),
       paymentMode: 'upi',
+      upiPaid: parseFloat(generatedRevenue),
       totalAmount: parseFloat(generatedRevenue),
     }
     if (billId) {
