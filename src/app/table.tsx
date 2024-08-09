@@ -104,7 +104,7 @@ export default function Table({table}: {table: TableType}) {
     {showFood && <Food table={table} items={data.items} close={()=>{setShowFood(false)}} />}
     {showNote && <Note tableId={table.id.toString()} close={()=>{setShowNote(false)}} />}
 
-    <div className="h-[268px] w-[350px] m-5 relative">
+    <div className="h-[268px] w-[350px] m-3 relative">
       <Image
         src={imageUrl}
         alt="bg"

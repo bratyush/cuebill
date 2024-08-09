@@ -36,7 +36,7 @@ export default function Pos() {
     <div>
       <NavBar />
 
-      <div className="text-white m-2 grid gap-2 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="text-white m-2 flex flex-row flex-wrap">
 
         {isLoading && Array(numTables).fill(<TableSkeleton />)}
 
@@ -47,13 +47,14 @@ export default function Pos() {
           />
         ))}
 
-        <div className="m-5 h-[268px] w-[350px] rounded-md bg-slate-300 flex items-center">
+        <div className="m-3 h-[268px] w-[350px] rounded-md bg-slate-300 flex items-center">
           <Link
             href={"/admin/tables/add"}
             className="mx-auto rounded-md bg-slate-400 p-3 hover:bg-slate-500">
             Add Table
           </Link>
         </div>
+
       </div>
     </div>
   );
