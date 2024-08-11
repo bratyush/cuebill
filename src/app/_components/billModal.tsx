@@ -4,7 +4,7 @@ import { Icons } from "~/components/icons";
 import type { BillType, TableType } from "~/types/myTypes";
 import { checkOutTable, getCanteenTotal, patchBill } from "~/utils/fetches";
 import { formatElapsed, formatTime } from "~/utils/formatters";
-import useSWR, { mutate } from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 export default function Bill({
   close,
@@ -17,6 +17,8 @@ export default function Bill({
   table: TableType;
   showFood: () => void;
 }) {
+  const { mutate } = useSWRConfig();
+
   const billId = localStorage.getItem("t" + table.id.toString() + "bill");
 
   const { data } = useSWR<{ total: number }>(
@@ -32,28 +34,39 @@ export default function Bill({
   const [error, setError] = useState<string>();
 
   function saveBill(bill: BillType) {
-    console.log("bill", bill);
-    patchBill(bill)
+    mutate(
+      "/api/tables",
+      patchBill(bill)
+        .then(() => {
+          close();
+          checkOutTable(bill.tableId)
+            .then(() => {
+              toast.success("Bill settled");
+            })
+            .catch((error) => {
+              toast.error("Table check out failed");
+              console.error("Fetch error:", error);
+            });
+        })
+        .catch((error) => {
+          toast.error("Table check out failed");
+          console.error("Fetch error:", error);
+        }),
+      { optimisticData: (tableData) => {
+          // find the table from tableData.tables and update it to checked_in_at = Date.now()
+          console.log(tableData);
+          const updatedTable = tableData.tables.find(
+            (t: TableType) => t.id === bill.tableId,
+          );
+          if (updatedTable) {
+            updatedTable.checked_in_at = null;
+          }
+          return { tables: tableData.tables };
+        }},
+    )
       .then(() => {
-        close();
-
-        checkOutTable(bill.tableId)
-          .then(() => {
-            toast.success("Bill settled");
-            mutate("/api/tables")
-              .then(() => {
-                console.log("Table checked out");
-                localStorage.removeItem("t" + bill.tableId.toString() + "bill");
-              })
-              .catch((error) => {
-                toast.error("Table check out failed");
-                console.error("Fetch error:", error);
-              });
-          })
-          .catch((error) => {
-            toast.error("Table check out failed");
-            console.error("Fetch error:", error);
-          });
+        console.log("Table checked out");
+        localStorage.removeItem("t" + bill.tableId.toString() + "bill");
       })
       .catch((error) => {
         toast.error("Table check out failed");
@@ -232,9 +245,9 @@ export default function Bill({
 
                         <input
                           value={cashPaid}
-                          onChange={(e)=>{
-                            let cash = e.target.value
-                            setCashPaid(parseFloat(cash))
+                          onChange={(e) => {
+                            let cash = e.target.value;
+                            setCashPaid(parseFloat(cash));
                           }}
                           type="number"
                           name="floating_password"
@@ -286,16 +299,16 @@ export default function Bill({
             <button
               onClick={() => {
                 if (bill) {
-                  let cash =0;
-                  let upi =0;
-                  if (mode === "upi"){
-                    upi = bill.tableMoney
-                  } else if (mode == 'cash') {
-                    cash = bill.tableMoney
-                  } else if (mode == 'both') {
+                  let cash = 0;
+                  let upi = 0;
+                  if (mode === "upi") {
+                    upi = bill.tableMoney;
+                  } else if (mode == "cash") {
+                    cash = bill.tableMoney;
+                  } else if (mode == "both") {
                     if (cashPaid > bill.tableMoney) {
-                      setError('Cash amount should be less than total amount')
-                      return
+                      setError("Cash amount should be less than total amount");
+                      return;
                     }
                     cash = cashPaid;
                     upi = bill.tableMoney - cashPaid;

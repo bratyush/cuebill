@@ -1,27 +1,31 @@
-"use client"
+"use client";
 
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import useSWR, { mutate } from "swr";
-import { Icons } from '~/components/icons';
-import { checkInTable, createBill, getItems } from '~/utils/fetches';
-import { calculateRevenue, formatElapsed, formatTime, tableTheme } from '~/utils/formatters';
-import type { BillType, TableType } from '../types/myTypes';
-import Food from './_components/foodModal';
-import Note from './_components/noteModal';
-import Bill from './_components/billModal';
-import toast from 'react-hot-toast';
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import useSWR, { useSWRConfig } from "swr";
+import { Icons } from "~/components/icons";
+import { checkInTable, createBill, getItems, getTables } from "~/utils/fetches";
+import {
+  calculateRevenue,
+  formatElapsed,
+  formatTime,
+  tableTheme,
+} from "~/utils/formatters";
+import type { BillType, TableType } from "../types/myTypes";
+import Food from "./_components/foodModal";
+import Note from "./_components/noteModal";
+import Bill from "./_components/billModal";
+import toast from "react-hot-toast";
 
-
-export default function Table({table}: {table: TableType}) {
+export default function Table({ table }: { table: TableType }) {
+  const { mutate } = useSWRConfig();
 
   // menu items fetch
-  const {data} = useSWR(`/api/items`, getItems)
+  const { data } = useSWR(`/api/items`, getItems);
 
-  const [elapsedTime, setElapsedTime] = useState<number>(
-    // Date.now() - table.checked_in_at
-  );
-  const [generatedRevenue, setGeneratedRevenue] = useState<string>('0.00');
+  const [elapsedTime, setElapsedTime] = useState<number>();
+  // Date.now() - table.checked_in_at
+  const [generatedRevenue, setGeneratedRevenue] = useState<string>("0.00");
 
   const [showFood, setShowFood] = useState<boolean>(false);
   const [showNote, setShowNote] = useState<boolean>(false);
@@ -31,48 +35,58 @@ export default function Table({table}: {table: TableType}) {
   const imageUrl = tableTheme(table.theme);
 
   function checkIn() {
-    createBill(table.id)
-    .then((data : {bill: BillType}) => {
-      if (data.bill.id) {
-        localStorage.setItem('t'+table.id.toString()+'bill', data.bill.id.toString())
-      }
-
-      checkInTable(table.id)
-      .then(() => {
-        toast.success('Table checked in')
-        mutate('/api/tables').catch(error => {
-          toast.error('Table check in failed')
-          console.error('Fetch error:', error);
+    mutate(
+      "/api/tables",
+      createBill(table.id)
+        .then((data: { bill: BillType }) => {
+          if (data.bill.id) {
+            localStorage.setItem(
+              "t" + table.id.toString() + "bill",
+              data.bill.id.toString(),
+            );
+          }
+          checkInTable(table.id)
+            .then(() => {
+              toast.success("Table checked in");
+            })
+            .catch((error) => {
+              toast.error("Table check in failed");
+              console.error("Fetch error:", error);
+            });
         })
-
-      }).catch(error => {
-        toast.error('Table check in failed')
-        console.error('Fetch error:', error);
-      })
-    })
-    .catch(error => {
-      toast.error('Table check in failed')
-      console.error('Fetch error:', error);
-    })
+        .catch((error) => {
+          toast.error("Table check in failed");
+          console.error("Fetch error:", error);
+        })
+      ,{ optimisticData: tableData => {
+        // find the table from tableData.tables and update it to checked_in_at = Date.now()
+        console.log(tableData);
+        const updatedTable = tableData.tables.find((t: TableType) => t.id === table.id);
+        if (updatedTable) {
+          updatedTable.checked_in_at = Date.now();
+        }
+        return { tables: tableData.tables };
+      }}
+    );
   }
 
   function checkOut() {
-    const billId = localStorage.getItem('t'+table.id.toString()+'bill')
-    const tempBill : BillType = {
+    const billId = localStorage.getItem("t" + table.id.toString() + "bill");
+    const tempBill: BillType = {
       tableId: table.id,
       checkIn: table.checked_in_at,
       checkOut: Date.now(),
       timePlayed: elapsedTime,
       tableMoney: parseFloat(generatedRevenue),
-      paymentMode: 'upi',
+      paymentMode: "upi",
       upiPaid: parseFloat(generatedRevenue),
       totalAmount: parseFloat(generatedRevenue),
-    }
+    };
     if (billId) {
-      tempBill.id = parseInt(billId)
+      tempBill.id = parseInt(billId);
     }
     console.log(tempBill);
-    setBill(tempBill)
+    setBill(tempBill);
     setShowBill(true);
   }
 
@@ -90,95 +104,123 @@ export default function Table({table}: {table: TableType}) {
     }
 
     return () => {
-      clearInterval(theTimer)
+      clearInterval(theTimer);
       setElapsedTime(0);
-      setGeneratedRevenue('0.00');
+      setGeneratedRevenue("0.00");
     };
   }, [table.checked_in_at, table.rate]);
 
   return (
-
     <>
-
-    {showBill && <Bill bill={bill} table={table} close={()=>{setShowBill(false)}} showFood={()=>setShowFood(true)}/>}
-    {showFood && <Food table={table} items={data.items} close={()=>{setShowFood(false)}} />}
-    {showNote && <Note tableId={table.id.toString()} close={()=>{setShowNote(false)}} />}
-
-    <div className="h-[268px] w-[350px] m-3 relative">
-      <Image
-        src={imageUrl}
-        alt="bg"
-        layout='fill'
-        objectFit='cover'
-        objectPosition='center'
-        className='-z-10'
+      {showBill && (
+        <Bill
+          bill={bill}
+          table={table}
+          close={() => {
+            setShowBill(false);
+          }}
+          showFood={() => setShowFood(true)}
         />
-      {/* style={{ backgroundImage: `url(${imageUrl})` }}> */}
-      <div className="pt-5 flex flex-col">
-        <div className="flex mx-auto mb-2">
-          <div className='flex flex-col'>
-            <span className='text-xl font-bold mx-auto'>{table.name}</span>
-            <span className='font-'>
-              &#8377;{table.rate}/min - &#8377;
-              {Math.round(table.rate * 60)}/hour
-            </span>
+      )}
+      {showFood && (
+        <Food
+          table={table}
+          items={data.items}
+          close={() => {
+            setShowFood(false);
+          }}
+        />
+      )}
+      {showNote && (
+        <Note
+          tableId={table.id.toString()}
+          close={() => {
+            setShowNote(false);
+          }}
+        />
+      )}
+
+      <div className="relative m-3 h-[268px] w-[350px]">
+        <Image
+          src={imageUrl}
+          alt="bg"
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
+          className="-z-10"
+        />
+        <div className="flex flex-col pt-5">
+          <div className="mx-auto mb-2 flex">
+            <div className="flex flex-col">
+              <span className="mx-auto text-xl font-bold">{table.name}</span>
+              <span className="font-">
+                &#8377;{table.rate}/min - &#8377;
+                {Math.round(table.rate * 60)}/hour
+              </span>
+            </div>
           </div>
-        </div>
 
-        {table.checked_in_at ? (
-          <div className="flex flex-col justify-evenly">
-            <div className="flex justify-center font-medium">
-              {formatTime(table.checked_in_at)}
-            </div>
-
-            <div className="flex flex-row justify-evenly">
-              <div className="flex flex-col">
-                <span className='text-sm font-thin mx-auto'>Time</span>
-                <span className='font-medium'>{formatElapsed(elapsedTime)}</span>
+          {table.checked_in_at ? (
+            <div className="flex flex-col justify-evenly">
+              <div className="flex justify-center font-medium">
+                {formatTime(table.checked_in_at)}
               </div>
 
-              <div className="flex flex-col">
-                <span className='text-sm font-thin mx-auto'>Money</span>
-                <span className='font-medium'>&#8377;{generatedRevenue}</span>
+              <div className="flex flex-row justify-evenly">
+                <div className="flex flex-col">
+                  <span className="mx-auto text-sm font-thin">Time</span>
+                  <span className="font-medium">
+                    {formatElapsed(elapsedTime)}
+                  </span>
+                </div>
+
+                <div className="flex flex-col">
+                  <span className="mx-auto text-sm font-thin">Money</span>
+                  <span className="font-medium">&#8377;{generatedRevenue}</span>
+                </div>
+              </div>
+
+              <div className="mt-4 flex flex-row px-6">
+                <button
+                  className="my-1 mr-1 flex w-full basis-1/6 items-center justify-center rounded-md bg-green-400/70 shadow-sm hover:bg-green-400/90"
+                  onClick={() => {
+                    setShowFood(true);
+                  }}
+                >
+                  <Icons.food />
+                </button>
+                <button
+                  className="my-1 mr-1 flex w-full basis-1/6 items-center justify-center rounded-md bg-orange-400/70 shadow-sm hover:bg-orange-400/90"
+                  onClick={() => {
+                    setShowNote(true);
+                  }}
+                >
+                  <Icons.note />
+                </button>
+                <button
+                  className="my-1 basis-2/3 rounded-md bg-white/30 py-3 shadow-sm hover:bg-white/40"
+                  onClick={() => {
+                    checkOut();
+                  }}
+                >
+                  <span className="font-semibold">Check Out</span>
+                </button>
               </div>
             </div>
-
-            <div className='flex flex-row mt-4 px-6'>
-              <button 
-                className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-green-400/70 hover:bg-green-400/90 rounded-md shadow-sm"
-                onClick={()=>{setShowFood(true)}}
-                >
-                <Icons.food />
-              </button>
-              <button 
-                className="my-1 mr-1 basis-1/6 w-full flex items-center justify-center bg-orange-400/70 hover:bg-orange-400/90 rounded-md shadow-sm"
-                onClick={()=>{setShowNote(true)}} 
-                >
-                <Icons.note />
-              </button>
+          ) : (
+            <div className="flex">
               <button
-                className="my-1 py-3 basis-2/3 bg-white/30 hover:bg-white/40 rounded-md shadow-sm"
+                className="mx-auto my-5 rounded-md bg-white/20 px-10 py-6 shadow-sm hover:bg-white/30"
                 onClick={() => {
-                  checkOut();
-                }}>
-                <span className='font-semibold'>Check Out</span>
+                  checkIn();
+                }}
+              >
+                Check In
               </button>
             </div>
-          </div>
-        ) : (
-          <div className="flex">
-            <button
-              className="py-6 px-10 my-5 mx-auto bg-white/20 hover:bg-white/30 rounded-md shadow-sm"
-              onClick={() => {
-                checkIn();
-              }}>
-              Check In
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-
-    </div>
     </>
   );
 }

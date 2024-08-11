@@ -18,6 +18,7 @@ export async function GET(
   return Response.json({table: table})
 }
 
+// checking in a table
 export async function PATCH(
   request: Request,
   { params }: { params: { tableId: string } }
