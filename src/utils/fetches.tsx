@@ -147,6 +147,35 @@ export const getItems = () =>
     return response.json();
   });
 
+export const addItem = (item: { itemName: string; price: number }) =>
+  fetch("/api/items", {
+    method: "POST",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name: item.itemName, price: item.price }),
+  }).then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    });
+
+export const deleteItem = (itemId: number) =>
+  fetch("/api/items/" + itemId, {
+    method: "DELETE",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
 export const getCanteenTotal = (billId?: string) =>
   fetch("/api/bills/canteen/total/" + billId, {
     method: "GET",

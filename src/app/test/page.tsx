@@ -1,40 +1,60 @@
 "use client";
 
-import useSWR, { useSWRConfig } from 'swr';
-import { bills } from '~/db/schema';
-import { TableType } from '~/types/myTypes';
-import { getTables } from '~/utils/fetches';
+import toast from 'react-hot-toast';
+import useSWR from 'swr';
+import { ItemType } from '~/types/myTypes';
+import { addItem, getItems } from '~/utils/fetches';
 
 export default function Asdf() {
 
-  const {data, error, isLoading} = useSWR<{tables: TableType[]}>('/api/tables', getTables)
-
-  const { mutate }  = useSWRConfig()
-
-  
+  const {data, mutate} = useSWR<{items:ItemType[]}>('/api/items', getItems)
 
   return (
     <div className='flex flex-col justify-between'>
       <p>asdf</p>
 
-      <button onClick={()=>{
-        fetch('/api/test')
-        .then(res=>res.json())
-        .then(data=>{
-          console.log(data)
-        }).catch(error => {
-          console.error('Fetch error:', error);
-        })
-      }}>
-        fetch
-      </button>
+      {data?.items && data.items.map((item: any) => (
+        <div key={item.id}>
+          <p>{item.name}</p>
+          <p>{item.price}</p>
+        </div>
+      ))}
 
       <button onClick={()=>{
-          mutate('/api/tables').catch(error => {
-            console.error('Fetch error:', error);
-          })
+          if (data) {
+            mutate(
+              addItem({ itemName:'kaju', price:12 })
+              .then(()=>getItems()), {
+                optimisticData: {items:[...data.items, {id:1, name:'kaju', price:12}]},
+                rollbackOnError: true,
+                populateCache: true,
+                revalidate: false
+              }
+            ).then(()=>{
+              toast.success('Kaju added')
+            }).catch(error => {
+              toast.error('Kaju add failed')
+              console.error('Fetch error:', error);
+            })
+          }
+
         }}>
-        mutate
+        Add Kaju
+      </button>
+      <button onClick={()=>{
+          if (data) {
+            mutate(
+              addItem({ itemName:'kaju', price:12 })
+              .then(()=>getItems()), {
+                optimisticData: {items:data.items.filter((item:ItemType)=>item.name!=='kaju')},
+                rollbackOnError: true,
+                populateCache: true,
+                revalidate: false
+              }
+            )
+          }
+      }}>
+        Delete Kaju
       </button>
     </div>
   )

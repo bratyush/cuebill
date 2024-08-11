@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { type ItemType } from "~/types/myTypes";
 import toast from "react-hot-toast";
+import { deleteItem, getItems } from "~/utils/fetches";
 
 export default function ItemsPage() {
   const [data, setData] = useState<ItemType[]>([]);
@@ -49,14 +50,12 @@ export default function ItemsPage() {
       },
     },
     {
-      // accessorKey: "name",
       header: "Item",
       cell: ({ row }) => {
         const item = row.original;
         return (
           <div>
             <div className="text-lg">{item.name}</div>
-            {/* <div className="text-sm text-gray-500">{item.theme}</div> */}
           </div>
         );
       },
@@ -79,24 +78,10 @@ export default function ItemsPage() {
         return (
           <div>
             <div className="text-lg">&#8377;{item.price}</div>
-            {/* <div className="text-sm text-gray-500">
-              &#8377;{item.rate}/min
-            </div> */}
           </div>
         );
       },
     },
-    // {
-    //   header: 'Quantity',
-    //   cell: ({ row }) => {
-    //     const item = row.original;
-    //     return (
-    //       <div>
-    //         <div className="text-md font-semibold">{item.quantity}</div>
-    //       </div>
-    //     );
-    //   }
-    // },
     {
       id: "actions",
       cell: ({ row }) => {
@@ -114,38 +99,24 @@ export default function ItemsPage() {
               type="button"
               onClick={async () => {
                 if (confirm("Are you sure you want to delete?")) {
-                  fetch("/api/items", {
-                    method: "DELETE",
-                    headers: {
-                      "Cache-Control": "no-cache",
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ id: item.id }),
-                  })
-                    .then((res) => {
-                      if (!res.ok) {
-                        throw new Error("Network response was not ok");
-                      }
-                    })
+
+                  if (!item.id) {
+                    return;
+                  }
+                  deleteItem(item.id)
                     .then(() => {
                       toast.success("Item deleted");
-                      fetch("/api/items", {
-                        method: "GET",
-                        headers: {
-                          "Cache-Control": "no-cache",
-                          "Content-Type": "application/json",
-                        },
-                      })
-                        .then((res) => res.json())
+                      
+                      getItems()
                         .then((data: { items: ItemType[] }) => {
                           setData(data.items);
                         })
                         .catch((error) => {
-                          console.error("Fetch error:", error);
+                          toast.error("Item fetch failed");
                         });
                     })
                     .catch((error) => {
-                      console.error("Fetch error:", error);
+                      toast.error("Item delete failed");
                     });
                 }
               }}

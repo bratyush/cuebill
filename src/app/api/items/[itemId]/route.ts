@@ -33,3 +33,17 @@ export async function PATCH(
 
   return Response.json({status: "created"})
 }
+
+// delete item
+export async function DELETE(
+  request: Request,
+  { params }: { params: { itemId: string } }
+) {
+
+  const itemId = params.itemId // 'a', 'b', or 'c'
+  const id = parseInt(itemId);
+
+  await db.update(items).set({active:false}).where(eq(items.id, id))
+
+  return Response.json({status: "deleted"})
+}
