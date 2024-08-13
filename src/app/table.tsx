@@ -58,7 +58,7 @@ export default function Table({ table }: { table: TableType }) {
           toast.error("Table check in failed");
           console.error("Fetch error:", error);
         })
-      ,{ optimisticData: tableData => {
+      ,{ optimisticData: (tableData) => {
         // find the table from tableData.tables and update it to checked_in_at = Date.now()
         console.log(tableData);
         const updatedTable = tableData.tables.find((t: TableType) => t.id === table.id);
@@ -117,6 +117,13 @@ export default function Table({ table }: { table: TableType }) {
           bill={bill}
           table={table}
           close={() => {
+            // unsettled = {tableId: [bill1, bill2, ...]}
+            let unsettled = localStorage.getItem('unsettled');
+            console.log(unsettled)
+
+            // check if unsettled exists else create in localstorage
+
+
             setShowBill(false);
           }}
           showFood={() => setShowFood(true)}
@@ -144,9 +151,8 @@ export default function Table({ table }: { table: TableType }) {
         <Image
           src={imageUrl}
           alt="bg"
-          layout="fill"
-          objectFit="cover"
-          objectPosition="center"
+          fill
+          priority={true}
           className="-z-10"
         />
         <div className="flex flex-col pt-5">

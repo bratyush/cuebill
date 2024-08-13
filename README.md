@@ -7,8 +7,8 @@
 - [x] Auth on middleware.
 - [x] Multi-tenancy.
 - [ ] Loading state everywhere.
-- [ ] use swr snappy mutate.
-  - [ ] optimistic updateded for checkin and checkout.
+- [x] use swr snappy mutate.
+  - [x] optimistic updateded for checkin and checkout.
 - [x] delete.
 - [x] show canteen bills.
 - [x] make revenue page better.

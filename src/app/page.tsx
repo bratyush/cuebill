@@ -23,7 +23,7 @@ export default function Pos() {
     if (!a) {
       localStorage.setItem('tables', JSON.stringify(0));
     } else {
-      console.log('no tables in localstorage')
+      
     }
     const b = localStorage.getItem('bills');
     if (!b) {
@@ -38,11 +38,14 @@ export default function Pos() {
 
       <div className="text-white m-2 flex flex-row flex-wrap">
 
-        {isLoading && Array(numTables).fill(<TableSkeleton />)}
+        {isLoading && Array(numTables).fill(null).map((_, index) => (
+          <TableSkeleton key={index} />
+        ))}
+
 
         {data && data.tables.map((table, index) => (
           <Table
-            key={table.id}
+            key={index}
             table={table}
           />
         ))}
