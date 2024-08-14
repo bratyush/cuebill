@@ -22,12 +22,15 @@ export default function Pos() {
     const a = localStorage.getItem('tables');
     if (!a) {
       localStorage.setItem('tables', JSON.stringify(0));
-    } else {
-      
     }
     const b = localStorage.getItem('bills');
     if (!b) {
       localStorage.setItem('bills', JSON.stringify(0));
+    }
+    
+    const c = localStorage.getItem('unsettled');
+    if (!c) {
+      // localStorage.setItem('unsettled', JSON.stringify({}));
     }
   }, [])
 

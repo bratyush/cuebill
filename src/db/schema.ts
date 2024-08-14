@@ -33,6 +33,7 @@ export const bills = createTable(
     totalAmount: real("totalAmount").default(0),
     cashPaid: real("cashPaid").default(0),
     upiPaid: real("upiPaid").default(0),
+    settled: integer("settled", {mode: 'boolean'}).default(false),
     note: text("note"),
     club: text("club"),
   }

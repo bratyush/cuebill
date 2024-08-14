@@ -119,10 +119,27 @@ export default function Table({ table }: { table: TableType }) {
           close={() => {
             // unsettled = {tableId: [bill1, bill2, ...]}
             let unsettled = localStorage.getItem('unsettled');
-            console.log(unsettled)
 
-            // check if unsettled exists else create in localstorage
+            // check if unsettled exists else create {} in localstorage
+            // check if tableId exists in unsettled else create [] in unsettled
+            // push bill to tableId array
+            // do this all in typescript
 
+            if (unsettled) {
+              console.log(typeof unsettled, unsettled);
+              type unsType = {[index:number]:BillType[]}
+              let unsjson: unsType = JSON.parse(unsettled);
+              console.log(typeof unsjson, unsjson);
+
+              if (unsjson[table.id]) {
+                unsjson[table.id].push(bill);
+              } else {
+                unsjson[table.id] = [bill];
+              }
+              localStorage.setItem('unsettled', JSON.stringify(unsjson));
+            } else {
+              localStorage.setItem('unsettled', JSON.stringify({ [table.id]: [bill] }));
+            }
 
             setShowBill(false);
           }}

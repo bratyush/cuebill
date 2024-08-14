@@ -1,20 +1,33 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "~/db";
-import { items } from "~/db/schema";
+import { tables, bills } from "~/db/schema";
 
 export async function GET() {
-
-  // Get the Backend API User object when you need access to the user's information
   const user = await currentUser();
 
-  const club: string = user?.privateMetadata?.org ?? '';
+  if (!user) return Response.json({ tables: [] });
 
-  console.log('club', club)
+  const club: string = user?.privateMetadata?.org ?? "";
 
-  const itms = await db.query.items.findMany({
-    where: eq(items.club, club),
-  })
+  const tbls = await db.query.tables.findMany({
+    columns: { club: false, active: false },
+    where: and(eq(tables.club, club), eq(tables.active, true)),
+  });
 
-  return Response.json({items: itms})
+  const unsettled = await db.query.bills.findMany({
+    columns: { club: false },
+    where: and(eq(bills.club, club), eq(bills.settled, false)),
+  });
+
+  let resData: any = [];
+  for (let tbl of tbls) {
+    let unsettledBills = unsettled.filter((b) => b.tableId === tbl.id);
+    resData.push({
+      ...tbl,
+      unsettled: unsettledBills
+    });
+  }
+
+  return Response.json({ tables: resData });
 }

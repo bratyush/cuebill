@@ -1,7 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { db } from "~/db";
-import { tables } from "~/db/schema";
+import { bills, tables } from "~/db/schema";
 import type { TableType } from "~/types/myTypes";
 
 // add table
@@ -20,20 +20,32 @@ export async function POST(request: Request) {
 
 // get tables
 export async function GET() {
-
   const user = await currentUser();
 
-  if (!user) return Response.json({tables: []})
+  if (!user) return Response.json({ tables: [] });
 
-  const club = user.username ?? '';
+  const club: string = user?.privateMetadata?.org ?? "";
 
   const tbls = await db.query.tables.findMany({
-    columns: {club:false, active:false},
-    where: and(eq(tables.club, club),eq(tables.active, true)),
+    columns: { club: false, active: false },
+    where: and(eq(tables.club, club), eq(tables.active, true)),
   });
 
-  return Response.json({tables: tbls});
+  const unsettled = await db.query.bills.findMany({
+    columns: { club: false },
+    where: and(eq(bills.club, club), eq(bills.settled, false)),
+  });
 
+  let resData: any = [];
+  for (let tbl of tbls) {
+    let unsettledBills = unsettled.filter((b) => b.tableId === tbl.id);
+    resData.push({
+      ...tbl,
+      unsettled: unsettledBills
+    });
+  }
+
+  return Response.json({ tables: resData });
 }
 
 // delete table
