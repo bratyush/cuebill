@@ -328,6 +328,7 @@ export default function Bill({
                       (bill.tableMoney ?? 0) +
                       (bill.canteenMoney ?? 0) +
                       canteenTotal,
+                    settled: true,
                   });
                 }
               }}

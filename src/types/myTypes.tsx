@@ -5,6 +5,7 @@ export type TableType = {
     theme: 'pool' | 'snooker' | 'violet' | 'amber' | 'red' | 'stone';
     checked_in_at: number;
     time: number;
+    unsettled: BillType[];
 };
 
 export type BillType = {
@@ -17,9 +18,10 @@ export type BillType = {
     tableMoney: number;
     canteenMoney?: number;
     paymentMode: 'cash' | 'upi' | 'both';
+    totalAmount: number;
     cashPaid?: number;
     upiPaid: number;
-    totalAmount: number;
+    settled: boolean;
     note?: string;
 };
 

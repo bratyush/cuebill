@@ -32,6 +32,8 @@ export default function Table({ table }: { table: TableType }) {
   const [showBill, setShowBill] = useState<boolean>(false);
   const [bill, setBill] = useState<BillType | null>(null);
 
+  const unsettled = table.unsettled.length;
+
   const imageUrl = tableTheme(table.theme);
 
   function checkIn() {
@@ -81,6 +83,7 @@ export default function Table({ table }: { table: TableType }) {
       paymentMode: "upi",
       upiPaid: parseFloat(generatedRevenue),
       totalAmount: parseFloat(generatedRevenue),
+      settled: false,
     };
     if (billId) {
       tempBill.id = parseInt(billId);
@@ -131,11 +134,11 @@ export default function Table({ table }: { table: TableType }) {
               let unsjson: unsType = JSON.parse(unsettled);
               console.log(typeof unsjson, unsjson);
 
-              if (unsjson[table.id]) {
-                unsjson[table.id].push(bill);
-              } else {
-                unsjson[table.id] = [bill];
-              }
+              // if (unsjson[table.id]) {
+              //   unsjson[table.id].push(bill);
+              // } else {
+              //   unsjson[table.id] = [bill];
+              // }
               localStorage.setItem('unsettled', JSON.stringify(unsjson));
             } else {
               localStorage.setItem('unsettled', JSON.stringify({ [table.id]: [bill] }));
@@ -172,14 +175,21 @@ export default function Table({ table }: { table: TableType }) {
           priority={true}
           className="-z-10"
         />
+
+        <button className="absolute top-6 right-7 p-1 px-2 rounded-full bg-orange-600/90">
+          {unsettled}
+        </button>
+
         <div className="flex flex-col pt-5">
-          <div className="mx-auto mb-2 flex">
-            <div className="flex flex-col">
-              <span className="mx-auto text-xl font-bold">{table.name}</span>
-              <span className="font-">
-                &#8377;{table.rate}/min - &#8377;
-                {Math.round(table.rate * 60)}/hour
-              </span>
+          <div className="flex justify-between items-center w-full">
+            <div className="flex-grow flex justify-center">
+              <div className="flex flex-col">
+                <span className="mx-auto text-xl font-bold">{table.name}</span>
+                <span className="font-">
+                  &#8377;{table.rate}/min - &#8377;
+                  {Math.round(table.rate * 60)}/hour
+                </span>
+              </div>
             </div>
           </div>
 

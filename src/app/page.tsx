@@ -13,24 +13,16 @@ import useSWR from 'swr';
 export default function Pos() {
 
   const {data, isLoading} = useSWR<{tables: TableType[]}>('/api/tables', getTables, {onSuccess: (data) => {
-    localStorage.setItem('tables', JSON.stringify(data.tables.length));
+    localStorage.setItem('tables', JSON.stringify(data.tables));
   }})
 
-  const numTables = parseInt(localStorage.getItem('tables') ?? '0');
+  const localTables = localStorage.getItem('tables')
+  const numTables = localTables ? JSON.parse(localTables).length : 0;
 
   useEffect(()=>{
     const a = localStorage.getItem('tables');
     if (!a) {
-      localStorage.setItem('tables', JSON.stringify(0));
-    }
-    const b = localStorage.getItem('bills');
-    if (!b) {
-      localStorage.setItem('bills', JSON.stringify(0));
-    }
-    
-    const c = localStorage.getItem('unsettled');
-    if (!c) {
-      // localStorage.setItem('unsettled', JSON.stringify({}));
+      localStorage.setItem('tables', JSON.stringify([]));
     }
   }, [])
 
