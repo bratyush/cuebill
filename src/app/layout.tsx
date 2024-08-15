@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
+import {NextUIProvider} from "@nextui-org/system";
 
 import { Toaster } from "react-hot-toast";
 
@@ -19,10 +20,12 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`font-sans `}>
+          <NextUIProvider>
           <div className="">
             <Toaster />
             {children}
           </div>
+          </NextUIProvider>
         </body>
       </html>
     </ClerkProvider>

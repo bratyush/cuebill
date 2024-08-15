@@ -1,10 +1,10 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import useSWR, { useSWRConfig } from "swr";
 import { Icons } from "~/components/icons";
 import type { BillType, TableType } from "~/types/myTypes";
-import { checkOutTable, getCanteenTotal, patchBill } from "~/utils/fetches";
+import { checkOutTable, getCanteenTotal, settleBill } from "~/utils/fetches";
 import { formatElapsed, formatTime } from "~/utils/formatters";
-import useSWR, { useSWRConfig } from "swr";
 
 export default function Bill({
   close,
@@ -36,7 +36,7 @@ export default function Bill({
   function saveBill(bill: BillType) {
     mutate(
       "/api/tables",
-      patchBill(bill)
+      settleBill(bill)
         .then(() => {
           close();
           checkOutTable(bill.tableId)
@@ -51,18 +51,7 @@ export default function Bill({
         .catch((error) => {
           toast.error("Table check out failed");
           console.error("Fetch error:", error);
-        }),
-      { optimisticData: (tableData) => {
-          // find the table from tableData.tables and update it to checked_in_at = Date.now()
-          console.log(tableData);
-          const updatedTable = tableData.tables.find(
-            (t: TableType) => t.id === bill.tableId,
-          );
-          if (updatedTable) {
-            updatedTable.checked_in_at = null;
-          }
-          return { tables: tableData.tables };
-        }},
+        })
     )
       .then(() => {
         console.log("Table checked out");

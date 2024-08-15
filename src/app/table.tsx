@@ -16,6 +16,7 @@ import Food from "./_components/foodModal";
 import Note from "./_components/noteModal";
 import Bill from "./_components/billModal";
 import toast from "react-hot-toast";
+import Unset from "./_components/unsetModal";
 
 export default function Table({ table }: { table: TableType }) {
   const { mutate } = useSWRConfig();
@@ -30,9 +31,11 @@ export default function Table({ table }: { table: TableType }) {
   const [showFood, setShowFood] = useState<boolean>(false);
   const [showNote, setShowNote] = useState<boolean>(false);
   const [showBill, setShowBill] = useState<boolean>(false);
+  const [showUnset, setShowUnset] = useState<boolean>(false);
+
   const [bill, setBill] = useState<BillType | null>(null);
 
-  const unsettled = table.unsettled.length;
+  const unsettled = table.unsettled;
 
   const imageUrl = tableTheme(table.theme);
 
@@ -59,16 +62,20 @@ export default function Table({ table }: { table: TableType }) {
         .catch((error) => {
           toast.error("Table check in failed");
           console.error("Fetch error:", error);
-        })
-      ,{ optimisticData: (tableData) => {
-        // find the table from tableData.tables and update it to checked_in_at = Date.now()
-        console.log(tableData);
-        const updatedTable = tableData.tables.find((t: TableType) => t.id === table.id);
-        if (updatedTable) {
-          updatedTable.checked_in_at = Date.now();
-        }
-        return { tables: tableData.tables };
-      }}
+        }),
+      {
+        optimisticData: (tableData) => {
+          // find the table from tableData.tables and update it to checked_in_at = Date.now()
+          console.log(tableData);
+          const updatedTable = tableData.tables.find(
+            (t: TableType) => t.id === table.id,
+          );
+          if (updatedTable) {
+            updatedTable.checked_in_at = Date.now();
+          }
+          return { tables: tableData.tables };
+        },
+      },
     );
   }
 
@@ -120,30 +127,6 @@ export default function Table({ table }: { table: TableType }) {
           bill={bill}
           table={table}
           close={() => {
-            // unsettled = {tableId: [bill1, bill2, ...]}
-            let unsettled = localStorage.getItem('unsettled');
-
-            // check if unsettled exists else create {} in localstorage
-            // check if tableId exists in unsettled else create [] in unsettled
-            // push bill to tableId array
-            // do this all in typescript
-
-            if (unsettled) {
-              console.log(typeof unsettled, unsettled);
-              type unsType = {[index:number]:BillType[]}
-              let unsjson: unsType = JSON.parse(unsettled);
-              console.log(typeof unsjson, unsjson);
-
-              // if (unsjson[table.id]) {
-              //   unsjson[table.id].push(bill);
-              // } else {
-              //   unsjson[table.id] = [bill];
-              // }
-              localStorage.setItem('unsettled', JSON.stringify(unsjson));
-            } else {
-              localStorage.setItem('unsettled', JSON.stringify({ [table.id]: [bill] }));
-            }
-
             setShowBill(false);
           }}
           showFood={() => setShowFood(true)}
@@ -166,23 +149,34 @@ export default function Table({ table }: { table: TableType }) {
           }}
         />
       )}
+      {showUnset && (
+        <Unset
+          bills={unsettled}
+          table={table}
+          showFood={() => setShowFood(true)}
+          close={() => {
+            setShowUnset(false);
+          }}
+        />
+      )}
 
       <div className="relative m-3 h-[268px] w-[350px]">
-        <Image
-          src={imageUrl}
-          alt="bg"
-          fill
-          priority={true}
-          className="-z-10"
-        />
+        <Image src={imageUrl} alt="bg" fill priority className="-z-10" />
 
-        <button className="absolute top-6 right-7 p-1 px-2 rounded-full bg-orange-600/90">
-          {unsettled}
-        </button>
+        {unsettled.length > 0 && (
+          <button
+            className="absolute right-7 top-6 rounded-full bg-red-500/90 p-1 px-2"
+            onClick={() => {
+              setShowUnset(true);
+            }}
+          >
+            {unsettled.length}
+          </button>
+        )}
 
         <div className="flex flex-col pt-5">
-          <div className="flex justify-between items-center w-full">
-            <div className="flex-grow flex justify-center">
+          <div className="flex w-full items-center justify-between">
+            <div className="flex flex-grow justify-center">
               <div className="flex flex-col">
                 <span className="mx-auto text-xl font-bold">{table.name}</span>
                 <span className="font-">

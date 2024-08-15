@@ -2,7 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 import { BillType } from "~/types/myTypes";
-import { patchBill } from "~/utils/fetches";
+import { settleBill } from "~/utils/fetches";
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -34,7 +34,7 @@ export default function Note({ tableId, close }: { tableId:string, close: () => 
     } else if (bill) {
       bill.note = note;
       if (billId) {
-        patchBill(bill)
+        settleBill(bill)
           .then((data) => {
             toast.success("Note saved");
             close();

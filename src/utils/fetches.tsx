@@ -79,7 +79,7 @@ export const createBill = (tableId: number) =>
     return response.json();
   });
 
-export const patchBill = (bill: BillType) =>
+export const settleBill = (bill: BillType) =>
   fetch("/api/bills/" + bill.id, {
     method: "PATCH",
     headers: {
