@@ -20,6 +20,10 @@ export default function Unset({
 }) {
   const { mutate } = useSWRConfig();
 
+  if (bills.length === 0) {
+    close();
+  }
+
   const [bill, setBill] = useState<BillType | null>(null);
   const [showBill, setShowBill] = useState<boolean>(false);
 
@@ -96,7 +100,7 @@ export default function Unset({
                     </thead>
                     <tbody>
                       {bills.map((bill, index) => (
-                        <tr className="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800">
+                        <tr key={index} className="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800">
                           <td className="px-6 py-4">{bill.id}</td>
                           <td className="px-6 py-4">
                             {formatTime(bill.checkIn)}
@@ -127,35 +131,39 @@ export default function Unset({
                                   mutate(
                                     "/api/tables",
                                     async (data: any) => {
-                                      if (bills.length === 1) {
-                                        close();
-                                      }
+                                      await deleteBill(bill.id).then(() => {
+                                        toast.success(
+                                          "Bill deleted successfully",
+                                        );
+                                      });
 
-                                      await deleteBill(bill.id).then(()=>{
-                                        toast.success('Bill deleted successfully');
-                                      })
-                                      
-                                      return data.map((val:TableType)=>{
-                                        if(val.id === table.id){
+                                      return data.map((val: TableType) => {
+                                        if (val.id === table.id) {
                                           return {
                                             ...val,
-                                            unsettled: val.unsettled.filter((bl) => bl.id !== bill.id),
-                                          }
+                                            unsettled: val.unsettled.filter(
+                                              (bl) => bl.id !== bill.id,
+                                            ),
+                                          };
                                         }
                                         return val;
-                                      })
+                                      });
                                     },
                                     {
                                       optimisticData: (tableData) => {
-                                        return tableData.map((val:TableType)=>{
-                                          if(val.id === table.id){
-                                            return {
-                                              ...val,
-                                              unsettled: val.unsettled.filter((bl) => bl.id !== bill.id),
+                                        return tableData.map(
+                                          (val: TableType) => {
+                                            if (val.id === table.id) {
+                                              return {
+                                                ...val,
+                                                unsettled: val.unsettled.filter(
+                                                  (bl) => bl.id !== bill.id,
+                                                ),
+                                              };
                                             }
-                                          }
-                                          return val;
-                                        })
+                                            return val;
+                                          },
+                                        );
                                       },
                                     },
                                   );

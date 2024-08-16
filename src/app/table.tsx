@@ -86,13 +86,14 @@ export default function Table({
   }
 
   function checkOut() {
-    if (elapsedTime < 10*1000) {
-      toast.error("Minimum time for billing is 10 seconds");
+    if (elapsedTime < 5*1000) {
+      toast.error("Minimum time for billing is 5 seconds");
       return;
     }
 
     if (!currentBillId) {
       toast.error("Bill not created");
+      checkOutTable(table.id)
       return;
     }
     const tempBill: BillType = {

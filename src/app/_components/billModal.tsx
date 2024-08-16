@@ -37,14 +37,33 @@ export default function Bill({
   function saveBill(bill: BillType) {
     mutate(
       "/api/tables",
-      settleBill(bill)
-        .then(() => {
-          close();
-        })
-        .catch((error) => {
-          toast.error("Settling Bill failed");
-          console.error("Fetch error:", error);
-        }),
+      async (data: any) => {
+        close();
+        await settleBill(bill);
+
+        return data.map((val: TableType) => {
+          if (val.id === table.id) {
+            return {
+              ...val,
+              unsettled: val.unsettled.filter((bl) => bl.id !== bill.id),
+            };
+          }
+          return val;
+        });
+      },
+      {
+        optimisticData: (tableData) => {
+          return tableData.map((val: TableType) => {
+            if (val.id === table.id) {
+              return {
+                ...val,
+                unsettled: val.unsettled.filter((bl) => bl.id !== bill.id),
+              };
+            }
+            return val;
+          });
+        },
+      },
     );
   }
 
