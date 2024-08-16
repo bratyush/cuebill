@@ -96,6 +96,20 @@ export const settleBill = (bill: BillType) =>
     return response.json();
   });
 
+export const deleteBill = (billId: number) =>
+  fetch("/api/bills/" + billId, {
+    method: "DELETE",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
 export const createCanteenBill = (
   billId: number,
   itemId: number | undefined,

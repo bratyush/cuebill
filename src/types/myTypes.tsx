@@ -9,7 +9,7 @@ export type TableType = {
 };
 
 export type BillType = {
-    id?: number;
+    id: number;
     tableId:number;
     table?: TableType;
     checkIn?: number;

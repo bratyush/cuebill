@@ -20,7 +20,6 @@ import {
 import type { BillType, TableType } from "../types/myTypes";
 import Food from "./_components/foodModal";
 import Note from "./_components/noteModal";
-import Bill from "./_components/billModal";
 import toast from "react-hot-toast";
 import Unset from "./_components/unsetModal";
 
@@ -36,17 +35,16 @@ export default function Table({
   // menu items fetch
   const { data } = useSWR(`/api/items`, getItems);
 
-  const [elapsedTime, setElapsedTime] = useState<number>();
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
   // Date.now() - table.checked_in_at
   const [generatedRevenue, setGeneratedRevenue] = useState<string>("0.00");
 
   const [showFood, setShowFood] = useState<boolean>(false);
   const [showNote, setShowNote] = useState<boolean>(false);
-  const [showBill, setShowBill] = useState<boolean>(false);
   const [showUnset, setShowUnset] = useState<boolean>(false);
 
-  const [currentBillId, setCurrentBillId] = useState<number | null>(null);
-  const [bill, setBill] = useState<BillType | null>(null);
+  const cbid = localStorage.getItem("tableBill"+table.id.toString())
+  const currentBillId = cbid ? parseInt(cbid) : null;
 
   const unsettled = table.unsettled;
 
@@ -68,11 +66,12 @@ export default function Table({
       async () => {
         try {
           await checkInTable(table.id, NOW);
-          toast.success("Table checked in");
 
           const data = await createBill(table.id);
           if (data.bill.id) {
-            setCurrentBillId(data.bill.id);
+            // setCurrentBillId(data.bill.id);
+            localStorage.setItem("tableBill"+table.id.toString(), data.bill.id.toString());
+            // set billId to localstorage
           }
 
           return updatedData;
@@ -87,7 +86,17 @@ export default function Table({
   }
 
   function checkOut() {
+    if (elapsedTime < 10*1000) {
+      toast.error("Minimum time for billing is 10 seconds");
+      return;
+    }
+
+    if (!currentBillId) {
+      toast.error("Bill not created");
+      return;
+    }
     const tempBill: BillType = {
+      id: currentBillId,
       tableId: table.id,
       checkOut: Date.now(),
       timePlayed: elapsedTime,
@@ -100,13 +109,10 @@ export default function Table({
     if (table.checked_in_at) {
       tempBill.checkIn = table.checked_in_at;
     }
-    if (currentBillId) {
-      tempBill.id = currentBillId;
-    }
 
     const updatedData = tableData.map((t: TableType) => {
       if (t.id === table.id) {
-        return { ...t, checked_in_at: null };
+        return { ...t, checked_in_at: null, unsettled: [...t.unsettled, tempBill] };
       } else {
         return t;
       }
@@ -114,15 +120,20 @@ export default function Table({
 
     mutate(
       "/api/tables",
-      checkOutTable(table.id).then(() => updatedData),
+      async ()=> {
+        await checkOutTable(table.id);
+        await settleBill(tempBill);
+        // delete from localStorage
+        localStorage.removeItem("tableBill"+table.id.toString());
+        toast.success("Bill Saved");
+        return updatedData;
+      },
       {
         revalidate: false,
         optimisticData: updatedData,
       },
     );
 
-    setBill(tempBill);
-    setShowBill(true);
   }
 
   useEffect(() => {
@@ -147,21 +158,6 @@ export default function Table({
 
   return (
     <>
-      {showBill && (
-        <Bill
-          bill={bill}
-          table={table}
-          close={() => {
-            if (bill) {
-              settleBill(bill).then(() => {
-                toast.success("Bill saved");
-              });
-            }
-            setShowBill(false);
-          }}
-          showFood={() => setShowFood(true)}
-        />
-      )}
       {showFood && currentBillId && (
         <Food
           billId={currentBillId}

@@ -120,7 +120,7 @@ export default function Food({
                             }).catch((err) => console.error(err));
                           }
                         }}>
-                          <Icons.bin/>
+                          <Icons.bin color='red'/>
                         </button>
                         </td>
                     </tr>

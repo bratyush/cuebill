@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import useSWR, { useSWRConfig } from "swr";
 import { Icons } from "~/components/icons";
 import type { BillType, TableType } from "~/types/myTypes";
-import { checkOutTable, getCanteenTotal, settleBill } from "~/utils/fetches";
+import { getCanteenTotal, settleBill } from "~/utils/fetches";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 
 export default function Bill({
@@ -42,10 +42,10 @@ export default function Bill({
           close();
         })
         .catch((error) => {
-          toast.error("Table check out failed");
+          toast.error("Settling Bill failed");
           console.error("Fetch error:", error);
-        })
-    )
+        }),
+    );
   }
 
   return (
@@ -252,17 +252,7 @@ export default function Bill({
           <div className="flex items-center justify-between rounded-b border-t border-gray-200 p-4 dark:border-gray-600 md:p-5">
             <button
               onClick={() => {
-                toast((t) => (
-                  <span>
-                    Please SETTLE the bill
-                    <button
-                      className="ml-2 bg-transparent text-gray-400"
-                      onClick={() => toast.dismiss(t.id)}
-                    >
-                      <Icons.close className="h-3 w-3" />
-                    </button>
-                  </span>
-                ));
+                close();
               }}
               type="button"
               className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-slate-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"

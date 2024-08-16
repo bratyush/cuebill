@@ -8,7 +8,7 @@ export async function GET(
   request: Request,
   { params }: { params: { tableId: string } }
 ) {
-  const tableId = params.tableId // 'a', 'b', or 'c'
+  const tableId = params.tableId
   const id = parseInt(tableId);
 
   const table = await db.query.tables.findFirst({
@@ -24,7 +24,7 @@ export async function PATCH(
   { params }: { params: { tableId: string } }
 ) {
 
-  const tableId = params.tableId // 'a', 'b', or 'c'
+  const tableId = params.tableId
   const id = parseInt(tableId);
   
   const body : TableType = await request.json() as TableType

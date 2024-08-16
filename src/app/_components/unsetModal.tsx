@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BillType, TableType } from "~/types/myTypes";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import Bill from "./billModal";
+import { Icons } from "~/components/icons";
+import { deleteBill } from "~/utils/fetches";
+import { useSWRConfig } from "swr";
+import toast from "react-hot-toast";
 
 export default function Unset({
   bills,
@@ -14,6 +18,7 @@ export default function Unset({
   showFood: () => void;
   close: () => void;
 }) {
+  const { mutate } = useSWRConfig();
 
   const [bill, setBill] = useState<BillType | null>(null);
   const [showBill, setShowBill] = useState<boolean>(false);
@@ -102,16 +107,62 @@ export default function Unset({
                           <td className="px-6 py-4">
                             &#8377;{bill.totalAmount}
                           </td>
-                          <td className="py-2">
+                          <td className="flex gap-2 py-2">
                             <button
                               type="button"
-                              className="rounded-lg bg-yellow-400 px-5 py-2.5 text-sm font-medium text-white hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-900"
-                              onClick={()=>{
+                              className="rounded-lg bg-yellow-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-400 dark:focus:ring-yellow-900"
+                              onClick={() => {
                                 setBill(bill);
                                 setShowBill(true);
                               }}
                             >
                               Settle
+                            </button>
+                            <button
+                              className="rounded-lg bg-red-500 px-2.5 py-2.5 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-400 dark:focus:ring-red-900"
+                              onClick={() => {
+                                if (
+                                  confirm("Sure you want to delete this bill?")
+                                ) {
+                                  mutate(
+                                    "/api/tables",
+                                    async (data: any) => {
+                                      if (bills.length === 1) {
+                                        close();
+                                      }
+
+                                      await deleteBill(bill.id).then(()=>{
+                                        toast.success('Bill deleted successfully');
+                                      })
+                                      
+                                      return data.map((val:TableType)=>{
+                                        if(val.id === table.id){
+                                          return {
+                                            ...val,
+                                            unsettled: val.unsettled.filter((bl) => bl.id !== bill.id),
+                                          }
+                                        }
+                                        return val;
+                                      })
+                                    },
+                                    {
+                                      optimisticData: (tableData) => {
+                                        return tableData.map((val:TableType)=>{
+                                          if(val.id === table.id){
+                                            return {
+                                              ...val,
+                                              unsettled: val.unsettled.filter((bl) => bl.id !== bill.id),
+                                            }
+                                          }
+                                          return val;
+                                        })
+                                      },
+                                    },
+                                  );
+                                }
+                              }}
+                            >
+                              <Icons.bin color="white" />
                             </button>
                           </td>
                         </tr>
