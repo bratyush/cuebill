@@ -1,6 +1,6 @@
 import { BillType } from "~/types/myTypes";
 
-export const checkInTable = (id: number) =>
+export const checkInTable = (id: number, time:number) =>
   fetch("/api/tables/" + id, {
     method: "PATCH",
     headers: {
@@ -8,7 +8,7 @@ export const checkInTable = (id: number) =>
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      checked_in_at: Date.now(),
+      checked_in_at: time,
     }),
   }).then((response) => {
     if (!response.ok) {
@@ -46,6 +46,8 @@ export const getTables = () =>
       throw new Error("Network response was not ok");
     }
     return response.json();
+  }).then((data) => {
+    return data.tables;
   });
 
 export const getBills = () =>
@@ -161,6 +163,21 @@ export const addItem = (item: { itemName: string; price: number }) =>
       }
       return response.json();
     });
+
+export const editItem = (itemId: number, item: { name: string; price: number }) =>
+  fetch("/api/items/" + itemId, {
+    method: "PATCH",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(item),
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
 
 export const deleteItem = (itemId: number) =>
   fetch("/api/items/" + itemId, {

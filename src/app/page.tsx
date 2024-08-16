@@ -8,12 +8,13 @@ import NavBar from './_components/navbar';
 import { TableSkeleton } from './_components/skeletons';
 import Table from './table';
 import useSWR from 'swr';
+import toast from 'react-hot-toast';
 
 
 export default function Pos() {
 
-  const {data, isLoading} = useSWR<{tables: TableType[]}>('/api/tables', getTables, {onSuccess: (data) => {
-    localStorage.setItem('tables', JSON.stringify(data.tables));
+  const {data, isLoading} = useSWR<TableType[]>('/api/tables', getTables, {onSuccess: (data) => {
+    localStorage.setItem('tables', JSON.stringify(data));
   }})
 
   const localTables = localStorage.getItem('tables')
@@ -37,9 +38,9 @@ export default function Pos() {
           <TableSkeleton key={index} />
         ))}
 
-
-        {data && data.tables.map((table, index) => (
+        {data && data.map((table, index) => (
           <Table
+            tableData={data}
             key={index}
             table={table}
           />

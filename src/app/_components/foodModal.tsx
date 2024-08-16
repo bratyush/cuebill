@@ -29,18 +29,16 @@ const fetcher = (url: string) =>
   });
 
 export default function Food({
-  table,
+  billId,
   items,
   close,
 }: {
-  table: TableType;
+  billId: number;
   items: ItemType[];
   close: () => void;
 }) {
   const [selectedItem, setSelectedItem] = useState<ItemType>();
   const [selectedQuant, setSelectedQuant] = useState<number>();
-
-  const billId = localStorage.getItem("t" + table.id.toString() + "bill");
 
   const { data, isLoading, mutate } = useSWR<{
     bills: CanteenBillType[];
@@ -196,7 +194,7 @@ export default function Food({
                 onClick={() => {
                   if (billId && selectedItem && selectedQuant) {
                     createCanteenBill(
-                      parseInt(billId),
+                      billId,
                       selectedItem.id,
                       selectedQuant,
                       selectedQuant * selectedItem.price,
@@ -207,7 +205,7 @@ export default function Food({
                           bills: [
                             ...(data?.bills ?? []),
                             {
-                              billId: parseInt(billId),
+                              billId: billId,
                               itemId: selectedItem.id??0,
                               quantity: selectedQuant,
                               amount: selectedQuant * selectedItem?.price,

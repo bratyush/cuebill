@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { db } from "~/db";
 import { bills, tables } from "~/db/schema";
 import type { TableType } from "~/types/myTypes";
@@ -33,7 +33,7 @@ export async function GET() {
 
   const unsettled = await db.query.bills.findMany({
     columns: { club: false },
-    where: and(eq(bills.club, club), eq(bills.settled, false)),
+    where: and(eq(bills.club, club), eq(bills.settled, false), ne(bills.checkIn, 0)),
   });
 
   let resData: any = [];

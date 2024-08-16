@@ -3,7 +3,7 @@ export type TableType = {
     name: string;
     rate: number;
     theme: 'pool' | 'snooker' | 'violet' | 'amber' | 'red' | 'stone';
-    checked_in_at: number;
+    checked_in_at: number | null;
     time: number;
     unsettled: BillType[];
 };

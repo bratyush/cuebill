@@ -4,7 +4,13 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import { Icons } from "~/components/icons";
-import { checkInTable, createBill, getItems, getTables } from "~/utils/fetches";
+import {
+  checkInTable,
+  checkOutTable,
+  createBill,
+  getItems,
+  settleBill,
+} from "~/utils/fetches";
 import {
   calculateRevenue,
   formatElapsed,
@@ -18,7 +24,13 @@ import Bill from "./_components/billModal";
 import toast from "react-hot-toast";
 import Unset from "./_components/unsetModal";
 
-export default function Table({ table }: { table: TableType }) {
+export default function Table({
+  tableData,
+  table,
+}: {
+  tableData: TableType[];
+  table: TableType;
+}) {
   const { mutate } = useSWRConfig();
 
   // menu items fetch
@@ -33,6 +45,7 @@ export default function Table({ table }: { table: TableType }) {
   const [showBill, setShowBill] = useState<boolean>(false);
   const [showUnset, setShowUnset] = useState<boolean>(false);
 
+  const [currentBillId, setCurrentBillId] = useState<number | null>(null);
   const [bill, setBill] = useState<BillType | null>(null);
 
   const unsettled = table.unsettled;
@@ -40,50 +53,42 @@ export default function Table({ table }: { table: TableType }) {
   const imageUrl = tableTheme(table.theme);
 
   function checkIn() {
+    const NOW = Date.now();
+
+    const updatedData = tableData.map((t: TableType) => {
+      if (t.id === table.id) {
+        return { ...t, checked_in_at: NOW };
+      } else {
+        return t;
+      }
+    });
+
     mutate(
       "/api/tables",
-      createBill(table.id)
-        .then((data: { bill: BillType }) => {
+      async () => {
+        try {
+          await checkInTable(table.id, NOW);
+          toast.success("Table checked in");
+
+          const data = await createBill(table.id);
           if (data.bill.id) {
-            localStorage.setItem(
-              "t" + table.id.toString() + "bill",
-              data.bill.id.toString(),
-            );
+            setCurrentBillId(data.bill.id);
           }
-          checkInTable(table.id)
-            .then(() => {
-              toast.success("Table checked in");
-            })
-            .catch((error) => {
-              toast.error("Table check in failed");
-              console.error("Fetch error:", error);
-            });
-        })
-        .catch((error) => {
+
+          return updatedData;
+        } catch (error) {
           toast.error("Table check in failed");
-          console.error("Fetch error:", error);
-        }),
+        }
+      },
       {
-        optimisticData: (tableData) => {
-          // find the table from tableData.tables and update it to checked_in_at = Date.now()
-          console.log(tableData);
-          const updatedTable = tableData.tables.find(
-            (t: TableType) => t.id === table.id,
-          );
-          if (updatedTable) {
-            updatedTable.checked_in_at = Date.now();
-          }
-          return { tables: tableData.tables };
-        },
+        optimisticData: updatedData,
       },
     );
   }
 
   function checkOut() {
-    const billId = localStorage.getItem("t" + table.id.toString() + "bill");
     const tempBill: BillType = {
       tableId: table.id,
-      checkIn: table.checked_in_at,
       checkOut: Date.now(),
       timePlayed: elapsedTime,
       tableMoney: parseFloat(generatedRevenue),
@@ -92,10 +97,30 @@ export default function Table({ table }: { table: TableType }) {
       totalAmount: parseFloat(generatedRevenue),
       settled: false,
     };
-    if (billId) {
-      tempBill.id = parseInt(billId);
+    if (table.checked_in_at) {
+      tempBill.checkIn = table.checked_in_at;
     }
-    console.log(tempBill);
+    if (currentBillId) {
+      tempBill.id = currentBillId;
+    }
+
+    const updatedData = tableData.map((t: TableType) => {
+      if (t.id === table.id) {
+        return { ...t, checked_in_at: null };
+      } else {
+        return t;
+      }
+    });
+
+    mutate(
+      "/api/tables",
+      checkOutTable(table.id).then(() => updatedData),
+      {
+        revalidate: false,
+        optimisticData: updatedData,
+      },
+    );
+
     setBill(tempBill);
     setShowBill(true);
   }
@@ -127,23 +152,28 @@ export default function Table({ table }: { table: TableType }) {
           bill={bill}
           table={table}
           close={() => {
+            if (bill) {
+              settleBill(bill).then(() => {
+                toast.success("Bill saved");
+              });
+            }
             setShowBill(false);
           }}
           showFood={() => setShowFood(true)}
         />
       )}
-      {showFood && (
+      {showFood && currentBillId && (
         <Food
-          table={table}
+          billId={currentBillId}
           items={data.items}
           close={() => {
             setShowFood(false);
           }}
         />
       )}
-      {showNote && (
+      {showNote && currentBillId && (
         <Note
-          tableId={table.id.toString()}
+          billId={currentBillId}
           close={() => {
             setShowNote(false);
           }}

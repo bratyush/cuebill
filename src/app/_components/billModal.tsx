@@ -19,7 +19,8 @@ export default function Bill({
 }) {
   const { mutate } = useSWRConfig();
 
-  const billId = localStorage.getItem("t" + table.id.toString() + "bill");
+  const billId = bill?.id;
+  console.log("billId", billId);
 
   const { data } = useSWR<{ total: number }>(
     `/api/bills/canteen/total/${billId?.toString()}`,
@@ -39,28 +40,12 @@ export default function Bill({
       settleBill(bill)
         .then(() => {
           close();
-          checkOutTable(bill.tableId)
-            .then(() => {
-              toast.success("Bill settled");
-            })
-            .catch((error) => {
-              toast.error("Table check out failed");
-              console.error("Fetch error:", error);
-            });
         })
         .catch((error) => {
           toast.error("Table check out failed");
           console.error("Fetch error:", error);
         })
     )
-      .then(() => {
-        console.log("Table checked out");
-        localStorage.removeItem("t" + bill.tableId.toString() + "bill");
-      })
-      .catch((error) => {
-        toast.error("Table check out failed");
-        console.error("Fetch error:", error);
-      });
   }
 
   return (
