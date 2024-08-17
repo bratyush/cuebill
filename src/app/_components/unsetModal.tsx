@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BillType, TableType } from "~/types/myTypes";
+import { BillType, ItemType, TableType } from "~/types/myTypes";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import Bill from "./billModal";
 import { Icons } from "~/components/icons";
@@ -9,13 +9,13 @@ import toast from "react-hot-toast";
 
 export default function Unset({
   bills,
+  items,
   table,
-  showFood,
   close,
 }: {
   bills: BillType[];
+  items: ItemType[];
   table: TableType;
-  showFood: () => void;
   close: () => void;
 }) {
   const { mutate } = useSWRConfig();
@@ -29,14 +29,14 @@ export default function Unset({
 
   return (
     <>
-      {showBill ? (
+      {showBill && bill ? (
         <Bill
           bill={bill}
+          items={items}
           table={table}
           close={() => {
             setShowBill(false);
           }}
-          showFood={() => showFood()}
         />
       ) : (
         <div className="fixed left-0 right-0 top-0 z-50 flex h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800/70 md:inset-0">

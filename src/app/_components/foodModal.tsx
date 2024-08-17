@@ -93,7 +93,7 @@ export default function Food({
                 </tr>
               </thead>
               <tbody>
-                {data?.bills.map((item: CanteenBillType) => {
+                {data?.bills.map((item: CanteenBillType, index: number) => {
                   const itemDetails = items.find(
                     (val) => val.id == item.itemId,
                   );
@@ -101,7 +101,7 @@ export default function Food({
                     ? itemDetails.price * item.quantity
                     : 0;
                   return (
-                    <tr key={item.id}>
+                    <tr key={index}>
                       <td className="border px-4 py-2">{itemDetails?.name}</td>
                       <td className="border px-4 py-2">
                         &#8377;{itemDetails?.price}

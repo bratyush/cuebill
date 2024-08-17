@@ -179,8 +179,8 @@ export default function Table({
       {showUnset && (
         <Unset
           bills={unsettled}
+          items={data.items}
           table={table}
-          showFood={() => setShowFood(true)}
           close={() => {
             setShowUnset(false);
           }}
