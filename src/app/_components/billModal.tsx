@@ -39,7 +39,7 @@ export default function Bill({
   const [discount, setDiscount] = useState<number>(0);
   const [showDiscount, setShowDiscount] = useState<boolean>(false);
 
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<string>("");
 
   function saveBill(bill: BillType) {
     mutate(
@@ -283,7 +283,18 @@ export default function Bill({
                                   value={cashPaid}
                                   onChange={(e) => {
                                     let cash = e.target.value;
-                                    setCashPaid(parseFloat(cash));
+                                    let x = parseFloat(cash)
+
+                                    if (Number.isNaN(x)) {
+                                      setError("Cash amount should be a number");
+                                    } else if (x > bill.tableMoney) {
+                                      setError("Cash amount should be less than total amount");
+                                    } else if (x < 0) {
+                                      setError("Cash amount should be positive");
+                                    } else {
+                                      setError("");
+                                    }
+                                    setCashPaid(x);
                                   }}
                                   type="number"
                                   name="floating_password"
@@ -301,7 +312,7 @@ export default function Bill({
                               Discount
                             </td>
                             <td className="border border-slate-300 p-2">
-                              {discount}
+                              &#8377;{discount}
                             </td>
                           </tr>
                         )}
@@ -336,6 +347,7 @@ export default function Bill({
                     </button>
 
                     <button
+                      disabled={error !== ""}
                       onClick={() => {
                         if (bill) {
                           let cash = 0;
@@ -345,12 +357,6 @@ export default function Bill({
                           } else if (mode == "cash") {
                             cash = bill.tableMoney;
                           } else if (mode == "both") {
-                            if (cashPaid > bill.tableMoney) {
-                              setError(
-                                "Cash amount should be less than total amount",
-                              );
-                              return;
-                            }
                             cash = cashPaid;
                             upi = bill.tableMoney - cashPaid;
                           }

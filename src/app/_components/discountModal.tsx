@@ -10,10 +10,13 @@ export default function Discount({
   close: () => void;
   billId: number;
   amount: number;
-  discount: number;
+  discount: number|undefined;
   setDiscount: (discount: number) => void;
 }) {
-  const [error, setError] = useState<string>();
+
+  const [disc, setDisc] = useState<string>(discount?.toString() || "0");
+
+  const [error, setError] = useState<string>("");
 
   return (
     <div className="fixed left-0 right-0 top-0 z-50 flex h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800/70 md:inset-0">
@@ -73,15 +76,18 @@ export default function Discount({
                       <span className="my-auto mr-1">&#8377;</span>
 
                       <input
-                        value={discount}
+                        value={disc}
                         onChange={(e) => {
                           let cash = e.target.value;
-                          if (cash === "") {
-                            cash = "0";
-                          }
-                          setDiscount(parseFloat(cash));
-                          if (parseInt(cash) > amount) {
-                            setError("Discount cannot be more than amount");
+                          setDisc(cash);
+
+                          let dichik = parseFloat(cash);
+                          if (Number.isNaN(dichik)) {
+                            setError("Discount should be a number");
+                            return;
+                          } else if (dichik > amount) {
+                            setError("Discount can't be greater than amount");
+                            return;
                           } else {
                             setError("");
                           }
@@ -97,7 +103,7 @@ export default function Discount({
                   <td className="border border-slate-300 p-2">Total Payable</td>
                   <td className="border border-slate-300 p-2">
                     <span className="text-xl font-semibold text-teal-700">
-                      &#8377; {amount - discount}
+                      &#8377; {amount - (disc?parseInt(disc):0)}
                     </span>
                   </td>
                 </tr>
@@ -121,6 +127,7 @@ export default function Discount({
             <button
               disabled={error !== ""}
               onClick={() => {
+                setDiscount(parseInt(disc));
                 close();
               }}
               type="button"
