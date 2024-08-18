@@ -10,6 +10,7 @@ export async function GET(
 
   const billId = params.billId
   const id = parseInt(billId);
+  console.log("Id", id)
 
   // const bills = await db.select().from(canteenBills).where(eq(canteenBills.billId, id));
   const bills = await db.query.canteenBills.findMany({
@@ -17,10 +18,13 @@ export async function GET(
     where: eq(canteenBills.billId, id)
   })
 
+  console.log("bills", bills)
+
   let canteenTotal = 0;
   for (const b of bills ?? []) {
     canteenTotal += b.amount??0;
   }
+  console.log("canteenTotal", canteenTotal)
 
   return Response.json({total: canteenTotal})
 }
