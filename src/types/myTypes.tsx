@@ -18,6 +18,7 @@ export type BillType = {
     tableMoney: number;
     canteenMoney?: number;
     paymentMode: 'cash' | 'upi' | 'both';
+    discount?: number;
     totalAmount: number;
     cashPaid?: number;
     upiPaid: number;

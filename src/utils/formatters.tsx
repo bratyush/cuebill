@@ -1,3 +1,10 @@
+export const formatDate = (date: number | undefined) => {
+  if (!date) return '';
+  const d = new Date(date);
+  return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+
+}
+
 export const formatTime = (ms: number | undefined) => {
   if (!ms) return '00:00:00';
   // Add 5 hours and 30 minutes (in milliseconds)

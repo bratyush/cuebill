@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BillType, ItemType, TableType } from "~/types/myTypes";
-import { formatElapsed, formatTime } from "~/utils/formatters";
+import { formatDate, formatElapsed, formatTime } from "~/utils/formatters";
 import Bill from "./billModal";
 import { Icons } from "~/components/icons";
 import { deleteBill } from "~/utils/fetches";
@@ -46,7 +46,7 @@ export default function Unset({
               {/* <!-- Modal header --> */}
               <div className="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {table.name} Unsettled Bills
+                  {table.name} - Bills
                 </h3>
                 <button
                   onClick={() => {
@@ -85,6 +85,9 @@ export default function Unset({
                           id
                         </th>
                         <th scope="col" className="px-6 py-3">
+                          Date
+                        </th>
+                        <th scope="col" className="px-6 py-3">
                           Start Time
                         </th>
                         <th scope="col" className="px-6 py-3">
@@ -102,6 +105,9 @@ export default function Unset({
                       {bills.map((bill, index) => (
                         <tr key={index} className="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800">
                           <td className="px-6 py-4">{bill.id}</td>
+                          <td className="px-6 py-4">
+                            {formatDate(bill.checkIn)}
+                          </td>
                           <td className="px-6 py-4">
                             {formatTime(bill.checkIn)}
                           </td>
