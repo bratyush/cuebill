@@ -15,8 +15,6 @@ import { tableTheme } from "~/utils/formatters";
 export default function TablePage() {
   const [data, setData] = useState<TableType[]>([]);
 
-  const typeImg = "/pool.png";
-
   useEffect(() => {
     fetch("/api/tables", {
       method: "GET",

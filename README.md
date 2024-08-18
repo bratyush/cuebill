@@ -1,13 +1,14 @@
 
 - [x] add pool/snooker photo in tables page.
-- [ ] add more colour tables.
+- [x] add more colour tables.
 - [x] Menu pages.
 - [x] Bill saving.
 - [x] Notes.
 - [x] Auth on middleware.
 - [x] Multi-tenancy.
 - [ ] Loading state everywhere.
-- [ ] use swr snappy mutate.
+- [x] use swr snappy mutate.
+  - [x] optimistic updateded for checkin and checkout.
 - [x] delete.
 - [x] show canteen bills.
 - [x] make revenue page better.
@@ -17,8 +18,8 @@
   - [x] daterange filter
   - [x] put charts togethor.
 - [ ] Testing:
-  - [ ] date range filter.
-  - [ ] 
+  - [x] date range filter.
+- [ ] Pending Bills.
 
 
 ### revenues

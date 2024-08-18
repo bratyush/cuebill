@@ -1,6 +1,6 @@
 import { BillType } from "~/types/myTypes";
 
-export const checkInTable = (id: number) =>
+export const checkInTable = (id: number, time:number) =>
   fetch("/api/tables/" + id, {
     method: "PATCH",
     headers: {
@@ -8,7 +8,7 @@ export const checkInTable = (id: number) =>
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      checked_in_at: Date.now(),
+      checked_in_at: time,
     }),
   }).then((response) => {
     if (!response.ok) {
@@ -46,6 +46,8 @@ export const getTables = () =>
       throw new Error("Network response was not ok");
     }
     return response.json();
+  }).then((data) => {
+    return data.tables;
   });
 
 export const getBills = () =>
@@ -79,7 +81,7 @@ export const createBill = (tableId: number) =>
     return response.json();
   });
 
-export const patchBill = (bill: BillType) =>
+export const settleBill = (bill: BillType) =>
   fetch("/api/bills/" + bill.id, {
     method: "PATCH",
     headers: {
@@ -87,6 +89,20 @@ export const patchBill = (bill: BillType) =>
       "Content-Type": "application/json",
     },
     body: JSON.stringify(bill),
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
+export const deleteBill = (billId: number) =>
+  fetch("/api/bills/" + billId, {
+    method: "DELETE",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
   }).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -136,6 +152,50 @@ export const deleteCanteenBill = (billId: number) =>
 export const getItems = () =>
   fetch("/api/items", {
     method: "GET",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
+export const addItem = (item: { itemName: string; price: number }) =>
+  fetch("/api/items", {
+    method: "POST",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name: item.itemName, price: item.price }),
+  }).then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    });
+
+export const editItem = (itemId: number, item: { name: string; price: number }) =>
+  fetch("/api/items/" + itemId, {
+    method: "PATCH",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(item),
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
+export const deleteItem = (itemId: number) =>
+  fetch("/api/items/" + itemId, {
+    method: "DELETE",
     headers: {
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",

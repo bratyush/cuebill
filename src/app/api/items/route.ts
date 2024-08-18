@@ -30,15 +30,3 @@ export async function GET() {
 
   return Response.json({items: itms})
 }
-
-// delete item
-export async function DELETE(request: Request) {
-
-  const body = await request.json() as {id: number}
-
-  // await db.delete(items).where(eq(items.id, body.id));
-  
-  await db.update(items).set({active:false}).where(eq(items.id, body.id))
-
-  return Response.json({status: "deleted"})
-}

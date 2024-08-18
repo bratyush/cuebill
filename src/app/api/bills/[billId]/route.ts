@@ -3,12 +3,25 @@ import { db } from "~/db";
 import { bills } from "~/db/schema";
 import { BillType } from "~/types/myTypes";
 
+export async function DELETE(
+  request: Request,
+  { params }: { params: { billId: string } }
+) {
+
+  const billId = params.billId
+  const id = parseInt(billId);
+
+  await db.delete(bills).where(eq(bills.id, id))
+
+  return Response.json({status: "deleted"})
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: { billId: string } }
 ) {
 
-  const billId = params.billId // 'a', 'b', or 'c'
+  const billId = params.billId
   const id = parseInt(billId);
 
   const body : BillType = await request.json() as BillType
@@ -23,7 +36,7 @@ export async function GET(
   { params }: { params: { billId: string } }
 ) {
 
-  const billId = params.billId // 'a', 'b', or 'c'
+  const billId = params.billId
   const id = parseInt(billId);
 
   const bill = await db.select().from(bills).where(eq(bills.id, id));

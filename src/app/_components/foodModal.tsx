@@ -29,18 +29,16 @@ const fetcher = (url: string) =>
   });
 
 export default function Food({
-  table,
+  billId,
   items,
   close,
 }: {
-  table: TableType;
+  billId: number;
   items: ItemType[];
   close: () => void;
 }) {
   const [selectedItem, setSelectedItem] = useState<ItemType>();
   const [selectedQuant, setSelectedQuant] = useState<number>();
-
-  const billId = localStorage.getItem("t" + table.id.toString() + "bill");
 
   const { data, isLoading, mutate } = useSWR<{
     bills: CanteenBillType[];
@@ -95,7 +93,7 @@ export default function Food({
                 </tr>
               </thead>
               <tbody>
-                {data?.bills.map((item: CanteenBillType) => {
+                {data?.bills.map((item: CanteenBillType, index: number) => {
                   const itemDetails = items.find(
                     (val) => val.id == item.itemId,
                   );
@@ -103,7 +101,7 @@ export default function Food({
                     ? itemDetails.price * item.quantity
                     : 0;
                   return (
-                    <tr key={item.id}>
+                    <tr key={index}>
                       <td className="border px-4 py-2">{itemDetails?.name}</td>
                       <td className="border px-4 py-2">
                         &#8377;{itemDetails?.price}
@@ -122,7 +120,7 @@ export default function Food({
                             }).catch((err) => console.error(err));
                           }
                         }}>
-                          <Icons.bin/>
+                          <Icons.bin color='red'/>
                         </button>
                         </td>
                     </tr>
@@ -196,7 +194,7 @@ export default function Food({
                 onClick={() => {
                   if (billId && selectedItem && selectedQuant) {
                     createCanteenBill(
-                      parseInt(billId),
+                      billId,
                       selectedItem.id,
                       selectedQuant,
                       selectedQuant * selectedItem.price,
@@ -207,7 +205,7 @@ export default function Food({
                           bills: [
                             ...(data?.bills ?? []),
                             {
-                              billId: parseInt(billId),
+                              billId: billId,
                               itemId: selectedItem.id??0,
                               quantity: selectedQuant,
                               amount: selectedQuant * selectedItem?.price,

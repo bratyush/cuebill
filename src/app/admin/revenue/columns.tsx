@@ -93,6 +93,24 @@ export const columns: ColumnDef<BillType>[] = [
     },
   },
   {
+    accessorKey: "tableMoney",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Table Money
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const bill = row.original;
+      return <div>&#8377;{bill.tableMoney}</div>;
+    },
+  },
+  {
     accessorKey: "canteenMoney",
     header: ({ column }) => {
       return (
@@ -111,6 +129,24 @@ export const columns: ColumnDef<BillType>[] = [
     },
   },
   {
+    accessorKey: "discount",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Discount
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const bill = row.original;
+      return <div>&#8377;{bill.discount}</div>;
+    },
+  },
+  {
     accessorKey: "totalAmount",
     header: ({ column }) => {
       return (
@@ -118,7 +154,7 @@ export const columns: ColumnDef<BillType>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Total Revenue
+          Total Received
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )

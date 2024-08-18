@@ -8,26 +8,22 @@ import NavBar from './_components/navbar';
 import { TableSkeleton } from './_components/skeletons';
 import Table from './table';
 import useSWR from 'swr';
+import toast from 'react-hot-toast';
 
 
 export default function Pos() {
 
-  const {data, isLoading} = useSWR<{tables: TableType[]}>('/api/tables', getTables, {onSuccess: (data) => {
-    localStorage.setItem('tables', JSON.stringify(data.tables.length));
+  const {data, isLoading} = useSWR<TableType[]>('/api/tables', getTables, {onSuccess: (data) => {
+    localStorage.setItem('tables', JSON.stringify(data));
   }})
 
-  const numTables = parseInt(localStorage.getItem('tables') ?? '0');
+  const localTables = localStorage.getItem('tables')
+  const numTables = localTables ? JSON.parse(localTables).length : 0;
 
   useEffect(()=>{
     const a = localStorage.getItem('tables');
     if (!a) {
-      localStorage.setItem('tables', JSON.stringify(0));
-    } else {
-      console.log('no tables in localstorage')
-    }
-    const b = localStorage.getItem('bills');
-    if (!b) {
-      localStorage.setItem('bills', JSON.stringify(0));
+      localStorage.setItem('tables', JSON.stringify([]));
     }
   }, [])
 
@@ -36,24 +32,28 @@ export default function Pos() {
     <div>
       <NavBar />
 
-      <div className="text-white m-2 grid gap-2 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="text-white m-2 flex flex-row flex-wrap">
 
-        {isLoading && Array(numTables).fill(<TableSkeleton />)}
+        {isLoading && Array(numTables).fill(null).map((_, index) => (
+          <TableSkeleton key={index} />
+        ))}
 
-        {data && data.tables.map((table, index) => (
+        {data && data.map((table, index) => (
           <Table
-            key={table.id}
+            tableData={data}
+            key={index}
             table={table}
           />
         ))}
 
-        <div className="m-5 h-[268px] w-[350px] rounded-md bg-slate-300 flex items-center">
+        <div className="m-3 h-[268px] w-[350px] rounded-md bg-slate-300 flex items-center">
           <Link
             href={"/admin/tables/add"}
             className="mx-auto rounded-md bg-slate-400 p-3 hover:bg-slate-500">
             Add Table
           </Link>
         </div>
+
       </div>
     </div>
   );

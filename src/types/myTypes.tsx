@@ -3,21 +3,26 @@ export type TableType = {
     name: string;
     rate: number;
     theme: 'pool' | 'snooker' | 'violet' | 'amber' | 'red' | 'stone';
-    checked_in_at: number;
+    checked_in_at: number | null;
     time: number;
+    unsettled: BillType[];
 };
 
 export type BillType = {
-    id?: number;
+    id: number;
     tableId:number;
     table?: TableType;
     checkIn?: number;
     checkOut?: number;
     timePlayed?: number;
-    tableMoney?: number;
+    tableMoney: number;
     canteenMoney?: number;
     paymentMode: 'cash' | 'upi' | 'both';
+    discount?: number;
     totalAmount: number;
+    cashPaid?: number;
+    upiPaid: number;
+    settled: boolean;
     note?: string;
 };
 

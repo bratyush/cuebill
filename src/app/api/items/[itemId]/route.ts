@@ -8,7 +8,7 @@ export async function GET(
   request: Request,
   { params }: { params: { itemId: string } }
 ) {
-  const itemId = params.itemId // 'a', 'b', or 'c'
+  const itemId = params.itemId
   const id = parseInt(itemId);
 
   const item = await db.query.items.findFirst({
@@ -24,7 +24,7 @@ export async function PATCH(
   { params }: { params: { itemId: string } }
 ) {
 
-  const itemId = params.itemId // 'a', 'b', or 'c'
+  const itemId = params.itemId
   const id = parseInt(itemId);
   
   const body : TableType = await request.json() as TableType
@@ -32,4 +32,18 @@ export async function PATCH(
   await db.update(items).set(body).where(eq(items.id, id))
 
   return Response.json({status: "created"})
+}
+
+// delete item
+export async function DELETE(
+  request: Request,
+  { params }: { params: { itemId: string } }
+) {
+
+  const itemId = params.itemId
+  const id = parseInt(itemId);
+
+  await db.update(items).set({active:false}).where(eq(items.id, id))
+
+  return Response.json({status: "deleted"})
 }
