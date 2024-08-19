@@ -323,10 +323,11 @@ export default function Bill({
                           <td className="border border-slate-300 p-2">
                             <span className="text-2xl font-semibold text-teal-700">
                               &#8377;
-                              {(bill.tableMoney ?? 0) +
+                              {/* round this */}
+                              {Math.round((bill.tableMoney ?? 0) +
                                 (bill.canteenMoney ?? 0) +
                                 canteenTotal
-                                - discount}
+                                - discount)}
                             </span>
                           </td>
                         </tr>
@@ -372,10 +373,10 @@ export default function Bill({
                             cashPaid: cash,
                             upiPaid: upi,
                             discount: discount,
-                            totalAmount:
+                            totalAmount: Math.round(
                               (bill.tableMoney ?? 0) +
                               (bill.canteenMoney ?? 0) +
-                              canteenTotal - discount,
+                              canteenTotal - discount),
                             settled: true,
                           });
                         }
