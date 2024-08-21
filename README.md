@@ -19,12 +19,11 @@
   - [x] put charts togethor.
 - [ ] Testing:
   - [x] date range filter.
-- [ ] Pending Bills.
-
-
-### revenues
-
-1. should see all the bills.
-2. monthly total sales.
-3. table wise and item wise breakdown.
-4. 
+- [x] Pending Bills.
+- [ ] Canteen Only Bills.
+  - [x] Capture Bills.
+  - [x] save unsettled.
+  - [x] create canteen Table.
+  - [ ] make food modal DRY.
+  - [ ] take care of mutates.
+  - [ ] styling for the canteen table.

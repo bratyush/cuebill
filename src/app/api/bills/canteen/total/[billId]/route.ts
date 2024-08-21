@@ -12,7 +12,6 @@ export async function GET(
   const id = parseInt(billId);
   console.log("Id", id)
 
-  // const bills = await db.select().from(canteenBills).where(eq(canteenBills.billId, id));
   const bills = await db.query.canteenBills.findMany({
     columns: {club:false },
     where: eq(canteenBills.billId, id)

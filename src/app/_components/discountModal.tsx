@@ -103,7 +103,7 @@ export default function Discount({
                   <td className="border border-slate-300 p-2">Total Payable</td>
                   <td className="border border-slate-300 p-2">
                     <span className="text-xl font-semibold text-teal-700">
-                      &#8377; {amount - (disc?parseInt(disc):0)}
+                      &#8377; {Math.round(amount - (disc?parseInt(disc):0))}
                     </span>
                   </td>
                 </tr>

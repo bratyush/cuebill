@@ -21,17 +21,15 @@ export default function Bill({
   const { mutate } = useSWRConfig();
 
   const billId = bill.id;
-  console.log("billId", billId);
 
   const [showFood, setShowFood] = useState<boolean>(false);
-  console.log("showFood", showFood);
 
-  const { data } = useSWR<{ total: number }>(
+  const { data, isLoading } = useSWR<{ total: number }>(
     `/api/bills/canteen/total/${billId?.toString()}`,
     async () => getCanteenTotal(billId?.toString()),
   );
 
-  const canteenTotal = data?.total ?? 0;
+  const canteenTotal = data?.total!==undefined ? data?.total : bill.canteenMoney ?? 0;
 
   const [mode, setMode] = useState<"cash" | "upi" | "both">("upi");
   const [cashPaid, setCashPaid] = useState<number>(0);
@@ -81,7 +79,8 @@ export default function Bill({
           items={items}
           billId={bill.id}
           close={() => {
-            setShowFood(false);
+            mutate(`/api/bills/canteen/total/${billId?.toString()}`)
+            setShowFood(false)
           }}
         />
       ) : (
@@ -283,14 +282,20 @@ export default function Bill({
                                   value={cashPaid}
                                   onChange={(e) => {
                                     let cash = e.target.value;
-                                    let x = parseFloat(cash)
+                                    let x = parseFloat(cash);
 
                                     if (Number.isNaN(x)) {
-                                      setError("Cash amount should be a number");
+                                      setError(
+                                        "Cash amount should be a number",
+                                      );
                                     } else if (x > bill.tableMoney) {
-                                      setError("Cash amount should be less than total amount");
+                                      setError(
+                                        "Cash amount should be less than total amount",
+                                      );
                                     } else if (x < 0) {
-                                      setError("Cash amount should be positive");
+                                      setError(
+                                        "Cash amount should be positive",
+                                      );
                                     } else {
                                       setError("");
                                     }
@@ -323,10 +328,12 @@ export default function Bill({
                           <td className="border border-slate-300 p-2">
                             <span className="text-2xl font-semibold text-teal-700">
                               &#8377;
-                              {(bill.tableMoney ?? 0) +
-                                (bill.canteenMoney ?? 0) +
-                                canteenTotal
-                                - discount}
+                              {/* round this */}
+                              {Math.round(
+                                (bill.tableMoney ?? 0) +
+                                  canteenTotal +
+                                  discount,
+                              )}
                             </span>
                           </td>
                         </tr>
@@ -372,10 +379,11 @@ export default function Bill({
                             cashPaid: cash,
                             upiPaid: upi,
                             discount: discount,
-                            totalAmount:
+                            totalAmount: Math.round(
                               (bill.tableMoney ?? 0) +
-                              (bill.canteenMoney ?? 0) +
-                              canteenTotal - discount,
+                                canteenTotal +
+                                discount,
+                            ),
                             settled: true,
                           });
                         }

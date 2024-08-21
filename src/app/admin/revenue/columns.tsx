@@ -26,16 +26,10 @@ export const columns: ColumnDef<BillType>[] = [
     header: "Table",
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>{bill.table?.name}</div>;
+      console.log(bill);
+      return <div>{ bill.table?.name ?? "Canteen"}</div>;
     },
   },
-  // {
-  //   header: "rate",
-  //   cell: ({ row }) => {
-  //     const bill = row.original;
-  //     return <div>&#8377;{bill.table?.rate}/min</div>;
-  //   },
-  // },
   {
     header: "Date",
     cell: ({ row }) => {
@@ -54,13 +48,6 @@ export const columns: ColumnDef<BillType>[] = [
       return <div>{formatTime(bill.checkIn)}</div>;
     },
   },
-  // {
-  //   header: 'End Time',
-  //   cell: ({ row }) => {
-  //     const bill = row.original;
-  //     return <div>{formatTime(bill.checkOut)}</div>;
-  //   }
-  // },
   {
     accessorKey: "timePlayed",
     header: ({ column }) => {

@@ -163,9 +163,7 @@ export default function Table({
         <Food
           billId={currentBillId}
           items={data.items}
-          close={() => {
-            setShowFood(false);
-          }}
+          close={() => {setShowFood(false)}}
         />
       )}
       {showNote && currentBillId && (
