@@ -6,6 +6,7 @@ import { getCanteenTotal, settleBill } from "~/utils/fetches";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import Food from "./foodModal";
 import Discount from "./discountModal";
+import toast from "react-hot-toast";
 
 export default function Bill({
   close,
@@ -45,6 +46,8 @@ export default function Bill({
       async (data: any) => {
         close();
         await settleBill(bill);
+
+        toast.success("Bill Settled");
 
         return data.map((val: TableType) => {
           if (val.id === table.id) {
@@ -385,7 +388,7 @@ export default function Bill({
                                 discount,
                             ),
                             settled: true,
-                          });
+                          })
                         }
                       }}
                       type="button"
