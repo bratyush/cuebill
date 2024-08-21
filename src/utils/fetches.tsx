@@ -1,3 +1,4 @@
+import { time } from "console";
 import { BillType } from "~/types/myTypes";
 
 export const checkInTable = (id: number, time:number) =>
@@ -142,6 +143,21 @@ export const deleteCanteenBill = (billId: number) =>
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",
     },
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+
+export const settleCanteenBill = (body: any) =>
+  fetch("/api/bills/canteen/", {
+    method: "PATCH",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
   }).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");

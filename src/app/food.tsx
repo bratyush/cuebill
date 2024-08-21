@@ -1,7 +1,16 @@
+"use client";
+
 import { useState } from "react";
-import toast from "react-hot-toast";
+import {
+  createCanteenBill,
+  deleteCanteenBill,
+  getItems,
+  settleCanteenBill,
+} from "~/utils/fetches";
 import useSWR from "swr";
+import { CanteenBillType, ItemType, TableType } from "~/types/myTypes";
 import { Icons } from "~/components/icons";
+import toast from "react-hot-toast";
 import { Input } from "~/components/ui/input";
 import {
   Select,
@@ -12,8 +21,78 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { CanteenBillType, ItemType, TableType } from "~/types/myTypes";
-import { createCanteenBill, deleteCanteenBill } from "~/utils/fetches";
+import Unset from "./_components/unsetModal";
+
+export default function FoodBill({table}: {table: TableType}) {
+  const [showFood, setShowFood] = useState<boolean>(false);
+  const { data, isLoading } = useSWR(`/api/items`, getItems);
+
+  const [showUnset, setShowUnset] = useState<boolean>(false);
+
+  const unsettled = table.unsettled;
+
+  return (
+    <div className="relative">
+      {isLoading && <div>Loading...</div>}
+      {!isLoading && (
+        <div>
+          {showUnset && (
+            <Unset
+              bills={unsettled}
+              items={data.items}
+              table={table}
+              close={() => {
+                setShowUnset(false);
+              }}
+            />
+          )}
+
+          {showFood && (
+            <Food
+              billId={-1}
+              items={data.items}
+              close={() => {
+                setShowFood(false);
+              }}
+            />
+          )}
+
+          {unsettled.length > 0 && (
+            <button
+              className="absolute right-7 top-6 rounded-full bg-red-500/90 p-1 px-2"
+              onClick={() => {
+                setShowUnset(true);
+              }}
+            >
+              {unsettled.length}
+            </button>
+          )}
+
+          <div className="m-3 h-[268px] w-[350px] rounded-md bg-slate-300">
+            <div className="flex flex-col pt-5">
+              <div className="flex w-full items-center justify-between">
+                <div className="flex flex-grow justify-center">
+                  <div className="flex flex-col">
+                    <span className="mx-auto text-xl font-bold">Canteen</span>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setShowFood(true);
+                }}
+                className="mx-auto rounded-md bg-slate-400 p-3 hover:bg-slate-500"
+              >
+                Canteen bill
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const fetcher = (url: string) =>
   fetch(url, {
@@ -28,7 +107,7 @@ const fetcher = (url: string) =>
     return response.json();
   });
 
-export default function Food({
+function Food({
   billId,
   items,
   close,
@@ -44,7 +123,10 @@ export default function Food({
     bills: CanteenBillType[];
   }>(`/api/bills/canteen/${billId?.toString()}`, fetcher);
 
-  const TotalAmount = data?.bills.reduce((total: number, item: CanteenBillType) => total + item.amount, 0)
+  const TotalAmount = data?.bills.reduce(
+    (total: number, item: CanteenBillType) => total + item.amount,
+    0,
+  );
 
   return (
     <div className="fixed left-0 right-0 top-0 z-50 flex h-[calc(100%-1rem)] max-h-screen w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800/70 md:inset-0">
@@ -58,6 +140,10 @@ export default function Food({
             </h3>
             <button
               onClick={() => {
+                if (data?.bills.length !== 0) {
+                  toast.error("Remove all items first");
+                  return;
+                }
                 close();
               }}
               type="button"
@@ -252,8 +338,8 @@ export default function Food({
                 <tr>
                   <td></td>
                   <td></td>
-                  <td className="pl-4 py-1">Total</td>
-                  <td className="pl-4 py-1">&#8377;{TotalAmount}</td>
+                  <td className="py-1 pl-4">Total</td>
+                  <td className="py-1 pl-4">&#8377;{TotalAmount}</td>
                 </tr>
               </tbody>
             </table>
@@ -276,6 +362,15 @@ export default function Food({
             </button>
             <button
               onClick={() => {
+                settleCanteenBill({
+                  tableId: 0,
+                  checkIn: Date.now(),
+                  checkOut: Date.now(),
+                  timePlayed: 0,
+                  tableMoney: 0,
+                  canteenMoney: TotalAmount,
+                  settled: false,
+                });
                 toast.success("Canteen Saved");
                 close();
               }}

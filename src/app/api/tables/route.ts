@@ -44,6 +44,7 @@ export async function GET() {
       unsettled: unsettledBills
     });
   }
+  resData.push({ id: 0, name: "Canteen", rate:0, theme:'canteen', checked_in_at: null, unsettled: unsettled.filter((b) => b.tableId === 0) });
 
   return Response.json({ tables: resData });
 }

@@ -1,15 +1,13 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { db } from "~/db";
-import { canteenBills } from "~/db/schema";
-import { CanteenBillType } from "~/types/myTypes";
+import { bills, canteenBills } from "~/db/schema";
+import { BillType, CanteenBillType } from "~/types/myTypes";
 
 // add bill
 export async function POST(request: Request) {
 
   const body: CanteenBillType = await request.json()
-
-  console.log('body', body);
 
   const user = await currentUser();
   const club = user?.privateMetadata.org?? '';
@@ -29,4 +27,25 @@ export async function GET() {
   })
 
   return Response.json({canteenBills: ctnbls})
+}
+
+export async function PATCH(request: Request) {
+
+  const body: BillType = await request.json()
+
+  const user = await currentUser();
+  const club = user?.privateMetadata.org?? '';
+
+  // make a bill with body.bill time and tableId 0,
+  // then update all canteenBills with -1 billId to this new billId
+
+  const bill = await db.insert(bills).values({...body, club:club}).returning();
+
+  if (bill[0]) {
+    await db.update(canteenBills)
+    .set({billId: bill[0]?.id})
+    .where(eq(canteenBills.billId, -1))
+  }
+
+  return Response.json({status: "updated"})
 }
