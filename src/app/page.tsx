@@ -39,7 +39,6 @@ export default function Pos() {
 
         {data &&
           data
-            .filter((val) => val.id != 0)
             .map((table, index) => (
               <Table tableData={data} key={index} table={table} />
             ))}
@@ -52,9 +51,8 @@ export default function Pos() {
           </Link>
         </div> */}
 
-        {data && data.find((val) => val.id == 0) && (
-          <FoodBill table={data.find((val) => val.id == 0)!} />
-        )}
+        <FoodBill table={{ id: 0, name: "Canteen", rate:0, theme:'canteen', checked_in_at: null, unsettled:[]}} />
+
       </div>
     </div>
   );
