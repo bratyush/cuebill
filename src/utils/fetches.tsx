@@ -163,7 +163,7 @@ export const settleCanteenBill = (body: any) =>
       throw new Error("Network response was not ok");
     }
     return response.json();
-  });
+  }).then(data=>data.bill)
 
 export const getItems = () =>
   fetch("/api/items", {

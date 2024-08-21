@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { CanteenBillType, ItemType, TableType } from "~/types/myTypes";
+import { CanteenBillType, ItemType } from "~/types/myTypes";
 import { createCanteenBill, deleteCanteenBill } from "~/utils/fetches";
 
 const fetcher = (url: string) =>
@@ -32,10 +32,12 @@ export default function Food({
   billId,
   items,
   close,
+  save,
 }: {
   billId: number;
   items: ItemType[];
   close: () => void;
+  save?: (TotalAmount: number) => void;
 }) {
   const [selectedItem, setSelectedItem] = useState<ItemType>();
   const [selectedQuant, setSelectedQuant] = useState<number>();
@@ -58,6 +60,12 @@ export default function Food({
             </h3>
             <button
               onClick={() => {
+                if (save) {
+                  if (data?.bills.length !== 0) {
+                    toast.error("Remove all items first");
+                    return;
+                  }
+                }
                 close();
               }}
               type="button"
@@ -263,9 +271,11 @@ export default function Food({
           <div className="flex items-center justify-between rounded-b border-t border-gray-200 p-4 dark:border-gray-600 md:p-5">
             <button
               onClick={() => {
-                if (data?.bills.length !== 0) {
-                  toast.error("Remove all items first");
-                  return;
+                if (save) {
+                  if (data?.bills.length !== 0) {
+                    toast.error("Remove all items first");
+                    return;
+                  }
                 }
                 close();
               }}
@@ -276,8 +286,10 @@ export default function Food({
             </button>
             <button
               onClick={() => {
-                toast.success("Canteen Saved");
-                close();
+                if (save && TotalAmount) {
+                  save(TotalAmount);
+                }
+                close()
               }}
               type="button"
               className="rounded-lg bg-sky-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-sky-600 focus:outline-none focus:ring-4 focus:ring-sky-300 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"

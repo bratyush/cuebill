@@ -23,4 +23,7 @@
 - [ ] Canteen Only Bills.
   - [x] Capture Bills.
   - [x] save unsettled.
-  - [ ] create canteen Table.
+  - [x] create canteen Table.
+  - [ ] make food modal DRY.
+  - [ ] take care of mutates.
+  - [ ] styling for the canteen table.

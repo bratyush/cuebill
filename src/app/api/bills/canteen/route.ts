@@ -40,6 +40,7 @@ export async function PATCH(request: Request) {
   // then update all canteenBills with -1 billId to this new billId
 
   const bill = await db.insert(bills).values({...body, club:club}).returning();
+  console.log(bill);
 
   if (bill[0]) {
     await db.update(canteenBills)
@@ -47,5 +48,5 @@ export async function PATCH(request: Request) {
     .where(eq(canteenBills.billId, -1))
   }
 
-  return Response.json({status: "updated"})
+  return Response.json({bill: bill[0]})
 }
