@@ -334,7 +334,7 @@ export default function Bill({
                               {/* round this */}
                               {Math.round(
                                 (bill.tableMoney ?? 0) +
-                                  canteenTotal +
+                                  canteenTotal -
                                   discount,
                               )}
                             </span>
@@ -384,7 +384,7 @@ export default function Bill({
                             discount: discount,
                             totalAmount: Math.round(
                               (bill.tableMoney ?? 0) +
-                                canteenTotal +
+                                canteenTotal -
                                 discount,
                             ),
                             settled: true,
