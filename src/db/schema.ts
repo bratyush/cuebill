@@ -3,6 +3,7 @@
 
 import { relations } from "drizzle-orm";
 import { integer, real, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
+import { themes } from "~/utils/consts";
 
 export const createTable = sqliteTableCreator((name) => `pool_${name}`);
 
@@ -12,7 +13,7 @@ export const tables = createTable(
     id: integer("id").primaryKey({ autoIncrement: true }),
     name: text("name", { length: 256 }),
     rate: real("rate"),
-    theme: text("theme", { enum: ['pool', 'snooker', 'violet', 'amber', 'stone', 'red', 'canteen']}),
+    theme: text("theme", { enum: themes}),
     checked_in_at: integer("checkedInAt"),
     active: integer("active", {mode: 'boolean'}).default(true),
     club: text("club"),

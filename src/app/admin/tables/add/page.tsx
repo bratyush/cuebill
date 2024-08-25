@@ -6,6 +6,7 @@ import pool from '@/public/pool.png';
 import Image, { type StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { themes } from "~/utils/consts";
 import { tableTheme } from "~/utils/formatters";
 // import { addTable } from '../utils/tauriFiles';
 
@@ -107,13 +108,11 @@ export default function AddTable() {
             defaultValue={style}
             className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
           >
-            <option value="pool">Pool</option>
-            <option value="snooker">Snooker</option>
-            <option value="violet">Violet</option>
-            <option value="amber">Amber</option>
-            <option value="red">Red</option>
-            <option value="stone">Stone</option>
-
+            {themes.map((theme) => (
+              <option key={theme} value={theme}>
+                {theme.charAt(0).toUpperCase() + theme.slice(1)}
+              </option>
+            ))}
           </select>
         </div>
 
