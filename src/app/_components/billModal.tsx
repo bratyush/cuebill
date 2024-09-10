@@ -272,7 +272,7 @@ export default function Bill({
                             </div>
                           </td>
                         </tr>
-                        {mode === "both" && (
+                        {mode === "both" && (<>
                           <tr>
                             <td className="border border-slate-300 p-2">
                               Cash Amount
@@ -313,6 +313,15 @@ export default function Bill({
                               </div>
                             </td>
                           </tr>
+                          <tr>
+                            <td className="border border-slate-300 p-2">
+                              UPI Amount
+                            </td>
+                            <td className="border border-slate-300 p-2">
+                              &#8377;{Math.round(bill.tableMoney - cashPaid)}
+                            </td>
+                          </tr>
+                          </>
                         )}
                         {discount !== 0 && (
                           <tr>
