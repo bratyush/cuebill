@@ -66,7 +66,7 @@ export default function FoodBill({ table }: { table: TableType }) {
           )} */}
 
           <div className="flex items-center justify-center relative m-3 h-[268px] w-[350px]">
-            <div className="rounded-3xl h-[168px] w-[250px] bg-[#ACBDBA]">
+            <div className="rounded-3xl h-[168px] w-[250px] bg-[#FFCC33]">
               <div className="flex flex-col pt-5">
                 <div className="flex w-full items-center justify-between">
                   <div className="flex flex-grow justify-center">
@@ -82,7 +82,7 @@ export default function FoodBill({ table }: { table: TableType }) {
                   onClick={() => {
                     setShowFood(true);
                   }}
-                  className="mx-auto my-5 rounded-md bg-white/70 px-10 py-6 text-black shadow-sm hover:bg-white/90"
+                  className="mx-auto my-5 rounded-md bg-white/60 px-10 py-6 text-black shadow-sm hover:bg-white/80"
                 >
                   Create Bill
                 </button>
