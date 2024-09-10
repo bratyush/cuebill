@@ -250,7 +250,7 @@ export default function Table({
                   <Icons.note />
                 </button>
                 <button
-                  className="my-1 basis-2/3 rounded-md bg-white/30 py-3 shadow-sm hover:bg-white/40"
+                  className="my-1 basis-2/3 rounded-md bg-red-500/70 py-3 shadow-sm hover:bg-red-500/90"
                   onClick={() => {
                     checkOut();
                   }}
