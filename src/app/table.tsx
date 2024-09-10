@@ -218,7 +218,7 @@ export default function Table({
                 {formatTime(table.checked_in_at)}
               </div>
 
-              <div className="flex flex-row justify-evenly">
+              <div className="mx-10 py-1 my-1 rounded flex flex-row justify-evenly bg-gray-800/50">
                 <div className="flex flex-col">
                   <span className="mx-auto text-sm font-thin">Time</span>
                   <span className="font-medium">

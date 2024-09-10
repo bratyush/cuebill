@@ -8,6 +8,8 @@ import Image, { type StaticImageData } from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { type TableType } from "~/types/myTypes";
 import toast from "react-hot-toast";
+import { themes } from "~/utils/consts";
+import { tableTheme } from "~/utils/formatters";
 
 export default function EditTable() {
   const [style, setStyle] = useState<string>("pool");
@@ -43,11 +45,7 @@ export default function EditTable() {
   }, [tableId]);
 
   useEffect(() => {
-    if (style === "pool") {
-      setTypeImg(pool);
-    } else {
-      setTypeImg(snooker);
-    }
+    setTypeImg(tableTheme(style))
   }, [style]);
 
   function addTableSubmit(tableName: string, rate: string, style: string) {
@@ -138,8 +136,11 @@ export default function EditTable() {
             value={style}
             className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
           >
-            <option value="pool">Pool</option>
-            <option value="snooker">Snooker</option>
+            {themes.map((theme) => (
+              <option key={theme} value={theme}>
+                {theme.charAt(0).toUpperCase() + theme.slice(1)}
+              </option>
+            ))}
           </select>
         </div>
 
