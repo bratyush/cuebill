@@ -1,8 +1,10 @@
+import { themes } from "~/utils/consts";
+
 export type TableType = {
     id: number;
     name: string;
     rate: number;
-    theme: 'pool' | 'snooker' | 'violet' | 'amber' | 'red' | 'stone' | 'canteen';
+    theme: typeof themes[number];
     checked_in_at: number | null;
     unsettled: BillType[];
 };

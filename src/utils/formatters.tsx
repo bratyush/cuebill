@@ -65,19 +65,34 @@ export const calculateRevenue = (rate: number | undefined, ms: number | undefine
   return revenue.toFixed(2);
 };
 
-import pool from '@/public/pool.png';
-import snooker from '@/public/snooker.png';
-import violet from '@/public/violet.svg';
 import amber from '@/public/amber.svg';
-import stone from '@/public/stone.svg';
+import pool from '@/public/pool.png';
+import ps from '@/public/ps.png';
 import red from '@/public/red.svg';
+import snooker from '@/public/snooker.png';
+import snookerDark from '@/public/snooker-dark.png';
+import stone from '@/public/stone.svg';
+import tv from '@/public/tv.png';
+import violet from '@/public/violet.svg';
+import windows from '@/public/windows.png';
+import xbox from '@/public/xbox.png';
 
 export const tableTheme = (theme: string) => {
   switch (theme) {
+    case 'tv':
+      return tv;
+    case 'windows':
+      return windows;
+    case 'xbox':
+      return xbox;
+    case 'ps':
+      return ps;
     case 'pool':
       return pool;
     case 'snooker':
       return snooker;
+    case 'snooker-dark':
+      return snookerDark;
     case 'violet':
       return violet;
     case 'amber':
