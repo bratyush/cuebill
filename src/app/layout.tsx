@@ -1,7 +1,7 @@
 import "~/styles/globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
-
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
@@ -23,6 +23,7 @@ export default function RootLayout({
             <Toaster />
             {children}
           </div>
+          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>
