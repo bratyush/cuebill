@@ -70,6 +70,7 @@ import pool from '@/public/pool.png';
 import ps from '@/public/ps.png';
 import red from '@/public/red.svg';
 import snooker from '@/public/snooker.png';
+import snookerDark from '@/public/snooker-dark.png';
 import stone from '@/public/stone.svg';
 import tv from '@/public/tv.png';
 import violet from '@/public/violet.svg';
@@ -90,6 +91,8 @@ export const tableTheme = (theme: string) => {
       return pool;
     case 'snooker':
       return snooker;
+    case 'snooker-dark':
+      return snookerDark;
     case 'violet':
       return violet;
     case 'amber':
