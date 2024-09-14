@@ -12,10 +12,14 @@ export async function GET(
   const id = parseInt(billId);
   console.log("Id", id)
 
-  const bills = await db.query.canteenBills.findMany({
-    columns: {club:false },
-    where: eq(canteenBills.billId, id)
-  })
+  // const bills = await db.query.canteenBills.findMany({
+  //   columns: {club:false },
+  //   where: eq(canteenBills.billId, id)
+  // })
+  
+  const bills = await db.select({
+    amount: canteenBills.amount
+  }).from(canteenBills).where(eq(canteenBills.billId, id))
 
   console.log("bills", bills)
 
