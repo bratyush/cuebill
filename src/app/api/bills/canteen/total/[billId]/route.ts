@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "~/db";
 import { canteenBills } from "~/db/schema";
 
@@ -21,7 +21,8 @@ export async function GET(
     id: canteenBills.id,
     amount: canteenBills.amount
   }).from(canteenBills)
-  .where(eq(canteenBills.billId, id))
+  .where(and(eq(canteenBills.billId, 124), eq(canteenBills.club, 'snooker_club')));
+  // .where(eq(canteenBills.billId, id))
 
   console.log("bills", bills)
 
