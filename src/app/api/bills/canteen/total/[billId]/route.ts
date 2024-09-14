@@ -18,8 +18,10 @@ export async function GET(
   // })
   
   const bills = await db.select({
+    id: canteenBills.id,
     amount: canteenBills.amount
-  }).from(canteenBills).where(eq(canteenBills.billId, id))
+  }).from(canteenBills)
+  .where(eq(canteenBills.billId, id))
 
   console.log("bills", bills)
 

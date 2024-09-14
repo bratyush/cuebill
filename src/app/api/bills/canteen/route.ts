@@ -25,6 +25,7 @@ export async function GET() {
   const ctnbls = await db.query.canteenBills.findMany({
     where: eq(canteenBills.club, club)
   })
+  console.log('canteenBills', ctnbls)
 
   return Response.json({canteenBills: ctnbls})
 }
