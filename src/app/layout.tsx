@@ -2,6 +2,7 @@ import "~/styles/globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({
             {children}
           </div>
           <SpeedInsights />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
