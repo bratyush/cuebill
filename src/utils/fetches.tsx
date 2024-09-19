@@ -225,7 +225,6 @@ export const deleteItem = (itemId: number) =>
 export const getCanteenTotal = (billId?: string) =>
   fetch("/api/bills/canteen/total/" + billId, {
     method: "GET",
-    cache: "no-store",
     headers: {
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",

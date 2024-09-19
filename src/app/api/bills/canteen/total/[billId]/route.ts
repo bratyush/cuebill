@@ -2,6 +2,8 @@ import { eq } from "drizzle-orm";
 import { db } from "~/db";
 import { canteenBills } from "~/db/schema";
 
+export const revalidate = 0
+
 export async function GET(
   request: Request,
   { params }: { params: { billId: string } }
