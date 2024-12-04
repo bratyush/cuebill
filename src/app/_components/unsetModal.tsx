@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BillType, ItemType, TableType } from "~/types/myTypes";
 import { formatDate, formatElapsed, formatTime } from "~/utils/formatters";
 import Bill from "./billModal";
@@ -6,6 +6,7 @@ import { Icons } from "~/components/icons";
 import { deleteBill } from "~/utils/fetches";
 import { useSWRConfig } from "swr";
 import toast from "react-hot-toast";
+import { canteenTotalSwr } from "~/utils/hooks";
 
 export default function Unset({
   bills,
@@ -96,6 +97,9 @@ export default function Unset({
                         <th scope="col" className="px-6 py-3">
                           Table Total
                         </th>
+                        <th scope="col" className="py-3">
+                          Canteen
+                        </th>
                         <th scope="col" className="px-6 py-3">
                           Action
                         </th>
@@ -103,21 +107,12 @@ export default function Unset({
                     </thead>
                     <tbody>
                       {bills.map((bill, index) => (
-                        <tr key={index} className="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800">
-                          <td className="px-6 py-4">{bill.id}</td>
-                          <td className="px-6 py-4">
-                            {formatDate(bill.checkIn)}
-                          </td>
-                          <td className="px-6 py-4">
-                            {formatTime(bill.checkIn)}
-                          </td>
-                          <td className="px-6 py-4">
-                            {formatElapsed(bill.timePlayed)}
-                          </td>
-                          <td className="px-6 py-4">
-                            &#8377;{bill.totalAmount}
-                          </td>
-                          <td className="flex gap-2 py-2">
+                        <tr
+                          key={index}
+                          className="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800"
+                        >
+                          <BillRow bill={bill} />
+                          <td className="flex gap-2 px-2 py-2">
                             <button
                               type="button"
                               className="rounded-lg bg-yellow-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-400 dark:focus:ring-yellow-900"
@@ -189,6 +184,22 @@ export default function Unset({
           </div>
         </div>
       )}
+    </>
+  );
+}
+
+function BillRow({ bill }: { bill: BillType }) {
+
+  const {data} = canteenTotalSwr(bill.id?.toString());
+
+  return (
+    <>
+      <td className="px-6 py-4">{bill.id}</td>
+      <td className="px-6 py-4">{formatDate(bill.checkIn)}</td>
+      <td className="px-6 py-4">{formatTime(bill.checkIn)}</td>
+      <td className="px-6 py-4">{formatElapsed(bill.timePlayed)}</td>
+      <td className="px-6 py-4">&#8377;{bill.totalAmount}</td>
+      <td className="py-4">&#8377;{data?.total}</td>
     </>
   );
 }

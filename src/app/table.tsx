@@ -8,6 +8,7 @@ import {
   checkInTable,
   checkOutTable,
   createBill,
+  getCanteenTotal,
   getItems,
   settleBill,
 } from "~/utils/fetches";
@@ -22,6 +23,8 @@ import Food from "./_components/foodModal";
 import Note from "./_components/noteModal";
 import toast from "react-hot-toast";
 import Unset from "./_components/unsetModal";
+import { canteenTotalSwr } from "~/utils/hooks";
+import { set } from "zod";
 
 export default function Table({
   tableData,
@@ -44,11 +47,20 @@ export default function Table({
   const [showUnset, setShowUnset] = useState<boolean>(false);
 
   const cbid = localStorage.getItem("tableBill"+table.id.toString())
-  const currentBillId = cbid ? parseInt(cbid) : null;
+  const [currentBillId, setCurrentBillId] = useState<number | null>(cbid ? parseInt(cbid) : null);
 
   const unsettled = table.unsettled;
 
   const imageUrl = tableTheme(table.theme);
+
+  const { data: cantTotal } = useSWR<{ total: number }>(
+    currentBillId ? `/api/bills/canteen/total/${currentBillId?.toString()}` : null,
+    async () => getCanteenTotal(currentBillId?.toString()),
+    {
+      revalidateOnFocus: false,
+    }
+  );
+  console.log(currentBillId, cantTotal);
 
   function checkIn() {
     const NOW = Date.now();
@@ -69,7 +81,7 @@ export default function Table({
 
           const data = await createBill(table.id);
           if (data.bill.id) {
-            // setCurrentBillId(data.bill.id);
+            setCurrentBillId(data.bill.id);
             localStorage.setItem("tableBill"+table.id.toString(), data.bill.id.toString());
             // set billId to localstorage
           }
@@ -163,7 +175,10 @@ export default function Table({
         <Food
           billId={currentBillId}
           items={data.items}
-          close={() => {setShowFood(false)}}
+          close={() => {
+            mutate(`/api/bills/canteen/total/${currentBillId.toString()}`)
+            setShowFood(false)
+          }}
         />
       )}
       {showNote && currentBillId && (
@@ -188,14 +203,25 @@ export default function Table({
       <div className="relative m-3 h-[268px] w-[350px]">
         <Image src={imageUrl} alt="bg" fill priority className="-z-10" />
 
-        {unsettled.length > 0 && (
+        {unsettled?.length > 0 && (
           <button
             className="absolute right-7 top-6 rounded-full bg-red-500/90 p-1 px-2"
             onClick={() => {
               setShowUnset(true);
             }}
           >
-            {unsettled.length}
+            {unsettled?.length}
+          </button>
+        )}
+
+        {table.checked_in_at && cantTotal && cantTotal.total>0 && (
+          <button
+            className="absolute left-7 top-6 rounded-full bg-green-500/80 p-1 px-2"
+            onClick={() => {
+              setShowFood(true);
+            }}
+          >&#8377;
+            {cantTotal.total}
           </button>
         )}
 

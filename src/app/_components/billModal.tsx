@@ -1,12 +1,13 @@
 import { useState } from "react";
-import useSWR, { useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import { Icons } from "~/components/icons";
 import type { BillType, ItemType, TableType } from "~/types/myTypes";
-import { getCanteenTotal, settleBill } from "~/utils/fetches";
+import { settleBill } from "~/utils/fetches";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import Food from "./foodModal";
 import Discount from "./discountModal";
 import toast from "react-hot-toast";
+import { canteenTotalSwr } from "~/utils/hooks";
 
 export default function Bill({
   close,
@@ -25,10 +26,7 @@ export default function Bill({
 
   const [showFood, setShowFood] = useState<boolean>(false);
 
-  const { data, isLoading } = useSWR<{ total: number }>(
-    `/api/bills/canteen/total/${billId?.toString()}`,
-    async () => getCanteenTotal(billId?.toString()),
-  );
+  const {data} = canteenTotalSwr(billId?.toString());
 
   const canteenTotal = data?.total!==undefined ? data?.total : bill.canteenMoney ?? 0;
 

@@ -2,20 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 import { BillType } from "~/types/myTypes";
-import { settleBill } from "~/utils/fetches";
-
-const fetcher = (url: string) =>
-  fetch(url, {
-    headers: {
-      "Cache-Control": "no-cache",
-      "Content-Type": "application/json",
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
+import { fetcher, settleBill } from "~/utils/fetches";
 
 export default function Note({
   billId,

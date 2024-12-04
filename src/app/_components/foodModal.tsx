@@ -13,20 +13,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { CanteenBillType, ItemType } from "~/types/myTypes";
-import { createCanteenBill, deleteCanteenBill } from "~/utils/fetches";
-
-const fetcher = (url: string) =>
-  fetch(url, {
-    headers: {
-      "Cache-Control": "no-cache",
-      "Content-Type": "application/json",
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
+import { createCanteenBill, deleteCanteenBill, fetcher } from "~/utils/fetches";
 
 export default function Food({
   billId,
@@ -40,7 +27,7 @@ export default function Food({
   save?: (TotalAmount: number) => void;
 }) {
   const [selectedItem, setSelectedItem] = useState<ItemType>();
-  const [selectedQuant, setSelectedQuant] = useState<number>();
+  const [selectedQuant, setSelectedQuant] = useState<number>(1);
 
   const { data, isLoading, mutate } = useSWR<{
     bills: CanteenBillType[];
