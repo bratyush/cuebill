@@ -54,7 +54,7 @@ const NavBar = () => {
         {clerk.loaded ? (
           <UserButton />
         ) : (
-          <div className="h-8 w-8 animate-pulse rounded-full bg-gray-300"></div>
+          <div className="h-7 w-7 animate-pulse rounded-full bg-gray-300"></div>
         )}
       </div>
     </nav>
