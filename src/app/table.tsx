@@ -60,7 +60,6 @@ export default function Table({
       revalidateOnFocus: false,
     }
   );
-  console.log(currentBillId, cantTotal);
 
   function checkIn() {
     const NOW = Date.now();

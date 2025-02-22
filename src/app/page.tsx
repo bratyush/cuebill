@@ -15,7 +15,6 @@ export default function Pos() {
       localStorage.setItem("tables", JSON.stringify(data));
     },
   });
-  console.log(data);
 
   const localTables = localStorage.getItem("tables");
   const numTables = localTables ? JSON.parse(localTables).length : 0;

@@ -1,6 +1,6 @@
 import { BillType } from "~/types/myTypes";
 
-export const checkInTable = (id: number, time:number) =>
+export const checkInTable = (id: number, time: number) =>
   fetch("/api/tables/" + id, {
     method: "PATCH",
     headers: {
@@ -41,14 +41,16 @@ export const getTables = () =>
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",
     },
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  }).then((data) => {
-    return data.tables;
-  });
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return data.tables;
+    });
 
 export const getBills = () =>
   fetch("/api/bills", {
@@ -135,7 +137,7 @@ export const createCanteenBill = (
     return response.json();
   });
 
-export const deleteCanteenBill = (billId: number) => 
+export const deleteCanteenBill = (billId: number) =>
   fetch("/api/bills/canteen/" + billId, {
     method: "DELETE",
     headers: {
@@ -157,12 +159,14 @@ export const settleCanteenBill = (body: any) =>
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  }).then(data=>data.bill)
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => data.bill);
 
 export const getItems = () =>
   fetch("/api/items", {
@@ -187,13 +191,16 @@ export const addItem = (item: { itemName: string; price: number }) =>
     },
     body: JSON.stringify({ name: item.itemName, price: item.price }),
   }).then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    });
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
 
-export const editItem = (itemId: number, item: { name: string; price: number }) =>
+export const editItem = (
+  itemId: number,
+  item: { name: string; price: number },
+) =>
   fetch("/api/items/" + itemId, {
     method: "PATCH",
     headers: {

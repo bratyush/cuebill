@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { type ItemType } from "~/types/myTypes";
-import toast from "react-hot-toast";
+import toast, { Toast } from "react-hot-toast";
 import { deleteItem, getItems } from "~/utils/fetches";
 
 export default function ItemsPage() {
@@ -43,7 +43,7 @@ export default function ItemsPage() {
             #
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => {
         return <div>{row.index + 1}</div>;
@@ -71,7 +71,7 @@ export default function ItemsPage() {
             Price (₹)
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => {
         const item = row.original;
@@ -99,20 +99,19 @@ export default function ItemsPage() {
               type="button"
               onClick={async () => {
                 if (confirm("Are you sure you want to delete?")) {
-
                   if (!item.id) {
                     return;
                   }
                   deleteItem(item.id)
                     .then(() => {
                       toast.success("Item deleted");
-                      
+
                       getItems()
                         .then((data: { items: ItemType[] }) => {
                           setData(data.items);
                         })
-                        .catch((error) => {
-                          toast.error("Item fetch failed");
+                        .catch((error: any) => {
+                          toast.error("Item fetch failed", error);
                         });
                     })
                     .catch((error) => {
