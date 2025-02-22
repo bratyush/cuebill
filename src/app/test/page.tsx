@@ -4,22 +4,16 @@ import toast from "react-hot-toast";
 import useSWR from "swr";
 import { ItemType } from "~/types/myTypes";
 import { addItem, editItem, getItems } from "~/utils/fetches";
+import { swrData } from "./hook";
 
 export default function Asdf() {
-  const { data, mutate } = useSWR<{ items: ItemType[] }>(
-    "/api/items",
-    getItems,
-    {
-      onSuccess: (data) => {
-        console.log(data)
-        toast.success("Items fetched");
-      },
-    },
-  );
+  const { data, mutate } = swrData();
 
   return (
     <div className="flex flex-col justify-between">
       <p>asdf</p>
+
+      <Compo />
 
       {data?.items &&
         data.items.map((item: any) => (
@@ -33,7 +27,9 @@ export default function Asdf() {
         onClick={() => {
           if (data) {
             mutate(
-              addItem({ itemName: "kaju", price: 12 }).then(() => getItems()),
+              addItem({ itemName: "kaju", price: 12 }).then((()=>{
+                return { items: [...data.items, { id: 1, name: "kaju", price: 12 }] }
+              })),
               {
                 optimisticData: {
                   items: [...data.items, { id: 1, name: "kaju", price: 12 }],
@@ -60,18 +56,18 @@ export default function Asdf() {
           if (data) {
       
             const updatedData = {
-              items: data.items.map((val) => (val.id === 64 ? {
+              items: data.items.map((val) => (val.id === 10 ? {
                 ...val,
                 price: val.price+1,
               } : val)),
             };
 
-            const cur = updatedData.items.find((a) => a.id === 64)
+            const cur = updatedData.items.find((a) => a.id === 10)
 
             if (!cur) {return;}
 
             mutate(
-              editItem(64, { name: cur.name, price: cur.price }).then(() => updatedData),
+              editItem(10, { name: cur.name, price: cur.price }).then(() => updatedData),
               {
                 optimisticData: updatedData,
                 // revalidate: false,
@@ -84,4 +80,10 @@ export default function Asdf() {
       </button>
     </div>
   );
+}
+
+function Compo() {
+  const { data, mutate } = swrData();
+
+  return <p>{data?.items.length}</p>;
 }

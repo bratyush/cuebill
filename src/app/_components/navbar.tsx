@@ -1,10 +1,15 @@
 // import logo from '~/assets/8ballogo.png';
-import { UserButton } from '@clerk/nextjs';
-import Link from 'next/link';
+import { ClerkLoaded, ClerkLoading, UserButton, useAuth, useClerk } from "@clerk/nextjs";
+import Link from "next/link";
 
 const NavBar = () => {
+
+  const clerk = useClerk()
+
+  console.log(clerk.loaded, "userId");
+
   return (
-    <nav className="flex items-center justify-between h-16 bg-gray-50 text-black px-10">
+    <nav className="flex h-16 items-center justify-between bg-gray-50 px-10 text-black">
       <div>
         {/* <button className="hover:bg-slate-200 rounded-md p-2  " onClick={()=>{router.back()}}>
           <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -22,11 +27,35 @@ const NavBar = () => {
         <span className="text-2xl font-bold">Snooker Club</span>
       </div>
       <div className="flex items-center space-x-4">
-        <Link href={'/'} className="px-3 py-2 text-lg font-semibold text-black rounded-md hover:bg-slate-300">POS</Link>
-        <Link href={'/admin/tables'} className="px-3 py-2 text-lg font-semibold text-black rounded-md hover:bg-slate-300">Tables</Link>
-        <Link href={'/admin/items'} className="px-3 py-2 text-lg font-semibold text-black rounded-md hover:bg-slate-300">Menu</Link>
-        <Link href={'/admin/revenue'} className="px-3 py-2 text-lg font-semibold text-black rounded-md hover:bg-slate-300">Revenue</Link>
-        <UserButton />
+        <Link
+          href={"/"}
+          className="rounded-md px-3 py-2 text-lg font-semibold text-black hover:bg-slate-300"
+        >
+          POS
+        </Link>
+        <Link
+          href={"/admin/tables"}
+          className="rounded-md px-3 py-2 text-lg font-semibold text-black hover:bg-slate-300"
+        >
+          Tables
+        </Link>
+        <Link
+          href={"/admin/items"}
+          className="rounded-md px-3 py-2 text-lg font-semibold text-black hover:bg-slate-300"
+        >
+          Menu
+        </Link>
+        <Link
+          href={"/admin/revenue"}
+          className="rounded-md px-3 py-2 text-lg font-semibold text-black hover:bg-slate-300"
+        >
+          Revenue
+        </Link>
+        {clerk.loaded ? (
+          <UserButton />
+        ) : (
+          <div className="h-8 w-8 animate-pulse rounded-full bg-gray-300"></div>
+        )}
       </div>
     </nav>
   );

@@ -13,40 +13,27 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { CanteenBillType, ItemType } from "~/types/myTypes";
-import { createCanteenBill, deleteCanteenBill } from "~/utils/fetches";
+import { createCanteenBill, deleteCanteenBill, fetcher } from "~/utils/fetches";
 
-const fetcher = (url: string) =>
-  fetch(url, {
-    headers: {
-      "Cache-Control": "no-cache",
-      "Content-Type": "application/json",
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
-
-export default function Food({
-  billId,
-  items,
-  close,
-  save,
-}: {
+interface FoodProps {
   billId: number;
   items: ItemType[];
   close: () => void;
   save?: (TotalAmount: number) => void;
-}) {
+}
+
+const Food: React.FC<FoodProps> = ({ billId, items, close, save }) => {
   const [selectedItem, setSelectedItem] = useState<ItemType>();
-  const [selectedQuant, setSelectedQuant] = useState<number>();
+  const [selectedQuant, setSelectedQuant] = useState<number>(1);
 
   const { data, isLoading, mutate } = useSWR<{
     bills: CanteenBillType[];
   }>(`/api/bills/canteen/${billId?.toString()}`, fetcher);
 
-  const TotalAmount = data?.bills.reduce((total: number, item: CanteenBillType) => total + item.amount, 0)
+  const TotalAmount = data?.bills.reduce(
+    (total: number, item: CanteenBillType) => total + item.amount,
+    0,
+  );
 
   return (
     <div className="fixed left-0 right-0 top-0 z-50 flex h-[calc(100%-1rem)] max-h-screen w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800/70 md:inset-0">
@@ -260,8 +247,8 @@ export default function Food({
                 <tr>
                   <td></td>
                   <td></td>
-                  <td className="pl-4 py-1">Total</td>
-                  <td className="pl-4 py-1">&#8377;{TotalAmount}</td>
+                  <td className="py-1 pl-4">Total</td>
+                  <td className="py-1 pl-4">&#8377;{TotalAmount}</td>
                 </tr>
               </tbody>
             </table>
@@ -289,7 +276,7 @@ export default function Food({
                 if (save && TotalAmount) {
                   save(TotalAmount);
                 }
-                close()
+                close();
               }}
               type="button"
               className="rounded-lg bg-sky-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-sky-600 focus:outline-none focus:ring-4 focus:ring-sky-300 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
@@ -301,4 +288,6 @@ export default function Food({
       </div>
     </div>
   );
-}
+};
+
+export default Food;
