@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { getTables } from "~/utils/fetches";
+import { universalFetcher } from "~/utils/fetches";
 import type { TableType } from "../types/myTypes";
 import NavBar from "./_components/navbar";
 import { TableSkeleton } from "./_components/skeletons";
@@ -10,11 +10,18 @@ import useSWR from "swr";
 import FoodBill from "./food";
 
 export default function Pos() {
-  const { data, isLoading } = useSWR<TableType[]>("/api/tables", getTables, {
-    onSuccess: (data) => {
-      localStorage.setItem("tables", JSON.stringify(data));
+  const { data, isLoading } = useSWR<TableType[]>(
+    "/api/tables",
+    async (url) => {
+      const data = await universalFetcher(url, "GET");
+      return data.tables;
     },
-  });
+    {
+      onSuccess: (data) => {
+        localStorage.setItem("tables", JSON.stringify(data));
+      },
+    },
+  );
 
   const localTables = localStorage.getItem("tables");
   const numTables = localTables ? JSON.parse(localTables).length : 0;
@@ -37,10 +44,9 @@ export default function Pos() {
             .map((_, index) => <TableSkeleton key={index} />)}
 
         {data &&
-          data
-            .map((table, index) => (
-              <Table tableData={data} key={index} table={table} />
-            ))}
+          data.map((table, index) => (
+            <Table tableData={data} key={index} table={table} />
+          ))}
 
         {/* <div className="m-3 h-[268px] w-[350px] rounded-md bg-slate-300 flex items-center">
           <Link
@@ -50,8 +56,16 @@ export default function Pos() {
           </Link>
         </div> */}
 
-        <FoodBill table={{ id: 0, name: "Canteen", rate:0, theme:'canteen', checked_in_at: null, unsettled:[]}} />
-
+        <FoodBill
+          table={{
+            id: 0,
+            name: "Canteen",
+            rate: 0,
+            theme: "canteen",
+            checked_in_at: null,
+            unsettled: [],
+          }}
+        />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 import { BillType } from "~/types/myTypes";
-import { fetcher, settleBill } from "~/utils/fetches";
+import { universalFetcher } from "~/utils/fetches";
 
 export default function Note({
   billId,
@@ -13,27 +13,29 @@ export default function Note({
 }) {
   const { data, isLoading } = useSWR<BillType>(
     `/api/bills/${billId.toString()}`,
-    fetcher,
+    async (url: string) => {
+      const data = await universalFetcher(url, "GET");
+      return data;
+    }
   );
 
   const [noteText, setNote] = useState<string>();
 
-  const saveNote = (note: string | undefined) => {
+  const saveNote = async (note: string | undefined) => {
     const bill = data;
 
     if (!note || note === data?.note) {
       close();
     } else if (bill) {
-      bill.note = note;
-      settleBill(bill)
-        .then((data) => {
-          toast.success("Note saved");
-          close();
-        })
-        .catch((error) => {
-          toast.error("There was an error!");
-          console.error("There was an error!", error);
-        });
+      try {
+        bill.note = note;
+        await universalFetcher(`/api/bills/${bill.id}`, "PATCH", bill);
+        toast.success("Note saved");
+        close();
+      } catch (error) {
+        toast.error("There was an error!");
+        console.error("There was an error!", error);
+      }
     }
   };
 

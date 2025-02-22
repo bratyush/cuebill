@@ -4,14 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import { Icons } from "~/components/icons";
-import {
-  checkInTable,
-  checkOutTable,
-  createBill,
-  getCanteenTotal,
-  getItems,
-  settleBill,
-} from "~/utils/fetches";
+import { universalFetcher } from "~/utils/fetches";
 import {
   calculateRevenue,
   formatElapsed,
@@ -23,8 +16,6 @@ import Food from "./_components/foodModal";
 import Note from "./_components/noteModal";
 import toast from "react-hot-toast";
 import Unset from "./_components/unsetModal";
-import { canteenTotalSwr } from "~/utils/hooks";
-import { set } from "zod";
 
 export default function Table({
   tableData,
@@ -36,7 +27,9 @@ export default function Table({
   const { mutate } = useSWRConfig();
 
   // menu items fetch
-  const { data } = useSWR(`/api/items`, getItems);
+  const { data } = useSWR(`/api/items`, () =>
+    universalFetcher("/api/items", "GET"),
+  );
 
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   // Date.now() - table.checked_in_at
@@ -46,19 +39,27 @@ export default function Table({
   const [showNote, setShowNote] = useState<boolean>(false);
   const [showUnset, setShowUnset] = useState<boolean>(false);
 
-  const cbid = localStorage.getItem("tableBill"+table.id.toString())
-  const [currentBillId, setCurrentBillId] = useState<number | null>(cbid ? parseInt(cbid) : null);
+  const cbid = localStorage.getItem("tableBill" + table.id.toString());
+  const [currentBillId, setCurrentBillId] = useState<number | null>(
+    cbid ? parseInt(cbid) : null,
+  );
 
   const unsettled = table.unsettled;
 
   const imageUrl = tableTheme(table.theme);
 
   const { data: cantTotal } = useSWR<{ total: number }>(
-    currentBillId ? `/api/bills/canteen/total/${currentBillId?.toString()}` : null,
-    async () => getCanteenTotal(currentBillId?.toString()),
+    currentBillId
+      ? `/api/bills/canteen/total/${currentBillId?.toString()}`
+      : null,
+    async () =>
+      universalFetcher(
+        `/api/bills/canteen/total/${currentBillId?.toString()}`,
+        "GET",
+      ),
     {
       revalidateOnFocus: false,
-    }
+    },
   );
 
   function checkIn() {
@@ -76,12 +77,20 @@ export default function Table({
       "/api/tables",
       async () => {
         try {
-          await checkInTable(table.id, NOW);
+          // await checkInTable(table.id, NOW);
+          await universalFetcher("/api/tables/" + table.id, "PATCH", {
+            checked_in_at: NOW,
+          });
 
-          const data = await createBill(table.id);
+          const data = await universalFetcher("/api/bills", "POST", {
+            table: table.id,
+          });
           if (data.bill.id) {
             setCurrentBillId(data.bill.id);
-            localStorage.setItem("tableBill"+table.id.toString(), data.bill.id.toString());
+            localStorage.setItem(
+              "tableBill" + table.id.toString(),
+              data.bill.id.toString(),
+            );
             // set billId to localstorage
           }
 
@@ -97,14 +106,16 @@ export default function Table({
   }
 
   function checkOut() {
-    if (elapsedTime < 5*1000) {
+    if (elapsedTime < 5 * 1000) {
       toast.error("Minimum time for billing is 5 seconds");
       return;
     }
 
     if (!currentBillId) {
       toast.error("Bill not created");
-      checkOutTable(table.id)
+      universalFetcher("/api/tables/" + table.id, "PATCH", {
+        checked_in_at: null,
+      });
       return;
     }
     const tempBill: BillType = {
@@ -117,6 +128,7 @@ export default function Table({
       upiPaid: parseFloat(generatedRevenue),
       totalAmount: parseFloat(generatedRevenue),
       settled: false,
+      memberId: "",
     };
     if (table.checked_in_at) {
       tempBill.checkIn = table.checked_in_at;
@@ -124,7 +136,11 @@ export default function Table({
 
     const updatedData = tableData.map((t: TableType) => {
       if (t.id === table.id) {
-        return { ...t, checked_in_at: null, unsettled: [...t.unsettled, tempBill] };
+        return {
+          ...t,
+          checked_in_at: null,
+          unsettled: [...t.unsettled, tempBill],
+        };
       } else {
         return t;
       }
@@ -132,11 +148,17 @@ export default function Table({
 
     mutate(
       "/api/tables",
-      async ()=> {
-        await checkOutTable(table.id);
-        await settleBill(tempBill);
+      async () => {
+        await universalFetcher("/api/tables/" + table.id, "PATCH", {
+          checked_in_at: null,
+        });
+        await universalFetcher(
+          "/api/bills/" + currentBillId,
+          "PATCH",
+          tempBill,
+        );
         // delete from localStorage
-        localStorage.removeItem("tableBill"+table.id.toString());
+        localStorage.removeItem("tableBill" + table.id.toString());
         toast.success("Bill Saved");
         return updatedData;
       },
@@ -145,7 +167,6 @@ export default function Table({
         optimisticData: updatedData,
       },
     );
-
   }
 
   useEffect(() => {
@@ -175,8 +196,8 @@ export default function Table({
           billId={currentBillId}
           items={data.items}
           close={() => {
-            mutate(`/api/bills/canteen/total/${currentBillId.toString()}`)
-            setShowFood(false)
+            mutate(`/api/bills/canteen/total/${currentBillId.toString()}`);
+            setShowFood(false);
           }}
         />
       )}
@@ -213,13 +234,14 @@ export default function Table({
           </button>
         )}
 
-        {table.checked_in_at && cantTotal && cantTotal.total>0 && (
+        {table.checked_in_at && cantTotal && cantTotal.total > 0 && (
           <button
             className="absolute left-7 top-6 rounded-full bg-green-500/80 p-1 px-2"
             onClick={() => {
               setShowFood(true);
             }}
-          >&#8377;
+          >
+            &#8377;
             {cantTotal.total}
           </button>
         )}
@@ -243,7 +265,7 @@ export default function Table({
                 {formatTime(table.checked_in_at)}
               </div>
 
-              <div className="mx-10 py-1 my-1 rounded flex flex-row justify-evenly bg-gray-800/50">
+              <div className="mx-10 my-1 flex flex-row justify-evenly rounded bg-gray-800/50 py-1">
                 <div className="flex flex-col">
                   <span className="mx-auto text-sm font-thin">Time</span>
                   <span className="font-medium">

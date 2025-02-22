@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { CanteenBillType, ItemType } from "~/types/myTypes";
-import { createCanteenBill, deleteCanteenBill, fetcher } from "~/utils/fetches";
+import { universalFetcher } from "~/utils/fetches";
 
 interface FoodProps {
   billId: number;
@@ -28,7 +28,10 @@ const Food: React.FC<FoodProps> = ({ billId, items, close, save }) => {
 
   const { data, isLoading, mutate } = useSWR<{
     bills: CanteenBillType[];
-  }>(`/api/bills/canteen/${billId?.toString()}`, fetcher);
+  }>(`/api/bills/canteen/${billId?.toString()}`, async (url: string) => {
+    const data = await universalFetcher(url, "GET");
+    return data;
+  });
 
   const TotalAmount = data?.bills.reduce(
     (total: number, item: CanteenBillType) => total + item.amount,
@@ -115,18 +118,25 @@ const Food: React.FC<FoodProps> = ({ billId, items, close, save }) => {
                       </td>
                       <td className="border border-slate-300 pl-2 pt-2">
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             if (item.id) {
-                              deleteCanteenBill(item.id)
-                                .then((dt: { status: string }) => {
-                                  console.log(dt);
-                                  mutate({
-                                    bills: data?.bills.filter(
-                                      (el) => el.id !== item.id,
-                                    ),
-                                  }).catch((err) => console.error(err));
-                                })
-                                .catch((err) => console.error(err));
+                              try {
+                                await universalFetcher(
+                                  `/api/bills/canteen/${billId}`,
+                                  "DELETE",
+                                  {
+                                    itemId: item.id,
+                                  },
+                                );
+
+                                await mutate({
+                                  bills: data?.bills.filter(
+                                    (el) => el.itemId !== item.id,
+                                  ),
+                                });
+                              } catch (err) {
+                                console.error(err);
+                              }
                             }
                           }}
                         >
@@ -198,39 +208,36 @@ const Food: React.FC<FoodProps> = ({ billId, items, close, save }) => {
                   </td>
                   <td className="border border-slate-300">
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         if (
                           billId !== undefined &&
                           selectedItem &&
                           selectedQuant
                         ) {
-                          createCanteenBill(
-                            billId,
-                            selectedItem.id,
-                            selectedQuant,
-                            selectedQuant * selectedItem.price,
-                          )
-                            .then((dt: { status: string }) => {
-                              console.log(dt);
-                              mutate({
-                                bills: [
-                                  ...(data?.bills ?? []),
-                                  {
-                                    billId: billId,
-                                    itemId: selectedItem.id ?? 0,
-                                    quantity: selectedQuant,
-                                    amount: selectedQuant * selectedItem?.price,
-                                  },
-                                ],
-                              })
-                                .then(() => {
-                                  setSelectedQuant(0);
-                                })
-                                .catch((err) => console.error(err));
-                            })
-                            .catch((error) => {
-                              console.error("Fetch error:", error);
+                          try {
+
+                            await universalFetcher(`/api/bills/canteen/`, "POST", {
+                              billId: billId,
+                              itemId: selectedItem.id,
+                              quantity: selectedQuant,
+                              amount: selectedQuant * selectedItem.price,
                             });
+
+                            await mutate({
+                              bills: [
+                                ...(data?.bills ?? []),
+                                {
+                                  billId: billId,
+                                  itemId: selectedItem.id ?? 0,
+                                  quantity: selectedQuant,
+                                  amount: selectedQuant * selectedItem?.price,
+                                },
+                              ],
+                            });
+                            setSelectedQuant(0);
+                          } catch (error) {
+                            console.error("Fetch error:", error);
+                          }
                         } else {
                           console.log(billId);
                           console.log("wrong");

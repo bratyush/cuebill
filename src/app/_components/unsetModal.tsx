@@ -3,10 +3,10 @@ import { BillType, ItemType, TableType } from "~/types/myTypes";
 import { formatDate, formatElapsed, formatTime } from "~/utils/formatters";
 import Bill from "./billModal";
 import { Icons } from "~/components/icons";
-import { deleteBill } from "~/utils/fetches";
 import { useSWRConfig } from "swr";
-import toast from "react-hot-toast";
 import { canteenTotalSwr } from "~/utils/hooks";
+import { universalFetcher } from "~/utils/fetches";
+import toast from "react-hot-toast";
 
 export default function Unset({
   bills,
@@ -132,11 +132,8 @@ export default function Unset({
                                   mutate(
                                     "/api/tables",
                                     async (data: any) => {
-                                      await deleteBill(bill.id).then(() => {
-                                        toast.success(
-                                          "Bill deleted successfully",
-                                        );
-                                      });
+                                      await universalFetcher(`/api/bills/${bill.id}`, "DELETE");
+                                      toast.success("Bill deleted successfully");
 
                                       return data.map((val: TableType) => {
                                         if (val.id === table.id) {

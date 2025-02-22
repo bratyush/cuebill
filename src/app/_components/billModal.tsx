@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSWRConfig } from "swr";
 import { Icons } from "~/components/icons";
 import type { BillType, ItemType, TableType, MemberType } from "~/types/myTypes";
-import { settleBill, universalFetcher } from "~/utils/fetches";
+import { universalFetcher } from "~/utils/fetches";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import Food from "./foodModal";
 import Discount from "./discountModal";
@@ -56,7 +56,8 @@ export default function Bill({
       "/api/tables",
       async (data: any) => {
         close();
-        await settleBill(bill);
+
+        await universalFetcher("/api/bills/"+bill.id, "PATCH", bill);
 
         toast.success("Bill Settled");
 

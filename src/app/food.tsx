@@ -1,25 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { getItems, settleCanteenBill } from "~/utils/fetches";
+
 import useSWR from "swr";
 import { BillType, TableType } from "~/types/myTypes";
+import { universalFetcher } from "~/utils/fetches";
 
 import Food from "./_components/foodModal";
 import Bill from "./_components/billModal";
 
-
 export default function FoodBill({ table }: { table: TableType }) {
   const [showFood, setShowFood] = useState<boolean>(false);
-  const { data, isLoading } = useSWR(`/api/items`, getItems);
+  const { data, isLoading } = useSWR(`/api/items`, async (url) => {
+    const data = await universalFetcher(url, "GET");
+    return data;
+  });
 
   const [bill, setBill] = useState<BillType>();
 
   return (
     <div className="relative">
       {isLoading && (
-        <div className="flex items-center justify-center relative m-3 h-[268px] w-[350px]">
-          <div className="rounded-3xl h-[168px] w-[250px] bg-[#FFCC33]">
+        <div className="relative m-3 flex h-[268px] w-[350px] items-center justify-center">
+          <div className="h-[168px] w-[250px] rounded-3xl bg-[#FFCC33]">
             <div className="flex flex-col pt-5">
               <div className="flex w-full items-center justify-between">
                 <div className="flex flex-grow justify-center">
@@ -31,7 +34,7 @@ export default function FoodBill({ table }: { table: TableType }) {
                 </div>
               </div>
 
-              <div className="mx-auto my-5 rounded-md bg-white/70 animate-pulse px-10 py-6 text-black shadow-sm hover:bg-white/80">
+              <div className="mx-auto my-5 animate-pulse rounded-md bg-white/70 px-10 py-6 text-black shadow-sm hover:bg-white/80">
                 Create Bill
               </div>
             </div>
@@ -39,7 +42,7 @@ export default function FoodBill({ table }: { table: TableType }) {
         </div>
       )}
 
-      {!isLoading && (  
+      {!isLoading && (
         <>
           {bill && (
             <Bill
@@ -60,7 +63,7 @@ export default function FoodBill({ table }: { table: TableType }) {
                 setShowFood(false);
               }}
               save={(TotalAmount: number) => {
-                settleCanteenBill({
+                universalFetcher("/api/bills/canteen", "PATCH", {
                   tableId: 0,
                   checkIn: Date.now(),
                   checkOut: Date.now(),
@@ -68,7 +71,7 @@ export default function FoodBill({ table }: { table: TableType }) {
                   tableMoney: 0,
                   canteenMoney: TotalAmount,
                   settled: false,
-                }).then((newBill) => {
+                }).then((newBill: BillType) => {
                   setBill(newBill);
                 });
               }}
@@ -86,8 +89,8 @@ export default function FoodBill({ table }: { table: TableType }) {
             </button>
           )} */}
 
-          <div className="flex items-center justify-center relative m-3 h-[268px] w-[350px]">
-            <div className="rounded-3xl h-[168px] w-[250px] bg-[#FFCC33]">
+          <div className="relative m-3 flex h-[268px] w-[350px] items-center justify-center">
+            <div className="h-[168px] w-[250px] rounded-3xl bg-[#FFCC33]">
               <div className="flex flex-col pt-5">
                 <div className="flex w-full items-center justify-between">
                   <div className="flex flex-grow justify-center">
