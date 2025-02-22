@@ -13,9 +13,12 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: ct
 
   const tableRevenue = bills.reduce((acc: { [key: string]: number }, bill: BillType) => {
     if (!acc[bill?.table?.name??0]) {
-      acc[bill?.table?.name??0] = 0;
+      const tableName = bill?.table?.name ?? 0;
+      if (!acc[tableName]) {
+        acc[tableName] = 0;
+      }
+      acc[tableName] += bill.totalAmount ?? 0;
     }
-    acc[bill?.table?.name??0] += bill.totalAmount;
     return acc;
   }, {});
   
@@ -23,9 +26,12 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: ct
 
   const ctn = canteen.reduce((acc: { [key: string]: number }, bill: ctnBllInt) => {
       if (!acc[bill?.item?.name??0]) {
-        acc[bill?.item?.name??0] = 0;
+        const itemName = bill?.item?.name ?? 0;
+        if (!acc[itemName]) {
+          acc[itemName] = 0;
+        }
+        acc[itemName] += bill.amount;
       }
-      acc[bill?.item?.name??0] += bill.amount;
     return acc;
   }, {});
 
@@ -33,9 +39,12 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: ct
 
   const canteenQuantity = canteen.reduce((acc: { [key: string]: number }, bill: ctnBllInt) => {
     if (!acc[bill?.item?.name??0]) {
-      acc[bill?.item?.name??0] = 0;
+      const itemName = bill?.item?.name ?? 0;
+      if (!acc[itemName]) {
+        acc[itemName] = 0;
+      }
+      acc[itemName] += bill.quantity;
     }
-    acc[bill?.item?.name??0] += bill.quantity;
     return acc;
   }, {});
 
@@ -43,9 +52,12 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: ct
 
   const tableTime = bills.reduce((acc: { [key: string]: number }, bill: BillType) => {
     if (!acc[bill?.table?.name??0]) {
-      acc[bill?.table?.name??0] = 0;
+      const tableName = bill?.table?.name ?? 0;
+      if (!acc[tableName]) {
+        acc[tableName] = 0;
+      }
+      acc[tableName] += bill.timePlayed??0;
     }
-    acc[bill?.table?.name??0] += bill.timePlayed??0;
     return acc;
   }, {});
   
@@ -53,9 +65,12 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: ct
   
   const payMode = bills.reduce((acc: { [key: string]: number }, bill: BillType) => {
     if (!acc[bill.paymentMode]) {
-      acc[bill.paymentMode] = 0;
+      const paymentMode = bill.paymentMode ?? 0;
+      if (!acc[paymentMode]) {
+        acc[paymentMode] = 0;
+      }
+      acc[paymentMode] += 1;
     }
-    acc[bill.paymentMode] += 1;
     return acc;
   }, {});
   
