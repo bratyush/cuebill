@@ -47,6 +47,7 @@ export const bills = createTable(
     cashPaid: real("cashPaid").default(0),
     upiPaid: real("upiPaid").default(0),
     settled: integer("settled", {mode: 'boolean'}).default(false),
+    memberId: text("memberId"),
     note: text("note"),
     club: text("club"),
   }
@@ -85,6 +86,10 @@ export const billRelations = relations(bills, ({one}) => ({
     fields: [bills.tableId],
     references: [tables.id],
   }),
+  member: one(members, {
+    fields: [bills.memberId],
+    references: [members.id],
+  })
 }))
 
 export const itemRelations = relations(items, ({many}) => ({

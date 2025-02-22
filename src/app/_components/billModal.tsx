@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSWRConfig } from "swr";
 import { Icons } from "~/components/icons";
-import type { BillType, ItemType, TableType } from "~/types/myTypes";
-import { settleBill } from "~/utils/fetches";
+import type { BillType, ItemType, TableType, MemberType } from "~/types/myTypes";
+import { settleBill, universalFetcher } from "~/utils/fetches";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import Food from "./foodModal";
 import Discount from "./discountModal";
@@ -37,6 +37,19 @@ export default function Bill({
   const [showDiscount, setShowDiscount] = useState<boolean>(false);
 
   const [error, setError] = useState<string>("");
+
+  const [members, setMembers] = useState<MemberType[]>([]);
+  const [selectedMember, setSelectedMember] = useState<string>("");
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      const members = await universalFetcher("/api/members", "GET");
+      console.log(members);
+      setMembers(members.members);
+    };
+
+    fetchMembers();
+  }, []);
 
   function saveBill(bill: BillType) {
     mutate(
@@ -333,6 +346,25 @@ export default function Bill({
                         )}
                         <tr>
                           <td className="border border-slate-300 p-2">
+                            Member
+                          </td>
+                          <td className="border border-slate-300 p-2">
+                            <select 
+                              className="border border-gray-300 rounded p-1"
+                              value={selectedMember}
+                              onChange={(e) => setSelectedMember(e.target.value)}
+                            >
+                              <option value="">Not a Member</option>
+                              {members.map((member) => (
+                                <option key={member.id} value={member.id}>
+                                  {member.name}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="border border-slate-300 p-2">
                             Total Amount
                           </td>
                           <td className="border border-slate-300 p-2">
@@ -389,6 +421,7 @@ export default function Bill({
                             cashPaid: cash,
                             upiPaid: upi,
                             discount: discount,
+                            memberId: selectedMember,
                             totalAmount: Math.round(
                               (bill.tableMoney ?? 0) +
                                 canteenTotal -
