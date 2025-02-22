@@ -27,9 +27,6 @@ export async function DELETE(
   const id = parseInt(billId);
 
   await db.delete(canteenBills).where(eq(canteenBills.id, id));
-  // await db.query.canteenBills.deleteMany({
-  //   where: eq(canteenBills.billId, id)
-  // })
 
   return Response.json({status: "success"})
 }

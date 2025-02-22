@@ -122,11 +122,8 @@ const Food: React.FC<FoodProps> = ({ billId, items, close, save }) => {
                             if (item.id) {
                               try {
                                 await universalFetcher(
-                                  `/api/bills/canteen/${billId}`,
-                                  "DELETE",
-                                  {
-                                    itemId: item.id,
-                                  },
+                                  `/api/bills/canteen/${item.id}`,
+                                  "DELETE"
                                 );
 
                                 await mutate({
