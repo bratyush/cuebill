@@ -30,3 +30,9 @@ https://cuebill.app
   - [ ] make food modal DRY.
   - [ ] take care of mutates.
   - [ ] styling for the canteen table.
+
+Members:
+  paid how much? owes how much?
+  at checkout assign bills to members.
+  show members in table.
+  

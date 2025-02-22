@@ -4,24 +4,23 @@ import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { addItem } from "~/utils/fetches";
+import { universalFetcher } from "~/utils/fetches";
 
-export default function AddTable() {
+export default function AddItem() {
   const [itemName, setItemName] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
 
   const router = useRouter();
 
-  function addItemSubmit(itemName: string, price: number) {
-    addItem({ itemName, price })
-      .then(() => {
-        toast.success("Item added");
-        router.push("/admin/items");
-      })
-      .catch((error) => {
-        toast.error("There was an error!");
-        console.error("Fetch error:", error);
-      });
+  async function addItemSubmit(itemName: string, price: number) {
+    try {
+      await universalFetcher("/api/items", "POST", { itemName, price });
+      toast.success("Item added");
+      router.push("/admin/items");
+    } catch (error) {
+      toast.error("There was an error!");
+      console.error("Fetch error:", error);
+    }
   }
 
   return (

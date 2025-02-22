@@ -1,12 +1,11 @@
-// import logo from '~/assets/8ballogo.png';
-import { ClerkLoaded, ClerkLoading, UserButton, useAuth, useClerk } from "@clerk/nextjs";
+"use client"
+
+import { UserButton, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 
 const NavBar = () => {
 
   const clerk = useClerk()
-
-  console.log(clerk.loaded, "userId");
 
   return (
     <nav className="flex h-16 items-center justify-between bg-gray-50 px-10 text-black">

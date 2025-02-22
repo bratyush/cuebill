@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { type ItemType } from "~/types/myTypes";
 import toast from "react-hot-toast";
+import { universalFetcher } from "~/utils/fetches";
 
-export default function EditTable() {
+export default function EditItem() {
   const [itemName, setItemName] = useState<string>("");
   const [price, setPrice] = useState<number>();
 
@@ -16,50 +17,33 @@ export default function EditTable() {
 
   useEffect(() => {
     if (itemId) {
-      fetch("/api/items/" + itemId, {
-        method: "GET",
-        headers: {
-          "Cache-Control": "no-cache",
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data: { item: ItemType }) => {
+      const fetchItem = async () => {
+        try {
+          const data = await universalFetcher("/api/items/" + itemId, "GET");
           const item: ItemType = data.item;
-          console.log("data", item);
           setItemName(item.name);
           setPrice(item.price);
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error("Fetch error:", error);
-        });
+        }
+      };
+      fetchItem();
     }
   }, [itemId]);
 
-  function addTableSubmit(itemName: string, price?: number) {
+  async function addTableSubmit(itemName: string, price?: number) {
     if (itemId) {
-      fetch("/api/items/" + itemId, {
-        method: "PATCH",
-        headers: {
-          "Cache-Control": "no-cache",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: itemName, price: price }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then(() => {
-          toast.success("Item updated");
-          router.push("/admin/items");
-        })
-        .catch((error) => {
-          toast.error("There was an error!");
-          console.error("Fetch error:", error);
+      try {
+        await universalFetcher("/api/items/" + itemId, "PATCH", {
+          name: itemName,
+          price,
         });
+        toast.success("Item updated");
+        router.push("/admin/items");
+      } catch (error) {
+        toast.error("There was an error!");
+        console.error("Fetch error:", error);
+      }
     }
   }
 

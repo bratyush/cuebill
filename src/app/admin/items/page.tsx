@@ -9,26 +9,21 @@ import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { type ItemType } from "~/types/myTypes";
 import toast, { Toast } from "react-hot-toast";
-import { deleteItem, getItems } from "~/utils/fetches";
+import { universalFetcher } from "~/utils/fetches";
 
 export default function ItemsPage() {
   const [data, setData] = useState<ItemType[]>([]);
 
   useEffect(() => {
-    fetch("/api/items", {
-      method: "GET",
-      headers: {
-        "Cache-Control": "no-cache",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data: { items: ItemType[] }) => {
+    const fetchData = async () => {
+      try {
+        const data = await universalFetcher("/api/items", "GET");
         setData(data.items);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Fetch error:", error);
-      });
+      }
+    };
+    fetchData();
   }, []);
 
   const columns: ColumnDef<ItemType>[] = [
@@ -102,21 +97,15 @@ export default function ItemsPage() {
                   if (!item.id) {
                     return;
                   }
-                  deleteItem(item.id)
-                    .then(() => {
-                      toast.success("Item deleted");
+                  try {
+                    await universalFetcher("/api/items/" + item.id, "DELETE");
+                    toast.success("Item deleted");
 
-                      getItems()
-                        .then((data: { items: ItemType[] }) => {
-                          setData(data.items);
-                        })
-                        .catch((error: any) => {
-                          toast.error("Item fetch failed", error);
-                        });
-                    })
-                    .catch((error) => {
-                      toast.error("Item delete failed");
-                    });
+                    const data = await universalFetcher("/api/items", "GET");
+                    setData(data.items);
+                  } catch (error) {
+                    toast.error("Item delete failed");
+                  }
                 }
               }}
               className="mb-2 me-2 rounded-lg bg-red-700 px-3 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"

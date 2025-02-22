@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 
 import pool from "@/public/pool.png";
-import snooker from "@/public/snooker.png";
+
 import Image, { type StaticImageData } from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { type TableType } from "~/types/myTypes";
 import toast from "react-hot-toast";
 import { themes } from "~/utils/consts";
 import { tableTheme } from "~/utils/formatters";
-
+import { universalFetcher } from "~/utils/fetches";
 export default function EditTable() {
   const [style, setStyle] = useState<string>("pool");
   const [tableName, setTableName] = useState<string>("");
@@ -23,24 +23,19 @@ export default function EditTable() {
 
   useEffect(() => {
     if (tableId) {
-      fetch("/api/tables/" + tableId, {
-        method: "GET",
-        headers: {
-          "Cache-Control": "no-cache",
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data: { table: TableType }) => {
+      const fetchTableData = async () => {
+        try {
+          const data: { table: TableType } = await universalFetcher("/api/tables/" + tableId, "GET");
           const table: TableType = data.table;
-          console.log("data", table);
           setTableName(table.name);
           setRate(table.rate?.toString());
           setStyle(table.theme);
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error("Fetch error:", error);
-        });
+        }
+      };
+
+      fetchTableData();
     }
   }, [tableId]);
 
@@ -48,32 +43,20 @@ export default function EditTable() {
     setTypeImg(tableTheme(style))
   }, [style]);
 
-  function addTableSubmit(tableName: string, rate: string, style: string) {
+  async function addTableSubmit(tableName: string, rate: string, style: string) {
     if (tableId) {
-      // editTable(parseInt(tableId), {name:tableName, rate:rate, theme:style})
-
-      fetch("/api/tables/" + tableId, {
-        method: "PATCH",
-        headers: {
-          "Cache-Control": "no-cache",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: tableName, rate: rate, theme: style }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then(() => {
-          toast.success("Table updated");
-          router.push("/");
-        })
-        .catch((error) => {
-          toast.error("There was an error!");
-          console.error("Fetch error:", error);
+      try {
+        await universalFetcher("/api/tables/" + tableId, "PATCH", {
+          name: tableName,
+          rate: rate,
+          theme: style,
         });
+        toast.success("Table updated");
+        router.push("/admin/tables");
+      } catch (error) {
+        toast.error("There was an error!");
+        console.error("Fetch error:", error);
+      }
     }
   }
 

@@ -1,5 +1,23 @@
 import { BillType } from "~/types/myTypes";
 
+// Universal fetcher function
+export async function universalFetcher(route: string, method: string, body?: any) {
+  const response = await fetch(route, {
+    method: method,
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  return response.json();
+}
+
 export const checkInTable = (id: number, time: number) =>
   fetch("/api/tables/" + id, {
     method: "PATCH",

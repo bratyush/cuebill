@@ -11,25 +11,23 @@ import { type TableType } from "~/types/myTypes";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { tableTheme } from "~/utils/formatters";
+import { universalFetcher } from "~/utils/fetches";
+
 
 export default function TablePage() {
   const [data, setData] = useState<TableType[]>([]);
 
   useEffect(() => {
-    fetch("/api/tables", {
-      method: "GET",
-      headers: {
-        "Cache-Control": "no-cache",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data: { tables: TableType[] }) => {
+    const fetchData = async () => {
+      try {
+        const data = await universalFetcher("/api/tables", "GET");
         setData(data.tables);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Fetch error:", error);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   const columns: ColumnDef<TableType>[] = [
@@ -44,7 +42,7 @@ export default function TablePage() {
             #
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => {
         return <div>{row.index + 1}</div>;
@@ -69,7 +67,11 @@ export default function TablePage() {
         const table = row.original;
         return (
           <div>
-            <Image className="h-16 w-24" src={tableTheme(table.theme)} alt="img" />
+            <Image
+              className="h-16 w-24"
+              src={tableTheme(table.theme)}
+              alt="img"
+            />
           </div>
         );
       },
@@ -85,7 +87,7 @@ export default function TablePage() {
             Rate (₹)
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-        )
+        );
       },
       cell: ({ row }) => {
         const table = row.original;
@@ -116,39 +118,16 @@ export default function TablePage() {
               type="button"
               onClick={async () => {
                 if (confirm("Are you sure you want to delete?")) {
-                  fetch("/api/tables", {
-                    method: "DELETE",
-                    headers: {
-                      "Cache-Control": "no-cache",
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ id: table.id }),
-                  })
-                    .then((res) => {
-                      if (!res.ok) {
-                        throw new Error("Network response was not ok");
-                      }
-                    })
-                    .then(() => {
-                      toast.success("Table deleted");
-                      fetch("/api/tables", {
-                        method: "GET",
-                        headers: {
-                          "Cache-Control": "no-cache",
-                          "Content-Type": "application/json",
-                        },
-                      })
-                        .then((res) => res.json())
-                        .then((data: { tables: TableType[] }) => {
-                          setData(data.tables);
-                        })
-                        .catch((error) => {
-                          console.error("Fetch error:", error);
-                        });
-                    })
-                    .catch((error) => {
-                      console.error("Fetch error:", error);
+                  try {
+                    await universalFetcher("/api/tables", "DELETE", {
+                      id: table.id,
                     });
+                    toast.success("Table deleted");
+                    const data = await universalFetcher("/api/tables", "GET");
+                    setData(data.tables);
+                  } catch (error) {
+                    console.error("Fetch error:", error);
+                  }
                 }
               }}
               className="mb-2 me-2 rounded-lg bg-red-700 px-3 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"

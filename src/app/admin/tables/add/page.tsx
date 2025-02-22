@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-import pool from '@/public/pool.png';
+import pool from "@/public/pool.png";
 import Image, { type StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { themes } from "~/utils/consts";
 import { tableTheme } from "~/utils/formatters";
-// import { addTable } from '../utils/tauriFiles';
+import { universalFetcher } from "~/utils/fetches";
 
 export default function AddTable() {
   const [style, setStyle] = useState<string>("pool");
@@ -19,34 +19,26 @@ export default function AddTable() {
   const router = useRouter();
 
   useEffect(() => {
-    setTypeImg(tableTheme(style))
+    setTypeImg(tableTheme(style));
   }, [style]);
 
-  function addTableSubmit(tableName: string, rate: string, style: string) {
-    // addTable({name:tableName, rate:rate, theme:style})
-
-    fetch("/api/tables", {
-      method: "POST",
-      headers: {
-        "Cache-Control": "no-cache",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: tableName, rate: rate, theme: style }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then(() => {
-        toast.success("Table added");
-        router.push("/");
-      })
-      .catch((error) => {
-        toast.error("There was an error!");
-        console.error("Fetch error:", error);
+  async function addTableSubmit(
+    tableName: string,
+    rate: string,
+    style: string,
+  ) {
+    try {
+      await universalFetcher("/api/tables", "POST", {
+        name: tableName,
+        rate: rate,
+        theme: style,
       });
+      toast.success("Table added");
+      router.push("/admin/tables");
+    } catch (error) {
+      toast.error("There was an error!");
+      console.error("Fetch error:", error);
+    }
   }
 
   return (

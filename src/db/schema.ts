@@ -7,6 +7,17 @@ import { themes } from "~/utils/consts";
 
 export const createTable = sqliteTableCreator((name) => `pool_${name}`);
 
+export const members = createTable(
+  "member",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    name: text("name", { length: 256 }),
+    number: integer("number"),
+    balance: real("balance").default(0),
+    club: text("club"),
+  }
+)
+
 export const tables = createTable(
   "table",
   {
