@@ -1,5 +1,12 @@
 import { themes } from "~/utils/consts";
 
+export type MemberType = {
+    id: number;
+    name: string;
+    number: number;
+    balance: number;
+}
+
 export type TableType = {
     id: number;
     name: string;

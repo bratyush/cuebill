@@ -45,6 +45,12 @@ const NavBar = () => {
           Menu
         </Link>
         <Link
+          href={"/admin/members"}
+          className="rounded-md px-3 py-2 text-lg font-semibold text-black hover:bg-slate-300"
+        >
+          Members
+        </Link>
+        <Link
           href={"/admin/revenue"}
           className="rounded-md px-3 py-2 text-lg font-semibold text-black hover:bg-slate-300"
         >
