@@ -11,10 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { ctnBllInt, type BillType } from "~/types/myTypes";
+import { ctnBllInt, type BillType, type TransactionType } from "~/types/myTypes";
 import { universalFetcher } from "~/utils/fetches";
 import Charts from "./charts";
-import { columns } from "./columns";
+import { billColumns, canteenColumns, transactionColumns } from "./columns";
 
 export default function Revenue() {
   const { data, error, isLoading } = useSWR<{
@@ -25,7 +25,7 @@ export default function Revenue() {
     return data;
   });
 
-  const [tab, setTab] = useState<boolean>(true);
+  const [tab, setTab] = useState<string>("bills");
 
   const [showCustom, setShowCustom] = useState<boolean>(false);
   const [showOne, setShowOne] = useState<boolean>(false);
@@ -36,6 +36,7 @@ export default function Revenue() {
 
   let filterBills: BillType[] = [];
   let filterCanteen: ctnBllInt[] = [];
+  let filterTransactions: TransactionType[] = [];
 
   if (data) {
     // filter data based on timeframe
@@ -123,6 +124,8 @@ export default function Revenue() {
     });
   }
 
+  console.log(filterCanteen);
+
   return (
     <div className="container mx-auto py-2">
       {error && <div>Error: {error.message}</div>}
@@ -130,11 +133,17 @@ export default function Revenue() {
       {data && (
         <>
           <TabNavigation>
-            <TabNavigationLink onClick={() => setTab(true)} active={tab}>
+            <TabNavigationLink onClick={() => setTab("charts")} active={tab === "charts"}>
               Charts
             </TabNavigationLink>
-            <TabNavigationLink onClick={() => setTab(false)} active={!tab}>
-              Bills
+            <TabNavigationLink onClick={() => setTab("bills")} active={tab === "bills"}>
+              Table Bills
+            </TabNavigationLink>
+            <TabNavigationLink onClick={() => setTab("canteen")} active={tab === "canteen"}>
+              Canteen Bills
+            </TabNavigationLink>
+            <TabNavigationLink onClick={() => setTab("transactions")} active={tab === "transactions"}>
+              Transactions
             </TabNavigationLink>
 
             <div className="m-2 ml-auto flex flex-row gap-4">
@@ -205,10 +214,14 @@ export default function Revenue() {
           </TabNavigation>
 
           <div className="mt-5">
-            {tab ? (
+            {tab === "charts" ? (
               <Charts bills={filterBills} canteen={filterCanteen} />
+            ) : tab === "bills" ? (
+              <DataTable columns={billColumns} data={filterBills} />
+            ) : tab === "canteen" ? (
+              <DataTable columns={canteenColumns} data={filterCanteen} />
             ) : (
-              <DataTable columns={columns} data={filterBills} />
+              <DataTable columns={transactionColumns} data={filterTransactions} />
             )}
           </div>
         </>

@@ -19,13 +19,15 @@ export async function GET() {
       table: {
         columns: {name:true, rate:true}
       },
+      member: {
+        columns: {name:true}
+      },
     },
     where: eq(bills.club, club),
   });
 
   const ctnBls = await db.query.canteenBills.findMany({
     columns: {
-      billId: false,
       club: false,
       itemId: false,
     },

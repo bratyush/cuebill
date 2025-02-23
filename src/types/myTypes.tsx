@@ -32,7 +32,8 @@ export type BillType = {
     upiPaid: number;
     settled: boolean;
     note?: string;
-    memberId: string;
+    memberId: string | null;
+    member?: MemberType;
 };
 
 export interface CanteenBillType {

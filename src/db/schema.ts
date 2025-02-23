@@ -13,11 +13,11 @@ export const members = createTable(
     id: integer("id").primaryKey({ autoIncrement: true }),
     name: text("name", { length: 256 }),
     number: integer("number"),
-    balance: real("balance").default(0),
-    club: text("club"),
+    balance: real("balance").notNull().default(0),
+    club: text("club").notNull(),
   }
 )
-
+ 
 export const tables = createTable(
   "table",
   {
@@ -27,7 +27,18 @@ export const tables = createTable(
     theme: text("theme", { enum: themes}),
     checked_in_at: integer("checkedInAt"),
     active: integer("active", {mode: 'boolean'}).default(true),
-    club: text("club"),
+    club: text("club").notNull(),
+  }
+)
+
+export const transactions = createTable(
+  "transaction",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    memberId: text("memberId").notNull(),
+    amount: real("amount").default(0).notNull(),
+    paymentMode: text("paymentMode", {enum: ['cash', 'upi', 'both']}).default('upi'),
+    club: text("club").notNull(),
   }
 )
 
@@ -49,7 +60,7 @@ export const bills = createTable(
     settled: integer("settled", {mode: 'boolean'}).default(false),
     memberId: text("memberId"),
     note: text("note"),
-    club: text("club"),
+    club: text("club").notNull(),
   }
 )
 
@@ -60,7 +71,7 @@ export const items = createTable(
     name: text("name", { length: 256 }),
     price: real("price"),
     active: integer("active", {mode: 'boolean'}).default(true),
-    club: text("club"),
+    club: text("club").notNull(),
   }
 )
 
@@ -72,7 +83,7 @@ export const canteenBills = createTable(
     billId: integer("billId", { mode: "number"}).notNull(),
     quantity: integer("quantity"),
     amount: real("amount"),
-    club: text("club"),
+    club: text("club").notNull(),
   }
 )
 

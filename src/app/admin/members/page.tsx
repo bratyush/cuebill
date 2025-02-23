@@ -41,7 +41,11 @@ export default function MembersPage() {
     {
       accessorKey: "name",
       header: "Name",
-      cell: ({ row }: { row: any }) => <div>{row.original.name}</div>,
+      cell: ({ row }: { row: any }) => (
+        <Link href={`/admin/members/${row.original.id}/`} className="hover:underline">
+          {row.original.name}
+        </Link>
+      ),
     },
     {
       accessorKey: "number",
@@ -55,11 +59,11 @@ export default function MembersPage() {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Balance
+          Balance Owed
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }: { row: any }) => <div>₹{row.original.balance}</div>,
+      cell: ({ row }: { row: any }) => <div>₹{row.original.balance * -1}</div>,
     },
     {
       id: "actions",

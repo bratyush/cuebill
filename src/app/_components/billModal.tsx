@@ -57,7 +57,7 @@ export default function Bill({
       async (data: any) => {
         close();
 
-        await universalFetcher("/api/bills/"+bill.id, "PATCH", bill);
+        await universalFetcher("/api/bills/settle/"+bill.id, "POST", bill);
 
         toast.success("Bill Settled");
 
@@ -422,7 +422,7 @@ export default function Bill({
                             cashPaid: cash,
                             upiPaid: upi,
                             discount: discount,
-                            memberId: selectedMember,
+                            memberId: selectedMember ? selectedMember : null,
                             totalAmount: Math.round(
                               (bill.tableMoney ?? 0) +
                                 canteenTotal -
