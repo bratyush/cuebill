@@ -144,6 +144,7 @@ export default function Bill({
                   <div className="space-y-4 p-4 text-black md:p-5">
                     <table className="w-full border-collapse border border-slate-300">
                       <tbody>
+                        {/* Bill No. */}
                         <tr>
                           <td className="border border-slate-300 p-2">
                             Bill No.
@@ -152,12 +153,16 @@ export default function Bill({
                             {bill.id}
                           </td>
                         </tr>
+
+                        {/* Table */}
                         <tr>
                           <td className="border border-slate-300 p-2">Table</td>
                           <td className="border border-slate-300 p-2">
                             {table?.name}
                           </td>
                         </tr>
+
+                        {/* Check In */}
                         <tr>
                           <td className="border border-slate-300 p-2">
                             Check In
@@ -166,6 +171,8 @@ export default function Bill({
                             {formatTime(bill.checkIn)}
                           </td>
                         </tr>
+
+                        {/* Check Out */}
                         <tr>
                           <td className="border border-slate-300 p-2">
                             Check Out
@@ -174,6 +181,8 @@ export default function Bill({
                             {formatTime(bill.checkOut)}
                           </td>
                         </tr>
+
+                        {/* Time Played */}
                         <tr>
                           <td className="border border-slate-300 p-2">
                             Time Played
@@ -182,6 +191,8 @@ export default function Bill({
                             {formatElapsed(bill.timePlayed)}
                           </td>
                         </tr>
+
+                        {/* Table Rate */}
                         <tr>
                           <td className="border border-slate-300 p-2">
                             Table Rate
@@ -190,6 +201,8 @@ export default function Bill({
                             &#8377;{table?.rate}/min
                           </td>
                         </tr>
+
+                        {/* Table Money */}
                         <tr>
                           <td className="border border-slate-300 p-2">
                             Table Money
@@ -198,6 +211,8 @@ export default function Bill({
                             &#8377;{bill.tableMoney}
                           </td>
                         </tr>
+
+                        {/* Canteen Money */}
                         <tr>
                           <td className="border border-slate-300 p-2">
                             Canteen Money
@@ -218,6 +233,8 @@ export default function Bill({
                             </div>
                           </td>
                         </tr>
+
+                        {/* Mode */}
                         <tr>
                           <td className="border border-slate-300 p-2">Mode</td>
                           <td className="flex justify-evenly border-slate-300 p-2">
@@ -226,6 +243,7 @@ export default function Bill({
                                 onChange={(e) => {
                                   if (e.target.checked) {
                                     setMode("cash");
+                                    setCashPaid(bill.tableMoney);
                                   }
                                 }}
                                 id="default-radio-1"
@@ -247,6 +265,7 @@ export default function Bill({
                                 onChange={(e) => {
                                   if (e.target.checked) {
                                     setMode("upi");
+                                    setCashPaid(0);
                                   }
                                 }}
                                 id="default-radio-2"
@@ -267,6 +286,7 @@ export default function Bill({
                                 onChange={(e) => {
                                   if (e.target.checked) {
                                     setMode("both");
+                                    setCashPaid(bill.tableMoney);
                                   }
                                 }}
                                 id="default-radio-2"
@@ -284,6 +304,8 @@ export default function Bill({
                             </div>
                           </td>
                         </tr>
+
+                        {/* Cash Amount */}
                         {mode === "both" && (<>
                           <tr>
                             <td className="border border-slate-300 p-2">
@@ -325,6 +347,8 @@ export default function Bill({
                               </div>
                             </td>
                           </tr>
+
+                          {/* UPI Amount */}
                           <tr>
                             <td className="border border-slate-300 p-2">
                               UPI Amount
@@ -335,6 +359,8 @@ export default function Bill({
                           </tr>
                           </>
                         )}
+
+                        {/* Discount */}
                         {discount !== 0 && (
                           <tr>
                             <td className="border border-slate-300 p-2">
@@ -345,6 +371,8 @@ export default function Bill({
                             </td>
                           </tr>
                         )}
+
+                        {/* Member */}
                         <tr>
                           <td className="border border-slate-300 p-2">
                             Member
@@ -364,6 +392,8 @@ export default function Bill({
                             </select>
                           </td>
                         </tr>
+
+                        {/* Total Amount */}
                         <tr>
                           <td className="border border-slate-300 p-2">
                             Total Amount

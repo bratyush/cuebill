@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { universalFetcher } from "~/utils/fetches";
 import { BillType } from "~/types/myTypes";
 import { DataTable } from "~/components/ui/dataTable";
-import { columns } from "~/app/admin/revenue/columns";
+import { billColumns } from "~/app/admin/revenue/columns";
+import SettleModal from "~/app/_components/settleModal";
+import useSWR from "swr";
 
 export default function MemberPage({
   params,
@@ -13,10 +15,26 @@ export default function MemberPage({
 }) {
   const [member, setMember] = useState<any>(null);
   const [bills, setBills] = useState<BillType[]>([]);
+  const [showSettleModal, setShowSettleModal] = useState(false);
 
-  const filteredColumns = columns.filter(
+  const filteredColumns = billColumns.filter(
     (column) => "accessorKey" in column && column.accessorKey !== "member",
   );
+
+  const { data: memberData, error } = useSWR(
+    `/api/members/${params.memberId}`,
+    universalFetcher,
+  );
+
+  useEffect(() => {
+    if (memberData) {
+      setMember(memberData.member);
+    }
+  }, [memberData]);
+
+  if (error) {
+    console.error("Error fetching member data:", error);
+  }
 
   useEffect(() => {
     const fetchMemberData = async () => {
@@ -28,13 +46,6 @@ export default function MemberPage({
 
         setBills(billsData);
         console.log("billsData", billsData);
-
-        const memberData = await universalFetcher(
-          `/api/members/${params.memberId}`,
-          "GET",
-        );
-
-        setMember(memberData.member);
       } catch (error) {
         console.error("Error fetching member data:", error);
       }
@@ -48,22 +59,34 @@ export default function MemberPage({
       {member && (
         <div className="mb-8 flex justify-between">
           <div className="flex flex-row gap-4">
-            <span className="text-3xl font-semibold my-auto">{member.name}</span>
-            <span className="text-xl font-light my-auto">+91 {member.number}</span>
+            <span className="my-auto text-3xl font-semibold">
+              {member.name}
+            </span>
+            <span className="my-auto text-xl font-light">
+              +91 {member.number}
+            </span>
           </div>
 
-            <span className="text-lg my-auto">Balance Owed: 
-              <span className="text-2xl font-semibold ml-4 text-red-500">₹{member.balance * -1}</span>
+          <span className="my-auto text-lg">
+            Balance Owed:
+            <span className="ml-4 text-2xl font-semibold text-red-500">
+              ₹{member.balance * -1}
             </span>
-          <button
-            className="mb-2 me-2 rounded-lg bg-orange-500 px-3 py-2 text-sm font-medium text-white hover:bg-orange-500"
-            onClick={() => {
-              console.log("Settle Balance");
-            }}
-          >
-            Settle Balance
-          </button>
+          </span>
+
+            <button
+              className={`mb-2 me-2 rounded-lg px-3 py-2 text-sm font-medium text-white ${member.balance !== 0 ? 'bg-orange-500 hover:bg-orange-500' : 'bg-gray-400 cursor-not-allowed'}`}
+              onClick={() => member.balance !== 0 && setShowSettleModal(true)}
+              disabled={member.balance == 0}
+            >
+              Settle Balance
+            </button>
+
         </div>
+      )}
+
+      {showSettleModal && member && (
+        <SettleModal close={() => setShowSettleModal(false)} member={member} />
       )}
 
       <DataTable columns={filteredColumns} data={bills} />

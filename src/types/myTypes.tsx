@@ -16,6 +16,14 @@ export type TableType = {
     unsettled: BillType[];
 };
 
+export type TransactionType = {
+    id: number;
+    memberId: number;
+    member?: MemberType;
+    amount: number;
+    paymentMode: 'cash' | 'upi' | 'both';
+}
+
 export type BillType = {
     id: number;
     tableId:number;

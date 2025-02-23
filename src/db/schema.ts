@@ -35,7 +35,7 @@ export const transactions = createTable(
   "transaction",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    memberId: text("memberId").notNull(),
+    memberId: integer("memberId").notNull(),
     amount: real("amount").default(0).notNull(),
     paymentMode: text("paymentMode", {enum: ['cash', 'upi', 'both']}).default('upi'),
     club: text("club").notNull(),
@@ -58,7 +58,7 @@ export const bills = createTable(
     cashPaid: real("cashPaid").default(0),
     upiPaid: real("upiPaid").default(0),
     settled: integer("settled", {mode: 'boolean'}).default(false),
-    memberId: text("memberId"),
+    memberId: integer("memberId"),
     note: text("note"),
     club: text("club").notNull(),
   }
@@ -115,5 +115,12 @@ export const canteenBillRelations = relations(canteenBills, ({one}) => ({
   bill: one(bills, {
     fields: [canteenBills.billId],
     references: [bills.id],
+  })
+}))
+
+export const transactionRelations = relations(transactions, ({one}) => ({
+  member: one(members, {
+    fields: [transactions.memberId],
+    references: [members.id],
   })
 }))
