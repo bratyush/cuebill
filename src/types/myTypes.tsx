@@ -41,7 +41,7 @@ export type BillType = {
     upiPaid: number;
     settled: boolean;
     note?: string;
-    memberId: string | null;
+    memberId: number | null;
     member?: MemberType;
 };
 

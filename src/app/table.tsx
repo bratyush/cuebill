@@ -130,7 +130,7 @@ export default function Table({
       upiPaid: parseFloat(generatedRevenue),
       totalAmount: parseFloat(generatedRevenue),
       settled: false,
-      memberId: "",
+      memberId: null,
     };
     if (table.checked_in_at) {
       tempBill.checkIn = table.checked_in_at;

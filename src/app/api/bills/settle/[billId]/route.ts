@@ -18,7 +18,7 @@ export async function POST(
     // update the balance of the member
     if (body.memberId) {
         // decrease the balance by the total amount
-        await db.update(members).set({balance: sql`balance - ${body.totalAmount}`}).where(eq(members.id, parseInt(body.memberId)))
+        await db.update(members).set({balance: sql`balance - ${body.totalAmount}`}).where(eq(members.id, body.memberId))
     }
 
     return Response.json({status: "created"})

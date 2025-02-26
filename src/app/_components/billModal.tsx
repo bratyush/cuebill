@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSWRConfig } from "swr";
 import { Icons } from "~/components/icons";
-import type { BillType, ItemType, TableType, MemberType } from "~/types/myTypes";
+import type {
+  BillType,
+  ItemType,
+  TableType,
+  MemberType,
+} from "~/types/myTypes";
 import { universalFetcher } from "~/utils/fetches";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import Food from "./foodModal";
@@ -26,9 +31,10 @@ export default function Bill({
 
   const [showFood, setShowFood] = useState<boolean>(false);
 
-  const {data} = canteenTotalSwr(billId?.toString());
+  const { data } = canteenTotalSwr(billId?.toString());
 
-  const canteenTotal = data?.total!==undefined ? data?.total : bill.canteenMoney ?? 0;
+  const canteenTotal =
+    data?.total !== undefined ? data?.total : (bill.canteenMoney ?? 0);
 
   const [mode, setMode] = useState<"cash" | "upi" | "both">("upi");
   const [cashPaid, setCashPaid] = useState<number>(0);
@@ -57,7 +63,7 @@ export default function Bill({
       async (data: any) => {
         close();
 
-        await universalFetcher("/api/bills/settle/"+bill.id, "POST", bill);
+        await universalFetcher("/api/bills/settle/" + bill.id, "POST", bill);
 
         toast.success("Bill Settled");
 
@@ -94,8 +100,8 @@ export default function Bill({
           items={items}
           billId={bill.id}
           close={() => {
-            mutate(`/api/bills/canteen/total/${billId?.toString()}`)
-            setShowFood(false)
+            mutate(`/api/bills/canteen/total/${billId?.toString()}`);
+            setShowFood(false);
           }}
         />
       ) : (
@@ -306,57 +312,58 @@ export default function Bill({
                         </tr>
 
                         {/* Cash Amount */}
-                        {mode === "both" && (<>
-                          <tr>
-                            <td className="border border-slate-300 p-2">
-                              Cash Amount
-                            </td>
-                            <td className="border border-slate-300 p-2">
-                              <div className="group relative z-0 flex w-full">
-                                <span className="my-auto mr-1">&#8377;</span>
+                        {mode === "both" && (
+                          <>
+                            <tr>
+                              <td className="border border-slate-300 p-2">
+                                Cash Amount
+                              </td>
+                              <td className="border border-slate-300 p-2">
+                                <div className="group relative z-0 flex w-full">
+                                  <span className="my-auto mr-1">&#8377;</span>
 
-                                <input
-                                  value={cashPaid}
-                                  onChange={(e) => {
-                                    let cash = e.target.value;
-                                    let x = parseFloat(cash);
+                                  <input
+                                    value={cashPaid}
+                                    onChange={(e) => {
+                                      let cash = e.target.value;
+                                      let x = parseFloat(cash);
 
-                                    if (Number.isNaN(x)) {
-                                      setError(
-                                        "Cash amount should be a number",
-                                      );
-                                    } else if (x > bill.tableMoney) {
-                                      setError(
-                                        "Cash amount should be less than total amount",
-                                      );
-                                    } else if (x < 0) {
-                                      setError(
-                                        "Cash amount should be positive",
-                                      );
-                                    } else {
-                                      setError("");
-                                    }
-                                    setCashPaid(x);
-                                  }}
-                                  type="number"
-                                  name="floating_password"
-                                  id="floating_password"
-                                  className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent px-0 py-2 text-sm text-gray-900 focus:border-slate-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-slate-500"
-                                  required
-                                />
-                              </div>
-                            </td>
-                          </tr>
+                                      if (Number.isNaN(x)) {
+                                        setError(
+                                          "Cash amount should be a number",
+                                        );
+                                      } else if (x > bill.tableMoney) {
+                                        setError(
+                                          "Cash amount should be less than total amount",
+                                        );
+                                      } else if (x < 0) {
+                                        setError(
+                                          "Cash amount should be positive",
+                                        );
+                                      } else {
+                                        setError("");
+                                      }
+                                      setCashPaid(x);
+                                    }}
+                                    type="number"
+                                    name="floating_password"
+                                    id="floating_password"
+                                    className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent px-0 py-2 text-sm text-gray-900 focus:border-slate-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-slate-500"
+                                    required
+                                  />
+                                </div>
+                              </td>
+                            </tr>
 
-                          {/* UPI Amount */}
-                          <tr>
-                            <td className="border border-slate-300 p-2">
-                              UPI Amount
-                            </td>
-                            <td className="border border-slate-300 p-2">
-                              &#8377;{Math.round(bill.tableMoney - cashPaid)}
-                            </td>
-                          </tr>
+                            {/* UPI Amount */}
+                            <tr>
+                              <td className="border border-slate-300 p-2">
+                                UPI Amount
+                              </td>
+                              <td className="border border-slate-300 p-2">
+                                &#8377;{Math.round(bill.tableMoney - cashPaid)}
+                              </td>
+                            </tr>
                           </>
                         )}
 
@@ -378,10 +385,12 @@ export default function Bill({
                             Member
                           </td>
                           <td className="border border-slate-300 p-2">
-                            <select 
-                              className="border border-gray-300 rounded p-1"
+                            <select
+                              className="rounded border border-gray-300 p-1"
                               value={selectedMember}
-                              onChange={(e) => setSelectedMember(e.target.value)}
+                              onChange={(e) =>
+                                setSelectedMember(e.target.value)
+                              }
                             >
                               <option value="">Not a Member</option>
                               {members.map((member) => (
@@ -452,14 +461,12 @@ export default function Bill({
                             cashPaid: cash,
                             upiPaid: upi,
                             discount: discount,
-                            memberId: selectedMember ? selectedMember : null,
+                            memberId: selectedMember ? parseInt(selectedMember) : null,
                             totalAmount: Math.round(
-                              (bill.tableMoney ?? 0) +
-                                canteenTotal -
-                                discount,
+                              (bill.tableMoney ?? 0) + canteenTotal - discount,
                             ),
                             settled: true,
-                          })
+                          });
                         }
                       }}
                       type="button"
