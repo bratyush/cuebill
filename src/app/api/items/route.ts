@@ -12,6 +12,8 @@ export async function POST(request: Request) {
   const user = await currentUser();
   const club = user?.privateMetadata.org?? '';
 
+  console.log('body', body)
+
   await db.insert(items).values({...body, club:club});
 
   return Response.json({status: "created"})

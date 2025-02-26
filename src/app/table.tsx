@@ -31,6 +31,8 @@ export default function Table({
     universalFetcher("/api/items", "GET"),
   );
 
+  console.log('adsf', data)
+
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   // Date.now() - table.checked_in_at
   const [generatedRevenue, setGeneratedRevenue] = useState<string>("0.00");

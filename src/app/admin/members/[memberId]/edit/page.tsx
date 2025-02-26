@@ -41,7 +41,7 @@ export default function EditMember() {
   }
 
   return (
-    <div>
+    <div className="container mx-auto py-10">
       <form onSubmit={editMemberSubmit} className="mx-auto max-w-md">
         <div className="mb-5">
           <label

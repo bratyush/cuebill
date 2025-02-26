@@ -1,7 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { db } from "~/db";
-import { bills, canteenBills } from "~/db/schema";
+import { bills, canteenBills, transactions } from "~/db/schema";
 
 export async function GET() {
 
@@ -34,7 +34,7 @@ export async function GET() {
     where: eq(canteenBills.club, club),
     with: {
       bill: {
-        columns: { checkIn: true },
+        columns: { checkOut: true },
       },
       item: {
         columns: { name: true, price: true},
@@ -42,6 +42,18 @@ export async function GET() {
     },
   });
 
-  return Response.json({bills: bls, canteen: ctnBls})
+  const trs = await db.query.transactions.findMany({
+    columns: {
+      club: false,
+    },
+    where: eq(transactions.club, club),
+    with: {
+      member: {
+        columns: { name: true },
+      },
+    },
+  });
+
+  return Response.json({bills: bls, canteen: ctnBls, transactions: trs})
 
 }

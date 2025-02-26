@@ -22,7 +22,7 @@ interface FoodProps {
   save?: (TotalAmount: number) => void;
 }
 
-const Food: React.FC<FoodProps> = ({ billId, items, close, save }) => {
+const Food = ({ billId, items, close, save }: FoodProps) => {
   const [selectedItem, setSelectedItem] = useState<ItemType>();
   const [selectedQuant, setSelectedQuant] = useState<number>(1);
 
@@ -30,6 +30,7 @@ const Food: React.FC<FoodProps> = ({ billId, items, close, save }) => {
     bills: CanteenBillType[];
   }>(`/api/bills/canteen/${billId?.toString()}`, async (url: string) => {
     const data = await universalFetcher(url, "GET");
+    console.log("data", data);
     return data;
   });
 
@@ -88,9 +89,7 @@ const Food: React.FC<FoodProps> = ({ billId, items, close, save }) => {
                 <tr>
                   <th className="border border-slate-300 px-4 py-2">Food</th>
                   <th className="border border-slate-300 px-4 py-2">Price</th>
-                  <th className="border border-slate-300 px-4 py-2">
-                    Quantity
-                  </th>
+                  <th className="border border-slate-300 px-4 py-2">Quantity</th>
                   <th className="border border-slate-300 px-4 py-2">Cost</th>
                 </tr>
               </thead>

@@ -22,7 +22,7 @@ export async function GET(request: Request, { params }: { params: { memberId: st
             columns: {name:true, rate:true}
           },
         },
-        where: and(eq(bills.club, club), eq(bills.memberId, memberId)),
+        where: and(eq(bills.club, club), eq(bills.memberId, parseInt(memberId))),
       });
 
     return new Response(JSON.stringify(memberBills), {

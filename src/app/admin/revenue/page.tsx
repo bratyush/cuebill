@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { TabNavigation, TabNavigationLink } from "~/components/tremor/tabNav";
 import { DataTable } from "~/components/ui/dataTable";
@@ -11,7 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { ctnBllInt, type BillType, type TransactionType } from "~/types/myTypes";
+import {
+  ctnBllInt,
+  type BillType,
+  type TransactionType,
+} from "~/types/myTypes";
 import { universalFetcher } from "~/utils/fetches";
 import Charts from "./charts";
 import { billColumns, canteenColumns, transactionColumns } from "./columns";
@@ -20,6 +24,7 @@ export default function Revenue() {
   const { data, error, isLoading } = useSWR<{
     bills: BillType[];
     canteen: ctnBllInt[];
+    transactions: TransactionType[];
   }>(`/api/data`, async (url: string) => {
     const data = await universalFetcher(url, "GET");
     return data;
@@ -34,97 +39,80 @@ export default function Revenue() {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
 
-  let filterBills: BillType[] = [];
-  let filterCanteen: ctnBllInt[] = [];
-  let filterTransactions: TransactionType[] = [];
+  const [filterBills, setFilterBills] = useState<BillType[]>([]);
+  const [filterCanteen, setFilterCanteen] = useState<ctnBllInt[]>([]);
+  const [filterTransactions, setFilterTransactions] = useState<TransactionType[]>([]);
 
-  if (data) {
-    // filter data based on timeframe
-
-    filterBills = data.bills.filter((bill) => {
-      if (bill.checkIn) {
-        const date = new Date(bill.checkIn);
-        const now = new Date();
-        if (timeframe == "td") {
-          // Added condition for This Day
-          return date.toDateString() === now.toDateString();
-        } else if (timeframe == "tm") {
-          return (
-            date.getMonth() == now.getMonth() &&
-            date.getFullYear() == now.getFullYear()
-          );
-        } else if (timeframe == "lm") {
-          if (now.getMonth() == 0) {
-            return (
-              date.getMonth() == 11 &&
-              date.getFullYear() == now.getFullYear() - 1
-            );
-          }
-          return (
-            date.getMonth() == now.getMonth() - 1 &&
-            date.getFullYear() == now.getFullYear()
-          );
-        } else if (timeframe == "ty") {
-          return date.getFullYear() == now.getFullYear();
-        } else if (timeframe == "ly") {
-          return date.getFullYear() == now.getFullYear() - 1;
-        } else if (timeframe == "c") {
-          const start = new Date(startDate);
-          const end = new Date(endDate);
-          return date >= start && date <= end;
-        } else if (timeframe == "od") {
-          // Added condition for One Day
-          const selectedDate = new Date(startDate); // Use startDate for the selected date
-          return date.toDateString() === selectedDate.toDateString();
-        }
-
-        return true;
+  const dateFiltering = (date: Date) => {
+    const now = new Date();
+    if (timeframe == "td") {
+      return date.toDateString() === now.toDateString();
+    } else if (timeframe == "tm") {
+      return (
+        date.getMonth() == now.getMonth() &&
+        date.getFullYear() == now.getFullYear()
+      );
+    } else if (timeframe == "lm") {
+      if (now.getMonth() == 0) {
+        return (
+          date.getMonth() == 11 && date.getFullYear() == now.getFullYear() - 1
+        );
       }
-    });
+      return (
+        date.getMonth() == now.getMonth() - 1 &&
+        date.getFullYear() == now.getFullYear()
+      );
+    } else if (timeframe == "ty") {
+      return date.getFullYear() == now.getFullYear();
+    } else if (timeframe == "ly") {
+      return date.getFullYear() == now.getFullYear() - 1;
+    } else if (timeframe == "c") {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      return date >= start && date <= end;
+    } else if (timeframe == "od") {
+      // Added condition for One Day
+      const selectedDate = new Date(startDate); // Use startDate for the selected date
+      return date.toDateString() === selectedDate.toDateString();
+    } else {
+      return true
+    }
+  };
 
-    filterCanteen = data.canteen.filter((canteen) => {
-      if (canteen.bill?.checkIn) {
-        const date = new Date(canteen.bill.checkIn);
-        const now = new Date();
-        if (timeframe == "td") {
-          // Added condition for This Day
-          return date.toDateString() === now.toDateString();
-        } else if (timeframe == "tm") {
-          return (
-            date.getMonth() == now.getMonth() &&
-            date.getFullYear() == now.getFullYear()
-          );
-        } else if (timeframe == "lm") {
-          if (now.getMonth() == 0) {
-            return (
-              date.getMonth() == 11 &&
-              date.getFullYear() == now.getFullYear() - 1
-            );
-          }
-          return (
-            date.getMonth() == now.getMonth() - 1 &&
-            date.getFullYear() == now.getFullYear()
-          );
-        } else if (timeframe == "ty") {
-          return date.getFullYear() == now.getFullYear();
-        } else if (timeframe == "ly") {
-          return date.getFullYear() == now.getFullYear() - 1;
-        } else if (timeframe == "c") {
-          const start = new Date(startDate);
-          const end = new Date(endDate);
-          return date >= start && date <= end;
-        } else if (timeframe == "od") {
-          // Added condition for One Day
-          const selectedDate = new Date(startDate); // Use startDate for the selected date
-          return date.toDateString() === selectedDate.toDateString();
+  useEffect(() => {
+    if (data) {
+      const filteredBills = data.bills.filter((bill) => {
+        if (bill.checkIn) {
+          const date = new Date(bill.checkIn);
+          return dateFiltering(date);
         }
+        return false; // Ensure a boolean return
+      });
+  
+      const filteredCanteen = data.canteen.filter((canteen) => {
+        if (canteen.bill?.checkOut) {
+          const date = new Date(canteen.bill.checkOut);
+          return dateFiltering(date);
+        }
+        return false; // Ensure a boolean return
+      });
+      console.log(filteredCanteen);
 
-        return true;
-      }
-    });
-  }
+      const filteredTransactions = data.transactions.filter((transaction) => {
+        if (transaction.createdAt) {
+          const date = new Date(transaction.createdAt);
+          return dateFiltering(date);
+        }
+        return false; // Ensure a boolean return
+      });
+  
+      setFilterBills(filteredBills);
+      setFilterCanteen(filteredCanteen);
+      setFilterTransactions(filteredTransactions);
+    }
+  }, [data, timeframe, startDate, endDate]);
 
-  console.log(filterCanteen);
+  console.log(tab);
 
   return (
     <div className="container mx-auto py-2">
@@ -133,16 +121,28 @@ export default function Revenue() {
       {data && (
         <>
           <TabNavigation>
-            <TabNavigationLink onClick={() => setTab("charts")} active={tab === "charts"}>
+            <TabNavigationLink
+              onClick={() => setTab("charts")}
+              active={tab === "charts"}
+            >
               Charts
             </TabNavigationLink>
-            <TabNavigationLink onClick={() => setTab("bills")} active={tab === "bills"}>
+            <TabNavigationLink
+              onClick={() => setTab("bills")}
+              active={tab === "bills"}
+            >
               Table Bills
             </TabNavigationLink>
-            <TabNavigationLink onClick={() => setTab("canteen")} active={tab === "canteen"}>
+            <TabNavigationLink
+              onClick={() => setTab("canteen")}
+              active={tab === "canteen"}
+            >
               Canteen Bills
             </TabNavigationLink>
-            <TabNavigationLink onClick={() => setTab("transactions")} active={tab === "transactions"}>
+            <TabNavigationLink
+              onClick={() => setTab("transactions")}
+              active={tab === "transactions"}
+            >
               Transactions
             </TabNavigationLink>
 
@@ -214,15 +214,10 @@ export default function Revenue() {
           </TabNavigation>
 
           <div className="mt-5">
-            {tab === "charts" ? (
-              <Charts bills={filterBills} canteen={filterCanteen} />
-            ) : tab === "bills" ? (
-              <DataTable columns={billColumns} data={filterBills} />
-            ) : tab === "canteen" ? (
-              <DataTable columns={canteenColumns} data={filterCanteen} />
-            ) : (
-              <DataTable columns={transactionColumns} data={filterTransactions} />
-            )}
+            {tab === "charts" && <Charts bills={filterBills} canteen={filterCanteen} />}
+            {tab === "bills" && <DataTable columns={billColumns} data={filterBills} />}
+            {tab === "canteen" && <DataTable columns={canteenColumns} data={filterCanteen} />}
+            {tab === "transactions" && <DataTable columns={transactionColumns} data={filterTransactions} />}
           </div>
         </>
       )}

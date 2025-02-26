@@ -38,6 +38,7 @@ export const transactions = createTable(
     memberId: integer("memberId").notNull(),
     amount: real("amount").default(0).notNull(),
     paymentMode: text("paymentMode", {enum: ['cash', 'upi', 'both']}).default('upi'),
+    createdAt: integer("createdAt").default(Date.now()),
     club: text("club").notNull(),
   }
 )

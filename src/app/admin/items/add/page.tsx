@@ -14,7 +14,8 @@ export default function AddItem() {
 
   async function addItemSubmit(itemName: string, price: number) {
     try {
-      await universalFetcher("/api/items", "POST", { itemName, price });
+      console.log('asdf', itemName)
+      await universalFetcher("/api/items", "POST", { name: itemName, price });
       toast.success("Item added");
       router.push("/admin/items");
     } catch (error) {

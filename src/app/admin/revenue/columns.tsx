@@ -3,7 +3,7 @@ import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
 import { formatElapsed, formatTime } from "~/utils/formatters";
 import { Button } from "~/components/ui/button";
-import { BillType, CanteenBillType } from "~/types/myTypes";
+import { BillType, CanteenBillType, TransactionType } from "~/types/myTypes";
 
 export const billColumns: ColumnDef<BillType>[] = [
   {
@@ -176,7 +176,152 @@ export const billColumns: ColumnDef<BillType>[] = [
   },
 ];
 
-
 export const canteenColumns: ColumnDef<CanteenBillType>[] = [
+// cratedAt(bill.checkIn),item name, price, quantity, billId, amount,
+  {
+    accessorKey: "id",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-10"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          #
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return <div>{row.index + 1}</div>;
+    },
+  },
+  {
+    accessorKey: "date",
+    header: "Date",
+    cell: ({ row }) => {
+      const bill = row.original;
+      const checkOutDate = bill.bill?.checkOut !== undefined ? bill.bill.checkOut : 0;
+      return <div>{new Date(checkOutDate).toDateString()}</div>;
+    },
+  },
+  {
+    accessorKey: "time",
+    header: "Time",
+    cell: ({ row }) => {
+      const bill = row.original;
+      const checkOutDate = bill.bill?.checkOut !== undefined ? bill.bill.checkOut : 0;
+      return <div>{formatTime(checkOutDate)}</div>;
+    },
+  },
+  {
+    accessorKey: "item",
+    header: "Item",
+    cell: ({ row }) => {
+      const bill = row.original;
+      return <div>{bill.item?.name}</div>;
+    },
+  },
+  {
+    accessorKey: "price",
+    header: "Price",
+    cell: ({ row }) => {
+      const bill = row.original;
+      return <div>&#8377;{bill.item?.price}</div>;
+    },
+  },
+  {
+    accessorKey: "quantity",
+    header: "Quantity",
+    cell: ({ row }) => {
+      const bill = row.original;
+      return <div>{bill.quantity}</div>;
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: "Amount",
+    cell: ({ row }) => {
+      const bill = row.original;
+      return <div>&#8377;{bill.amount}</div>;
+    },
+  },
+  {
+    accessorKey: "billId",
+    header: "Bill ID",
+    cell: ({ row }) => {
+      const bill = row.original;
+      return <div>{bill.billId}</div>;
+    },
+  },
+];
 
+export const transactionColumns: ColumnDef<TransactionType>[] = [
+  {
+    accessorKey: "id",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="w-10"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          #
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return <div>{row.index + 1}</div>;
+    },
+  },
+  {
+    accessorKey: "date",
+    header: "Date",
+    cell: ({ row }) => {
+      const transaction = row.original;
+      return <div>{transaction.createdAt ? new Date(transaction.createdAt).toDateString() : '-'}</div>;
+
+    },
+  },
+  {
+    accessorKey: "time",
+    header: "Time",
+    cell: ({ row }) => {
+      const transaction = row.original;
+      return <div>{formatTime(transaction.createdAt)}</div>;
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: "Amount",
+    cell: ({ row }) => {
+      const transaction = row.original;
+      return <div>&#8377;{transaction.amount}</div>;
+    },
+  },
+  {
+    accessorKey: "paymentMode",
+    header: "Payment Mode",
+    cell: ({ row }) => {
+      const transaction = row.original;
+      return <div>{transaction.paymentMode}</div>;
+    },  
+  },
+  {
+    accessorKey: "date",
+    header: "Date",
+    cell: ({ row }) => {
+      const transaction = row.original;
+      return <div>{transaction.createdAt ? new Date(transaction.createdAt).toDateString() : '-'}</div>;
+    },
+  },
+  {
+    accessorKey: "member",
+    header: "Member",
+    cell: ({ row }) => {
+      const transaction = row.original;
+      return <div>{transaction.member?.name}</div>;
+    },
+  },
 ];

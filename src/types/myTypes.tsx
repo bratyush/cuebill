@@ -22,6 +22,7 @@ export type TransactionType = {
     member?: MemberType;
     amount: number;
     paymentMode: 'cash' | 'upi' | 'both';
+    createdAt?: number;
 }
 
 export type BillType = {
@@ -47,7 +48,9 @@ export type BillType = {
 export interface CanteenBillType {
     id?:number;
     itemId:number;
+    item?: ItemType;
     billId:number;
+    bill?: BillType;
     quantity:number;
     amount:number;
 }
