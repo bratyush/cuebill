@@ -1,14 +1,11 @@
-import { type Config } from "drizzle-kit";
-
-import { env } from "~/env";
+import type { Config } from 'drizzle-kit';
 
 export default {
-  schema: "./src/db/schema.ts",
-  driver: "turso",
+  schema: './db/schema.ts',
+  out: './db/migrations',
+  dialect: 'turso',
   dbCredentials: {
-    url: env.DATABASE_URL,
-    authToken: env.DATABASE_AUTH_TOKEN,
+    url: process.env.DATABASE_URL!,
+    authToken: process.env.DATABASE_AUTH_TOKEN,
   },
-  dialect: "sqlite",
-  tablesFilter: ["pool_*"],
 } satisfies Config;
