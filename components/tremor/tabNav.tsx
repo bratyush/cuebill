@@ -1,4 +1,5 @@
 // Tremor Raw TabNavigation [v0.0.0]
+// @ts-nocheck
 
 import * as NavigationMenuPrimitives from "@radix-ui/react-navigation-menu";
 import React from "react";

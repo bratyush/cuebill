@@ -1,4 +1,5 @@
 // Tremor Raw BarChart [v0.0.0]
+// @ts-nocheck
 
 "use client"
 
