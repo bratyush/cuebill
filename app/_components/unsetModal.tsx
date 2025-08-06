@@ -123,7 +123,7 @@ export default function Unset({
                             >
                               Settle
                             </button>
-                            <button
+                            {/* <button
                               className="rounded-lg bg-red-500 px-2.5 py-2.5 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-400 dark:focus:ring-red-900"
                               onClick={() => {
                                 if (
@@ -169,7 +169,7 @@ export default function Unset({
                               }}
                             >
                               <Icons.bin color="white" />
-                            </button>
+                            </button> */}
                           </td>
                         </tr>
                       ))}
