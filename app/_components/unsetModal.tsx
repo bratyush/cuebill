@@ -123,12 +123,23 @@ export default function Unset({
                             >
                               Settle
                             </button>
-                            {/* <button
+                            <button
                               className="rounded-lg bg-red-500 px-2.5 py-2.5 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-400 dark:focus:ring-red-900"
                               onClick={() => {
-                                if (
-                                  confirm("Sure you want to delete this bill?")
-                                ) {
+                                if (bill.checkIn == null) {
+                                  toast.error("Bill creation time is unknown; cannot delete.");
+                                  return;
+                                }
+                                const createdAt = new Date(bill.checkIn);
+                                const now = new Date();
+                                const elapsedMs = now.getTime() - createdAt.getTime();
+
+                                if (elapsedMs > 2 * 60 * 1000) {
+                                  toast.error("You can only delete a bill within 2 minutes of creation.");
+                                  return;
+                                }
+
+                                if (confirm("Sure you want to delete this bill?")) {
                                   mutate(
                                     "/api/tables",
                                     async (data: any) => {
@@ -139,9 +150,7 @@ export default function Unset({
                                         if (val.id === table.id) {
                                           return {
                                             ...val,
-                                            unsettled: val.unsettled.filter(
-                                              (bl) => bl.id !== bill.id,
-                                            ),
+                                            unsettled: val.unsettled.filter((bl) => bl.id !== bill.id),
                                           };
                                         }
                                         return val;
@@ -149,19 +158,15 @@ export default function Unset({
                                     },
                                     {
                                       optimisticData: (tableData) => {
-                                        return tableData.map(
-                                          (val: TableType) => {
-                                            if (val.id === table.id) {
-                                              return {
-                                                ...val,
-                                                unsettled: val.unsettled.filter(
-                                                  (bl) => bl.id !== bill.id,
-                                                ),
-                                              };
-                                            }
-                                            return val;
-                                          },
-                                        );
+                                        return tableData.map((val: TableType) => {
+                                          if (val.id === table.id) {
+                                            return {
+                                              ...val,
+                                              unsettled: val.unsettled.filter((bl) => bl.id !== bill.id),
+                                            };
+                                          }
+                                          return val;
+                                        });
                                       },
                                     },
                                   );
@@ -169,7 +174,7 @@ export default function Unset({
                               }}
                             >
                               <Icons.bin color="white" />
-                            </button> */}
+                            </button>
                           </td>
                         </tr>
                       ))}
