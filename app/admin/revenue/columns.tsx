@@ -38,7 +38,7 @@ export const billColumns: ColumnDef<BillType>[] = [
     cell: ({ row }) => {
       const bill = row.original;
       return bill.checkIn ? (
-        <div>{new Date(bill.checkIn).toDateString()}</div>
+        <div>{new Date(bill.checkIn).toLocaleDateString('en-GB')}</div>
       ) : (
         <div>Not Checked In</div>
       );
