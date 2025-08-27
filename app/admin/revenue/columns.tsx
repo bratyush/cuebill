@@ -16,7 +16,7 @@ export const billColumns: ColumnDef<BillType>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           #
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="h-4 w-4" />
         </Button>
       );
     },
@@ -57,12 +57,12 @@ export const billColumns: ColumnDef<BillType>[] = [
     header: ({ column }) => {
       return (
         <Button
-          className="w-20"
+          className="w-12"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Time Played
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Played
+          <ArrowUpDown className="h-4 w-4" />
         </Button>
       );
     },
@@ -72,8 +72,21 @@ export const billColumns: ColumnDef<BillType>[] = [
     },
   },
   {
+    accessorKey: "endTime",
+    header: "End Time",
+    cell: ({ row }) => {
+      const bill = row.original;
+
+      const endTime = bill.checkIn && bill.timePlayed ? bill.checkIn + bill.timePlayed : bill.checkIn;
+      console.log(bill.checkIn, bill.timePlayed);
+      console.log(endTime);
+
+      return <div>{formatTime(endTime)}</div>;
+    },
+  },
+  {
     accessorKey: "paymentMode",
-    header: "Payment Mode",
+    header: "Mode",
     cell: ({ row }) => {
       const bill = row.original;
       return (
@@ -95,7 +108,7 @@ export const billColumns: ColumnDef<BillType>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Table Money
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="h-4 w-4" />
         </Button>
       );
     },
@@ -114,7 +127,7 @@ export const billColumns: ColumnDef<BillType>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Canteen
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="h-4 w-4" />
         </Button>
       );
     },
@@ -133,7 +146,7 @@ export const billColumns: ColumnDef<BillType>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Discount
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="h-4 w-4" />
         </Button>
       );
     },
@@ -152,7 +165,7 @@ export const billColumns: ColumnDef<BillType>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Total Received
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="h-4 w-4" />
         </Button>
       );
     },
@@ -188,7 +201,7 @@ export const canteenColumns: ColumnDef<CanteenBillType>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           #
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="h-4 w-4" />
         </Button>
       );
     },
@@ -267,7 +280,7 @@ export const transactionColumns: ColumnDef<TransactionType>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           #
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="h-4 w-4" />
         </Button>
       );
     },
@@ -302,7 +315,7 @@ export const transactionColumns: ColumnDef<TransactionType>[] = [
   },
   {
     accessorKey: "paymentMode",
-    header: "Payment Mode",
+    header: "Mode",
     cell: ({ row }) => {
       const transaction = row.original;
       return <div>{transaction.paymentMode}</div>;
