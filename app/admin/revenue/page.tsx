@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Download } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -199,12 +200,14 @@ export default function Revenue() {
               {/* Download Report Button */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">Download Report</Button>
+                  <Button variant="outline" size="icon">
+                    <Download className="h-4 w-4" />
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => downloadReport('pdf')}>
+                  {/* <DropdownMenuItem onClick={() => downloadReport('pdf')}>
                     Download PDF
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem onClick={() => downloadReport('excel')}>
                     Download Excel
                   </DropdownMenuItem>
