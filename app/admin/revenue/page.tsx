@@ -10,6 +10,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import {
   ctnBllInt,
   type BillType,
   type TransactionType,
@@ -21,96 +28,128 @@ import Charts from "./charts";
 import { billColumns, canteenColumns, transactionColumns } from "./columns";
 
 export default function Revenue() {
-  const { data, error, isLoading } = useSWR<{
-    bills: BillType[];
-    canteen: ctnBllInt[];
-    transactions: TransactionType[];
-  }>(`/api/data`, async (url: string) => {
-    const data = await universalFetcher(url, "GET");
-    return data;
-  });
-
   const [tab, setTab] = useState<string>("bills");
-
   const [showCustom, setShowCustom] = useState<boolean>(false);
   const [showOne, setShowOne] = useState<boolean>(false);
-
   const [timeframe, setTimeframe] = useState<string>("td");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
 
-  const [filterBills, setFilterBills] = useState<BillType[]>([]);
-  const [filterCanteen, setFilterCanteen] = useState<ctnBllInt[]>([]);
-  const [filterTransactions, setFilterTransactions] = useState<TransactionType[]>([]);
-
-  const dateFiltering = (date: Date) => {
+  const getDateRange = (timeframe: string, startDate: string, endDate: string): { startRange: Date | null, endRange: Date | null } => {
     const now = new Date();
-    if (timeframe == "td") {
-      return date.toDateString() === now.toDateString();
-    } else if (timeframe == "tm") {
-      return (
-        date.getMonth() == now.getMonth() &&
-        date.getFullYear() == now.getFullYear()
-      );
-    } else if (timeframe == "lm") {
-      if (now.getMonth() == 0) {
-        return (
-          date.getMonth() == 11 && date.getFullYear() == now.getFullYear() - 1
-        );
+    
+    if (timeframe === "td") {
+      // Today
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+      return { startRange: startOfDay, endRange: endOfDay };
+    } else if (timeframe === "tm") {
+      // This Month
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+      return { startRange: startOfMonth, endRange: endOfMonth };
+    } else if (timeframe === "lm") {
+      // Last Month
+      const lastMonth = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+      const lastMonthYear = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
+      const startOfLastMonth = new Date(lastMonthYear, lastMonth, 1);
+      const endOfLastMonth = new Date(lastMonthYear, lastMonth + 1, 0, 23, 59, 59, 999);
+      return { startRange: startOfLastMonth, endRange: endOfLastMonth };
+    } else if (timeframe === "ty") {
+      // This Year
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+      return { startRange: startOfYear, endRange: endOfYear };
+    } else if (timeframe === "ly") {
+      // Last Year
+      const lastYear = now.getFullYear() - 1;
+      const startOfLastYear = new Date(lastYear, 0, 1);
+      const endOfLastYear = new Date(lastYear, 11, 31, 23, 59, 59, 999);
+      return { startRange: startOfLastYear, endRange: endOfLastYear };
+    } else if (timeframe === "c") {
+      // Custom Range
+      if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999); // End of day
+        return { startRange: start, endRange: end };
       }
-      return (
-        date.getMonth() == now.getMonth() - 1 &&
-        date.getFullYear() == now.getFullYear()
-      );
-    } else if (timeframe == "ty") {
-      return date.getFullYear() == now.getFullYear();
-    } else if (timeframe == "ly") {
-      return date.getFullYear() == now.getFullYear() - 1;
-    } else if (timeframe == "c") {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      return date >= start && date <= end;
-    } else if (timeframe == "od") {
-      // Added condition for One Day
-      const selectedDate = new Date(startDate); // Use startDate for the selected date
-      return date.toDateString() === selectedDate.toDateString();
+      return { startRange: null, endRange: null };
+    } else if (timeframe === "od") {
+      // One Day
+      if (startDate) {
+        const selectedDate = new Date(startDate);
+        const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+        const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59, 999);
+        return { startRange: startOfDay, endRange: endOfDay };
+      }
+      return { startRange: null, endRange: null };
     } else {
-      return true
+      // No filtering
+      return { startRange: null, endRange: null };
     }
   };
 
-  useEffect(() => {
-    if (data) {
-      const filteredBills = data.bills.filter((bill) => {
-        if (bill.checkIn) {
-          const date = new Date(bill.checkIn);
-          return dateFiltering(date);
-        }
-        return false; // Ensure a boolean return
-      });
-  
-      const filteredCanteen = data.canteen.filter((canteen) => {
-        if (canteen.bill?.checkOut) {
-          const date = new Date(canteen.bill.checkOut);
-          return dateFiltering(date);
-        }
-        return false; // Ensure a boolean return
-      });
-      console.log(filteredCanteen);
+  const { data, error, isLoading } = useSWR<{
+    bills: BillType[];
+    canteen: ctnBllInt[];
+    transactions: TransactionType[];
+  }>(`revenue-data-${timeframe}-${startDate}-${endDate}`, async () => {
+    const { startRange, endRange } = getDateRange(timeframe, startDate, endDate);
+    
+    const response = await fetch('/api/revenue-data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        startRange: startRange?.toISOString(),
+        endRange: endRange?.toISOString()
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to fetch data');
+    return response.json();
+  },
+  {
+    refreshInterval: 60000, // Refresh every 60 seconds
+    revalidateOnFocus: true, // Refresh when user returns to tab
+  });
 
-      const filteredTransactions = data.transactions.filter((transaction) => {
-        if (transaction.createdAt) {
-          const date = new Date(transaction.createdAt);
-          return dateFiltering(date);
-        }
-        return false; // Ensure a boolean return
+  const downloadReport = async (format: 'pdf' | 'excel') => {
+    try {
+      const { startRange, endRange } = getDateRange(timeframe, startDate, endDate);
+      
+      const response = await fetch('/api/download-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          format,
+          startRange: startRange?.toISOString(),
+          endRange: endRange?.toISOString(),
+          timeframe // Keep for report labeling
+        }),
       });
-  
-      setFilterBills(filteredBills);
-      setFilterCanteen(filteredCanteen);
-      setFilterTransactions(filteredTransactions);
+
+      if (!response.ok) throw new Error('Failed to download report');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `revenue-report-${new Date().toISOString().split('T')[0]}.${format === 'pdf' ? 'pdf' : 'xlsx'}`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download report');
     }
-  }, [data, timeframe, startDate, endDate]);
+  };
+
 
   console.log(tab);
 
@@ -175,6 +214,7 @@ export default function Revenue() {
                 </div>
               )}
 
+              {/* timeframe select */}
               <Select
                 onValueChange={(e) => {
                   if (e === "c") {
@@ -210,14 +250,29 @@ export default function Revenue() {
                   {/* New option for One Day */}
                 </SelectContent>
               </Select>
+
+              {/* Download Report Button */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">Download Report</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => downloadReport('pdf')}>
+                    Download PDF
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => downloadReport('excel')}>
+                    Download Excel
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </TabNavigation>
 
           <div className="mt-5">
-            {tab === "charts" && <Charts bills={filterBills} canteen={filterCanteen} />}
-            {tab === "bills" && <DataTable columns={billColumns} data={filterBills} />}
-            {tab === "canteen" && <DataTable columns={canteenColumns} data={filterCanteen} />}
-            {tab === "transactions" && <DataTable columns={transactionColumns} data={filterTransactions} />}
+            {tab === "charts" && data && <Charts bills={data.bills} canteen={data.canteen} />}
+            {tab === "bills" && data && <DataTable columns={billColumns} data={data.bills} />}
+            {tab === "canteen" && data && <DataTable columns={canteenColumns} data={data.canteen} />}
+            {tab === "transactions" && data && <DataTable columns={transactionColumns} data={data.transactions} />}
           </div>
         </>
       )}
