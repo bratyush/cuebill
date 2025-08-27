@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 
 import pool from "@/public/pool.png";
+import { tableTheme } from "@/utils/common";
 import { themes } from "@/utils/consts";
 import { universalFetcher } from "@/utils/fetches";
-import { tableTheme } from "@/utils/formatters";
 import Image, { type StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { BillType, CanteenBillType, TransactionType } from "@/types/myTypes";
-import { formatElapsed, formatTime } from "@/utils/formatters";
+import { formatElapsed, formatTime } from "@/utils/common";
 import { type ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";

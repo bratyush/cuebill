@@ -5,8 +5,8 @@ import { type ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { type TableType } from "@/types/myTypes";
+import { tableTheme } from "@/utils/common";
 import { universalFetcher } from "@/utils/fetches";
-import { tableTheme } from "@/utils/formatters";
 import { ArrowUpDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

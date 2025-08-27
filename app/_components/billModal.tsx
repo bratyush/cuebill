@@ -5,8 +5,8 @@ import type {
   MemberType,
   TableType,
 } from "@/types/myTypes";
+import { formatElapsed, formatTime } from "@/utils/common";
 import { universalFetcher } from "@/utils/fetches";
-import { formatElapsed, formatTime } from "@/utils/formatters";
 import { canteenTotalSwr } from "@/utils/hooks";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";

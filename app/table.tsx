@@ -1,13 +1,13 @@
 "use client";
 
 import { Icons } from "@/components/icons";
-import { universalFetcher } from "@/utils/fetches";
 import {
   calculateRevenue,
   formatElapsed,
   formatTime,
   tableTheme,
-} from "@/utils/formatters";
+} from "@/utils/common";
+import { universalFetcher } from "@/utils/fetches";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";

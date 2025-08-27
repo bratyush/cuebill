@@ -2,7 +2,7 @@ import PieChart from "@/components/nivo/pie";
 import { BarChart } from "@/components/tremor/bar";
 import { Card } from "@/components/tremor/card";
 import { BillType, ctnBllInt } from "@/types/myTypes";
-import { formatElapsedRound } from "@/utils/formatters";
+import { formatElapsedRound } from "@/utils/common";
 
 
 export default function Charts({bills, canteen}: {bills: BillType[], canteen: ctnBllInt[]}) {

@@ -2,27 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as XLSX from 'xlsx';
 import PDFDocument from 'pdfkit';
 import { BillType, ctnBllInt, TransactionType } from '@/types/myTypes';
-import { universalFetcher } from '@/utils/fetches';
+import { getRevenueData } from '@/services/revenue-data';
 
 export async function POST(request: NextRequest) {
   try {
     const { format, startRange, endRange, timeframe } = await request.json();
 
-    // Use the same revenue-data endpoint that the frontend uses
-    const response = await fetch(new URL('/api/revenue-data', request.url), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        startRange,
-        endRange
-      }),
-    });
-
-    if (!response.ok) throw new Error('Failed to fetch revenue data');
-    
-    const { bills, canteen, transactions } = await response.json();
+    // Use the shared utility function to get revenue data
+    const { bills, canteen, transactions } = await getRevenueData(startRange, endRange);
 
     if (format === 'excel') {
       return generateExcelReport(bills, canteen, transactions, timeframe, startRange, endRange);
@@ -53,21 +40,23 @@ function generateExcelReport(
     'Bill ID': bill.id,
     'Table': bill.table?.name || 'N/A',
     'Check In': bill.checkIn ? new Date(bill.checkIn).toLocaleString() : 'N/A',
-    'Check Out': bill.checkOut ? new Date(bill.checkOut).toLocaleString() : 'N/A',
+    'Time Played': bill.timePlayed || 0,
+    'Check Out': bill.checkIn ? new Date(bill.timePlayed ? bill.checkIn + bill.timePlayed : bill.checkIn).toLocaleString() : 'N/A',
     'Total Amount': bill.totalAmount,
     'Canteen Money': bill.canteenMoney || 0,
     'Payment Mode': bill.paymentMode,
-    'Time Played': bill.timePlayed || 0
   }));
   const billsSheet = XLSX.utils.json_to_sheet(billsData);
   XLSX.utils.book_append_sheet(workbook, billsSheet, 'Bills');
 
   // Canteen sheet
   const canteenData = canteen.map(item => ({
+    'Date': item.bill.checkOut ? new Date(item.bill.checkOut).toLocaleString() : 'N/A',
     'Item': item.item?.name || 'N/A',
+    'Price': item.item?.price || 0,
     'Quantity': item.quantity,
     'Amount': item.amount,
-    'Bill ID': item.bill?.id || 'N/A'
+    'Bill ID': item.billId || 'N/A'
   }));
   const canteenSheet = XLSX.utils.json_to_sheet(canteenData);
   XLSX.utils.book_append_sheet(workbook, canteenSheet, 'Canteen');

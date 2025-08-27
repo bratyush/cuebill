@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import pool from "@/public/pool.png";
 
 import { type TableType } from "@/types/myTypes";
+import { tableTheme } from "@/utils/common";
 import { themes } from "@/utils/consts";
 import { universalFetcher } from "@/utils/fetches";
-import { tableTheme } from "@/utils/formatters";
 import Image, { type StaticImageData } from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";

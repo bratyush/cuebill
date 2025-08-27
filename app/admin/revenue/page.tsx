@@ -1,7 +1,14 @@
 "use client";
 
 import { TabNavigation, TabNavigationLink } from "@/components/tremor/tabNav";
+import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/dataTable";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -10,17 +17,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import {
   ctnBllInt,
   type BillType,
   type TransactionType,
 } from "@/types/myTypes";
+import { getDateRange, getReportName } from "@/utils/common";
 import { useState } from "react";
 import useSWR from "swr";
 import Charts from "./charts";
@@ -33,61 +34,6 @@ export default function Revenue() {
   const [timeframe, setTimeframe] = useState<string>("td");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
-
-  const getDateRange = (timeframe: string, startDate: string, endDate: string): { startRange: Date | null, endRange: Date | null } => {
-    const now = new Date();
-    
-    if (timeframe === "td") {
-      // Today
-      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-      return { startRange: startOfDay, endRange: endOfDay };
-    } else if (timeframe === "tm") {
-      // This Month
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-      return { startRange: startOfMonth, endRange: endOfMonth };
-    } else if (timeframe === "lm") {
-      // Last Month
-      const lastMonth = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
-      const lastMonthYear = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
-      const startOfLastMonth = new Date(lastMonthYear, lastMonth, 1);
-      const endOfLastMonth = new Date(lastMonthYear, lastMonth + 1, 0, 23, 59, 59, 999);
-      return { startRange: startOfLastMonth, endRange: endOfLastMonth };
-    } else if (timeframe === "ty") {
-      // This Year
-      const startOfYear = new Date(now.getFullYear(), 0, 1);
-      const endOfYear = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
-      return { startRange: startOfYear, endRange: endOfYear };
-    } else if (timeframe === "ly") {
-      // Last Year
-      const lastYear = now.getFullYear() - 1;
-      const startOfLastYear = new Date(lastYear, 0, 1);
-      const endOfLastYear = new Date(lastYear, 11, 31, 23, 59, 59, 999);
-      return { startRange: startOfLastYear, endRange: endOfLastYear };
-    } else if (timeframe === "c") {
-      // Custom Range
-      if (startDate && endDate) {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        end.setHours(23, 59, 59, 999); // End of day
-        return { startRange: start, endRange: end };
-      }
-      return { startRange: null, endRange: null };
-    } else if (timeframe === "od") {
-      // One Day
-      if (startDate) {
-        const selectedDate = new Date(startDate);
-        const startOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
-        const endOfDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59, 999);
-        return { startRange: startOfDay, endRange: endOfDay };
-      }
-      return { startRange: null, endRange: null };
-    } else {
-      // No filtering
-      return { startRange: null, endRange: null };
-    }
-  };
 
   const { data, error, isLoading } = useSWR<{
     bills: BillType[];
@@ -138,7 +84,7 @@ export default function Revenue() {
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = `revenue-report-${new Date().toISOString().split('T')[0]}.${format === 'pdf' ? 'pdf' : 'xlsx'}`;
+      a.download = `${getReportName(timeframe, startDate, endDate)}.${format === 'pdf' ? 'pdf' : 'xlsx'}`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
