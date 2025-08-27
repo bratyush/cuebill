@@ -92,11 +92,11 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: ct
         <div className="grid grid-rows-2 lg:col-span-2 gap-6">
           <Card className="text-center p-6">
             <p className="text-gray-500 text-lg">Total Revenue</p>
-            <p className="my-3 text-4xl font-semibold">&#8377;{totalRevenue}</p>
+            <p className="my-3 text-4xl font-semibold">&#8377;{Intl.NumberFormat("en-IN").format(parseFloat(totalRevenue))}</p>
           </Card>
           <Card className="text-center p-6">
             <p className="text-gray-500 text-lg">Canteen Revenue</p>
-            <p className="my-3 text-4xl font-semibold">&#8377;{canteenRevenue}</p>
+            <p className="my-3 text-4xl font-semibold">&#8377;{Intl.NumberFormat("en-IN").format(parseFloat(canteenRevenue))}</p>
           </Card>
         </div>
 

@@ -21,8 +21,7 @@ import {
   type BillType,
   type TransactionType,
 } from "@/types/myTypes";
-import { universalFetcher } from "@/utils/fetches";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import Charts from "./charts";
 import { billColumns, canteenColumns, transactionColumns } from "./columns";
