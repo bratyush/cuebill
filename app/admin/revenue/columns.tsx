@@ -21,7 +21,8 @@ export const billColumns: ColumnDef<BillType>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div>{row.index + 1}</div>;
+      const bill = row.original;
+      return <div>{bill.id}</div>;
     },
   },
   {
@@ -206,7 +207,8 @@ export const canteenColumns: ColumnDef<CanteenBillType>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div>{row.index + 1}</div>;
+      const bill = row.original;
+      return <div>{bill.id}</div>;
     },
   },
   {
