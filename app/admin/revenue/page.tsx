@@ -26,6 +26,7 @@ import { getDateRange, getReportName } from "@/utils/common";
 import { useState } from "react";
 import useSWR from "swr";
 import Charts from "./charts";
+import Breakdown from "./breakdown";
 import { billColumns, canteenColumns, transactionColumns } from "./columns";
 
 export default function Revenue() {
@@ -130,6 +131,12 @@ export default function Revenue() {
             >
               Transactions
             </TabNavigationLink>
+            <TabNavigationLink
+              onClick={() => setTab("breakdown")}
+              active={tab === "breakdown"}
+            >
+              Breakdown
+            </TabNavigationLink>
 
             <div className="m-2 ml-auto flex flex-row gap-4">
               {showCustom && (
@@ -221,6 +228,16 @@ export default function Revenue() {
             {tab === "bills" && data && <DataTable columns={billColumns} data={data.bills} />}
             {tab === "canteen" && data && <DataTable columns={canteenColumns} data={data.canteen} />}
             {tab === "transactions" && data && <DataTable columns={transactionColumns} data={data.transactions} />}
+            {tab === "breakdown" && data && (
+              <Breakdown 
+                bills={data.bills} 
+                canteen={data.canteen} 
+                transactions={data.transactions}
+                timeframe={timeframe}
+                startDate={startDate}
+                endDate={endDate}
+              />
+            )}
           </div>
         </>
       )}
