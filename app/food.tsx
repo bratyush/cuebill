@@ -4,19 +4,44 @@ import { useState } from "react";
 
 import { BillType, TableType } from "@/types/myTypes";
 import { universalFetcher } from "@/utils/fetches";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 import Bill from "./_components/billModal";
-import Food from "./_components/foodModal";
+import Unset from "./_components/unsetModal";
 
 export default function FoodBill({ table }: { table: TableType }) {
-  const [showFood, setShowFood] = useState<boolean>(false);
+  const { mutate } = useSWRConfig();
+
   const { data, isLoading } = useSWR(`/api/items`, async (url) => {
     const data = await universalFetcher(url, "GET");
     return data;
   });
 
+  const { data: unsettledData } = useSWR(`/api/bills/canteen/unsettled`, async (url) => {
+    const data = await universalFetcher(url, "GET");
+    return data;
+  });
+
   const [bill, setBill] = useState<BillType>();
+  const [showUnsettled, setShowUnsettled] = useState<boolean>(false);
+
+  async function handleCanteenBillClose() {
+    if (bill && bill.tableId === 0) {
+      // Check if canteen bill has no items (canteenMoney is 0 or undefined)
+      const hasNoItems = !bill.canteenMoney || bill.canteenMoney === 0;
+      
+      if (hasNoItems) {
+        try {
+          await universalFetcher(`/api/bills/${bill.id}`, "DELETE");
+          mutate("/api/bills/canteen/unsettled");
+        } catch (error) {
+          console.error("Error deleting empty canteen bill:", error);
+        }
+      }
+    }
+    setBill(undefined);
+  }
+
 
   return (
     <div className="relative">
@@ -49,48 +74,41 @@ export default function FoodBill({ table }: { table: TableType }) {
               bill={bill}
               items={data.items}
               table={table}
-              close={() => {
-                setBill(undefined);
-              }}
+              close={handleCanteenBillClose}
             />
           )}
 
-          {showFood && (
-            <Food
-              billId={-1}
-              items={data.items}
-              close={() => {
-                setShowFood(false);
+
+          {showUnsettled && (
+            <Unset
+              bills={unsettledData?.bills || []}
+              items={data?.items || []}
+              table={{
+                id: 0,
+                name: "Canteen",
+                rate: 0,
+                theme: "canteen",
+                checked_in_at: null,
+                unsettled: unsettledData?.bills || []
               }}
-              save={(TotalAmount: number) => {
-                universalFetcher("/api/bills/canteen", "PATCH", {
-                  tableId: 0,
-                  checkIn: Date.now(),
-                  checkOut: Date.now(),
-                  timePlayed: 0,
-                  tableMoney: 0,
-                  canteenMoney: TotalAmount,
-                  settled: false,
-                }).then((newBill: BillType) => {
-                  setBill(newBill);
-                });
+              close={() => {
+                setShowUnsettled(false);
               }}
             />
           )}
-
-          {/* {unsettled.length > 0 && (
-            <button
-              className="absolute right-7 top-6 rounded-full bg-red-500/90 p-1 px-2"
-              onClick={() => {
-                setShowUnset(true);
-              }}
-            >
-              {unsettled.length}
-            </button>
-          )} */}
 
           <div className="relative m-3 flex h-[268px] w-[350px] items-center justify-center">
-            <div className="h-[168px] w-[250px] rounded-3xl bg-[#FFCC33]">
+            <div className="relative h-[168px] w-[250px] rounded-3xl bg-[#FFCC33]">
+              {unsettledData?.bills?.length > 0 && (
+                <button
+                  className="absolute right-2 top-2 rounded-full bg-red-500/90 p-1 px-2"
+                  onClick={() => {
+                    setShowUnsettled(true);
+                  }}
+                >
+                  {unsettledData.bills.length}
+                </button>
+              )}
               <div className="flex flex-col pt-5">
                 <div className="flex w-full items-center justify-between">
                   <div className="flex flex-grow justify-center">
@@ -103,8 +121,25 @@ export default function FoodBill({ table }: { table: TableType }) {
                 </div>
 
                 <button
-                  onClick={() => {
-                    setShowFood(true);
+                  onClick={async () => {
+                    try {
+                      const response = await universalFetcher("/api/bills", "POST", {
+                        table: 0, // tableId: 0 for canteen-only bills
+                      });
+                      if (response.bill) {
+                        setBill({
+                          ...response.bill,
+                          tableMoney: 0,
+                          canteenMoney: 0,
+                          paymentMode: 'upi',
+                          upiPaid: 0,
+                          totalAmount: 0,
+                          settled: false
+                        });
+                      }
+                    } catch (error) {
+                      console.error("Error creating canteen bill:", error);
+                    }
                   }}
                   className="mx-auto my-5 rounded-md bg-white/60 px-10 py-6 text-black shadow-sm hover:bg-white/80"
                 >
@@ -118,3 +153,4 @@ export default function FoodBill({ table }: { table: TableType }) {
     </div>
   );
 }
+

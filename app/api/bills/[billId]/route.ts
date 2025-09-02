@@ -1,7 +1,8 @@
 import { db } from "@/db";
-import { bills } from "@/db/schema";
+import { bills, canteenBills } from "@/db/schema";
 import { BillType } from "@/types/myTypes";
-import { eq } from "drizzle-orm";
+import { currentUser } from "@clerk/nextjs/server";
+import { eq, and } from "drizzle-orm";
 
 export async function DELETE(request: Request, props: { params: Promise<{ billId: string }> }) {
   const params = await props.params;
@@ -9,9 +10,29 @@ export async function DELETE(request: Request, props: { params: Promise<{ billId
   const billId = params.billId
   const id = parseInt(billId);
 
-  await db.delete(bills).where(eq(bills.id, id))
+  const user = await currentUser();
+  const club = user?.privateMetadata.org ?? '';
 
-  return Response.json({status: "deleted"})
+  try {
+    // First delete all associated canteen bills
+    await db.delete(canteenBills)
+      .where(and(
+        eq(canteenBills.billId, id),
+        eq(canteenBills.club, club)
+      ));
+
+    // Then delete the main bill
+    await db.delete(bills)
+      .where(and(
+        eq(bills.id, id),
+        eq(bills.club, club)
+      ));
+
+    return Response.json({ status: "deleted" });
+  } catch (error) {
+    console.error("Error deleting bill:", error);
+    return Response.json({ error: "Failed to delete bill" }, { status: 500 });
+  }
 }
 
 export async function PATCH(request: Request, props: { params: Promise<{ billId: string }> }) {

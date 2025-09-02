@@ -12,7 +12,24 @@ export async function POST(request: Request) {
   
   const club = user?.privateMetadata.org?? '';
 
-  const bl = await db.insert(bills).values({tableId: body.table, club:club}).returning();
+  const isCanteenBill = body.table === 0;
+  const now = Date.now();
+
+  const billData = {
+    tableId: body.table,
+    club: club,
+    checkIn: isCanteenBill ? now : undefined,
+    checkOut: isCanteenBill ? now : undefined,
+    timePlayed: isCanteenBill ? 0 : undefined,
+    tableMoney: isCanteenBill ? 0 : undefined,
+    canteenMoney: 0,
+    paymentMode: 'upi' as const,
+    totalAmount: 0,
+    upiPaid: 0,
+    settled: false
+  };
+
+  const bl = await db.insert(bills).values(billData).returning();
 
   return Response.json({status: "created", bill: bl[0]})
 }
