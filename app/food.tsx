@@ -8,6 +8,7 @@ import useSWR, { useSWRConfig } from "swr";
 
 import Bill from "./_components/billModal";
 import Unset from "./_components/unsetModal";
+import { toast } from "react-hot-toast";
 
 export default function FoodBill({ table }: { table: TableType }) {
   const { mutate } = useSWRConfig();
@@ -24,24 +25,6 @@ export default function FoodBill({ table }: { table: TableType }) {
 
   const [bill, setBill] = useState<BillType>();
   const [showUnsettled, setShowUnsettled] = useState<boolean>(false);
-
-  async function handleCanteenBillClose() {
-    if (bill && bill.tableId === 0) {
-      // Check if canteen bill has no items (canteenMoney is 0 or undefined)
-      const hasNoItems = !bill.canteenMoney || bill.canteenMoney === 0;
-      
-      if (hasNoItems) {
-        try {
-          await universalFetcher(`/api/bills/${bill.id}`, "DELETE");
-          mutate("/api/bills/canteen/unsettled");
-        } catch (error) {
-          console.error("Error deleting empty canteen bill:", error);
-        }
-      }
-    }
-    setBill(undefined);
-  }
-
 
   return (
     <div className="relative">
@@ -74,7 +57,10 @@ export default function FoodBill({ table }: { table: TableType }) {
               bill={bill}
               items={data.items}
               table={table}
-              close={handleCanteenBillClose}
+              close={() => {
+                setBill(undefined);
+                mutate("/api/bills/canteen/unsettled", undefined, { revalidate: true });
+              }}
             />
           )}
 
@@ -94,6 +80,7 @@ export default function FoodBill({ table }: { table: TableType }) {
               close={() => {
                 setShowUnsettled(false);
               }}
+              canteen={true}
             />
           )}
 

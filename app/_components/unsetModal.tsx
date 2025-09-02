@@ -13,11 +13,13 @@ export default function Unset({
   items,
   table,
   close,
+  canteen = false,
 }: {
   bills: BillType[];
   items: ItemType[];
   table: TableType;
   close: () => void;
+  canteen: Boolean;
 }) {
   const { mutate } = useSWRConfig();
 
@@ -134,31 +136,42 @@ export default function Unset({
                                 const now = new Date();
                                 const elapsedMs = now.getTime() - createdAt.getTime();
 
-                                if (elapsedMs > 2 * 60 * 1000) {
-                                  toast.error("You can only delete a bill within 2 minutes of creation.");
-                                  return;
-                                }
+                                // if (elapsedMs > 2 * 60 * 1000) {
+                                //   toast.error("You can only delete a bill within 2 minutes of creation.");
+                                //   return;
+                                // }
 
                                 if (confirm("Sure you want to delete this bill?")) {
-                                  mutate(
-                                    "/api/tables",
-                                    async (data: any) => {
-                                      await universalFetcher(`/api/bills/${bill.id}`, "DELETE");
-                                      toast.success("Bill deleted successfully");
+                                  console.log('asdf', canteen)
+                                  if (canteen) {
+                                    mutate(
+                                      "/api/bills/canteen/unsettled",
+                                      async (data: any) => {
+                                        await universalFetcher(`/api/bills/${bill.id}`, "DELETE");
+                                        toast.success("Bill deleted successfully");
 
-                                      return data.map((val: TableType) => {
-                                        if (val.id === table.id) {
+                                        return {
+                                          ...data,
+                                          bills: data.bills.filter((bl: BillType) => bl.id !== bill.id)
+                                        };
+                                      },
+                                      {
+                                        optimisticData: (data: any) => {
                                           return {
-                                            ...val,
-                                            unsettled: val.unsettled.filter((bl) => bl.id !== bill.id),
+                                            ...data,
+                                            bills: data.bills.filter((bl: BillType) => bl.id !== bill.id)
                                           };
-                                        }
-                                        return val;
-                                      });
-                                    },
-                                    {
-                                      optimisticData: (tableData) => {
-                                        return tableData.map((val: TableType) => {
+                                        },
+                                      }
+                                    );
+                                  } else {
+                                    mutate(
+                                      "/api/tables",
+                                      async (data: any) => {
+                                        await universalFetcher(`/api/bills/${bill.id}`, "DELETE");
+                                        toast.success("Bill deleted successfully");
+
+                                        return data.map((val: TableType) => {
                                           if (val.id === table.id) {
                                             return {
                                               ...val,
@@ -168,8 +181,21 @@ export default function Unset({
                                           return val;
                                         });
                                       },
-                                    },
-                                  );
+                                      {
+                                        optimisticData: (tableData) => {
+                                          return tableData.map((val: TableType) => {
+                                            if (val.id === table.id) {
+                                              return {
+                                                ...val,
+                                                unsettled: val.unsettled.filter((bl) => bl.id !== bill.id),
+                                              };
+                                            }
+                                            return val;
+                                          });
+                                        },
+                                      },
+                                    );
+                                  }
                                 }
                               }}
                             >

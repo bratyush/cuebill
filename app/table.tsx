@@ -219,6 +219,7 @@ export default function Table({
           close={() => {
             setShowUnset(false);
           }}
+          canteen={false}
         />
       )}
 
