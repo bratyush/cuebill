@@ -12,9 +12,9 @@ export async function POST(request: NextRequest) {
     const { bills, canteen, transactions } = await getRevenueData(startRange, endRange);
 
     if (format === 'excel') {
-      return generateExcelReport(bills, canteen, transactions, timeframe, startRange, endRange);
+      return generateExcelReport(bills, canteen, timeframe, startRange, endRange);
     } else if (format === 'pdf') {
-      return generatePDFReport(bills, canteen, transactions, timeframe, startRange, endRange);
+      return generatePDFReport(bills, canteen, timeframe, startRange, endRange);
     }
 
     return NextResponse.json({ error: 'Invalid format' }, { status: 400 });
@@ -24,11 +24,82 @@ export async function POST(request: NextRequest) {
   }
 }
 
+interface BreakdownData {
+  Period: string;
+  'Total Bills': number;
+  'Table Revenue': number;
+  'Canteen Revenue': number;
+  'Total Revenue': number;
+}
+
+function generateBreakdownData(bills: BillType[], timeframe: string, startDate: string): BreakdownData[] {
+  const breakdownMap = new Map<string, BreakdownData>();
+  
+  bills.forEach(bill => {
+    if (!bill.checkIn) return;
+    
+    const date = new Date(bill.checkIn);
+    let periodKey: string;
+    let periodDisplay: string;
+    
+    switch (timeframe) {
+      case 'tm': // This Month - show daily breakdown
+      case 'lm': // Last Month - show daily breakdown
+      case 'c':  // Custom range - show daily breakdown
+      case 'od': // One day - show hourly breakdown
+        if (timeframe === 'od') {
+          // Hourly breakdown
+          const hour = date.getHours();
+          periodKey = `${date.toDateString()}-${hour}`;
+          periodDisplay = `${hour.toString().padStart(2, '0')}:00 - ${(hour + 1).toString().padStart(2, '0')}:00`;
+        } else {
+          // Daily breakdown
+          periodKey = date.toDateString();
+          periodDisplay = date.toLocaleDateString('en-GB');
+        }
+        break;
+        
+      case 'ty': // This Year - show monthly breakdown
+      case 'ly': // Last Year - show monthly breakdown
+        const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+        periodKey = monthKey;
+        periodDisplay = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        break;
+        
+      case 'td': // Today - show hourly breakdown
+      default:
+        const hour = date.getHours();
+        periodKey = `${date.toDateString()}-${hour}`;
+        periodDisplay = `${hour.toString().padStart(2, '0')}:00 - ${(hour + 1).toString().padStart(2, '0')}:00`;
+        break;
+    }
+    
+    if (!breakdownMap.has(periodKey)) {
+      breakdownMap.set(periodKey, {
+        Period: periodDisplay,
+        'Total Bills': 0,
+        'Table Revenue': 0,
+        'Canteen Revenue': 0,
+        'Total Revenue': 0,
+      });
+    }
+    
+    const breakdown = breakdownMap.get(periodKey)!;
+    breakdown['Total Bills']++;
+    breakdown['Total Revenue'] += bill.totalAmount || 0;
+    breakdown['Table Revenue'] += bill.tableMoney || 0;
+    breakdown['Canteen Revenue'] += bill.canteenMoney || 0;
+  });
+  
+  return Array.from(breakdownMap.values()).sort((a, b) => {
+    // Sort by period - this is a simplified sort, could be enhanced
+    return a.Period.localeCompare(b.Period);
+  });
+}
 
 function generateExcelReport(
   bills: BillType[], 
   canteen: ctnBllInt[], 
-  transactions: TransactionType[],
   timeframe: string,
   startRange: string,
   endRange: string
@@ -61,26 +132,21 @@ function generateExcelReport(
   const canteenSheet = XLSX.utils.json_to_sheet(canteenData);
   XLSX.utils.book_append_sheet(workbook, canteenSheet, 'Canteen');
 
-  // Transactions sheet
-  const transactionData = transactions.map(transaction => ({
-    'ID': transaction.id,
-    'Member': transaction.member?.name || 'N/A',
-    'Amount': transaction.amount,
-    'Payment Mode': transaction.paymentMode,
-    'Created At': transaction.createdAt ? new Date(transaction.createdAt).toLocaleString() : 'N/A'
-  }));
-  const transactionSheet = XLSX.utils.json_to_sheet(transactionData);
-  XLSX.utils.book_append_sheet(workbook, transactionSheet, 'Transactions');
+  // Breakdown sheet - matches UI breakdown functionality
+  const breakdownData = generateBreakdownData(bills, timeframe, startRange);
+  const breakdownSheet = XLSX.utils.json_to_sheet(breakdownData);
+  XLSX.utils.book_append_sheet(workbook, breakdownSheet, 'Breakdown');
 
   // Summary sheet
   const totalRevenue = bills.reduce((acc, bill) => acc + bill.totalAmount, 0);
   const canteenRevenue = bills.reduce((acc, bill) => acc + (bill.canteenMoney ?? 0), 0);
+  const tableRevenue = bills.reduce((acc, bill) => acc + (bill.tableMoney ?? 0), 0);
   const summaryData = [
     { 'Metric': 'Total Revenue', 'Value': totalRevenue },
+    { 'Metric': 'Table Revenue', 'Value': tableRevenue },
     { 'Metric': 'Canteen Revenue', 'Value': canteenRevenue },
     { 'Metric': 'Total Bills', 'Value': bills.length },
     { 'Metric': 'Total Canteen Items', 'Value': canteen.length },
-    { 'Metric': 'Total Transactions', 'Value': transactions.length },
     { 'Metric': 'Timeframe', 'Value': getTimeframeLabel(timeframe) },
     { 'Metric': 'Start Date', 'Value': startRange ? new Date(startRange).toLocaleDateString() : 'N/A' },
     { 'Metric': 'End Date', 'Value': endRange ? new Date(endRange).toLocaleDateString() : 'N/A' }
@@ -101,7 +167,6 @@ function generateExcelReport(
 function generatePDFReport(
   bills: BillType[], 
   canteen: ctnBllInt[], 
-  transactions: TransactionType[],
   timeframe: string,
   startRange: string,
   endRange: string
@@ -131,16 +196,17 @@ function generatePDFReport(
 
     const totalRevenue = bills.reduce((acc, bill) => acc + bill.totalAmount, 0);
     const canteenRevenue = bills.reduce((acc, bill) => acc + (bill.canteenMoney ?? 0), 0);
+    const tableRevenue = bills.reduce((acc, bill) => acc + (bill.tableMoney ?? 0), 0);
 
     doc.fontSize(12);
     doc.text(`Report Period: ${getTimeframeLabel(timeframe)}`);
     if (startRange) doc.text(`Start Date: ${new Date(startRange).toLocaleDateString()}`);
     if (endRange) doc.text(`End Date: ${new Date(endRange).toLocaleDateString()}`);
     doc.text(`Total Revenue: ₹${totalRevenue.toFixed(2)}`);
+    doc.text(`Table Revenue: ₹${tableRevenue.toFixed(2)}`);
     doc.text(`Canteen Revenue: ₹${canteenRevenue.toFixed(2)}`);
     doc.text(`Total Bills: ${bills.length}`);
     doc.text(`Total Canteen Items: ${canteen.length}`);
-    doc.text(`Total Transactions: ${transactions.length}`);
     
     doc.moveDown();
 
@@ -172,6 +238,23 @@ function generatePDFReport(
 
       if (canteen.length > 10) {
         doc.text(`... and ${canteen.length - 10} more items`);
+      }
+      doc.moveDown();
+    }
+
+    // Breakdown section
+    const breakdownData = generateBreakdownData(bills, timeframe, startRange);
+    if (breakdownData.length > 0) {
+      doc.fontSize(16).text('Revenue Breakdown', { underline: true });
+      doc.moveDown(0.5);
+      doc.fontSize(10);
+
+      breakdownData.slice(0, 15).forEach((item, index) => {
+        doc.text(`${index + 1}. ${item.Period} | Bills: ${item['Total Bills']} | Table: ₹${item['Table Revenue']} | Canteen: ₹${item['Canteen Revenue']} | Total: ₹${item['Total Revenue']}`);
+      });
+
+      if (breakdownData.length > 15) {
+        doc.text(`... and ${breakdownData.length - 15} more periods`);
       }
     }
 
