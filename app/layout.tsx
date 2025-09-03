@@ -1,7 +1,7 @@
 import "./globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
-// import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 // import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "react-hot-toast";
 
@@ -24,8 +24,8 @@ export default function RootLayout({
             <Toaster />
             {children}
           </div>
-          {/* <SpeedInsights />
-          <Analytics /> */}
+          <SpeedInsights />
+          {/* <Analytics /> */}
         </body>
       </html>
     </ClerkProvider>
