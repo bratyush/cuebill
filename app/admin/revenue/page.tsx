@@ -28,9 +28,10 @@ import useSWR from "swr";
 import Charts from "./charts";
 import Breakdown from "./breakdown";
 import { billColumns, canteenColumns, transactionColumns } from "./columns";
+import { ChartSkeleton } from "@/app/_components/skeletons";
 
 export default function Revenue() {
-  const [tab, setTab] = useState<string>("bills");
+  const [tab, setTab] = useState<string>("charts");
   const [showCustom, setShowCustom] = useState<boolean>(false);
   const [showOne, setShowOne] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState<string>("td");
@@ -106,14 +107,9 @@ export default function Revenue() {
     }
   };
 
-
-  console.log(tab);
-
   return (
     <div className="container mx-auto py-2">
-      {error && <div>Error: {error.message}</div>}
-      {isLoading && <div>Loading...</div>}
-      {data && (
+      {error && <div>Error: {error.message}</div>}      
         <>
           <TabNavigation>
             <TabNavigationLink
@@ -233,6 +229,8 @@ export default function Revenue() {
           </TabNavigation>
 
           <div className="mt-5">
+            {isLoading && <ChartSkeleton />}
+
             {tab === "charts" && data && <Charts charts={data.charts} />}
             {tab === "bills" && data && <DataTable columns={billColumns} data={data.bills} />}
             {tab === "canteen" && data && <DataTable columns={canteenColumns} data={data.canteen} />}
@@ -249,7 +247,6 @@ export default function Revenue() {
             )}
           </div>
         </>
-      )}
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { universalFetcher } from "@/utils/fetches";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import useSWR from "swr";
+import { type MemberType } from "@/types/myTypes";
 
 export default function EditMember() {
   const [name, setName] = useState("");
@@ -11,19 +13,17 @@ export default function EditMember() {
   const router = useRouter();
   const { memberId } = useParams<{ memberId: string }>();
 
-  useEffect(() => {
-    const fetchMemberData = async () => {
-      try {
-        const data = await universalFetcher(`/api/members/${memberId}`, "GET");
-        setName(data.member.name);
-        setNumber(data.member.number?.toString() ?? "");
-      } catch (error) {
-        console.error("Fetch error:", error);
-      }
-    };
+  const { data, error, isLoading } = useSWR<{ member: MemberType }>(
+    `/api/members/${memberId}`,
+    universalFetcher
+  );
 
-    fetchMemberData();
-  }, [memberId]);
+  useEffect(() => {
+    if (data) {
+      setName(data.member.name);
+      setNumber(data.member.number?.toString() ?? "");
+    }
+  }, [data]);
 
   async function editMemberSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -39,6 +39,9 @@ export default function EditMember() {
       console.error("Fetch error:", error);
     }
   }
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Failed to load member data</div>;
 
   return (
     <div className="container mx-auto py-10">

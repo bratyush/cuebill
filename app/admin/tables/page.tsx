@@ -10,25 +10,18 @@ import { universalFetcher } from "@/utils/fetches";
 import { ArrowUpDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
+import useSWR from "swr";
 
 export default function TablePage() {
-  const [data, setData] = useState<TableType[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await universalFetcher("/api/tables", "GET");
-        setData(data.tables);
-      } catch (error) {
-        console.error("Fetch error:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const {
+    data: tables,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<{ tables: TableType[] }>("/api/tables", async (url: string)=>{
+    return universalFetcher(url, "GET");
+  });
 
   const columns: ColumnDef<TableType>[] = [
     {
@@ -123,8 +116,7 @@ export default function TablePage() {
                       id: table.id,
                     });
                     toast.success("Table deleted");
-                    const data = await universalFetcher("/api/tables", "GET");
-                    setData(data.tables);
+                    mutate();
                   } catch (error) {
                     console.error("Fetch error:", error);
                   }
@@ -140,9 +132,11 @@ export default function TablePage() {
     },
   ];
 
+  if (error) return <div>Failed to load</div>;
+
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
+      <DataTable isLoading={isLoading} columns={columns} data={tables?.tables ?? []} />
       <div className="m-3 flex justify-end">
         <Link
           href={"/admin/tables/add"}

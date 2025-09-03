@@ -8,23 +8,15 @@ import { universalFetcher } from "@/utils/fetches";
 import { type ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import useSWR from "swr";
 
 export default function ItemsPage() {
-  const [data, setData] = useState<ItemType[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await universalFetcher("/api/items", "GET");
-        setData(data.items);
-      } catch (error) {
-        console.error("Fetch error:", error);
-      }
-    };
-    fetchData();
-  }, []);
+  const {data, error, isLoading, mutate} = useSWR<{ items: ItemType[] }>("/api/items", async (url:string)=>{
+    return universalFetcher(url, "GET");
+  });
+
 
   const columns: ColumnDef<ItemType>[] = [
     {
@@ -101,8 +93,7 @@ export default function ItemsPage() {
                     await universalFetcher("/api/items/" + item.id, "DELETE");
                     toast.success("Item deleted");
 
-                    const data = await universalFetcher("/api/items", "GET");
-                    setData(data.items);
+                    mutate()
                   } catch (error) {
                     toast.error("Item delete failed");
                   }
@@ -118,9 +109,11 @@ export default function ItemsPage() {
     },
   ];
 
+  if (error) return <div>Failed to load</div>;
+
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={data?.items ?? []} isLoading={isLoading} />
       <div className="m-3 flex justify-end">
         <Link
           href={"/admin/items/add"}

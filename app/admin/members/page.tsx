@@ -5,29 +5,23 @@ import { DataTable } from "@/components/ui/dataTable";
 import { universalFetcher } from "@/utils/fetches";
 import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import useSWR from "swr";
+import { type MemberType } from "@/types/myTypes";
+import { type ColumnDef } from "@tanstack/react-table";
 
 export default function MembersPage() {
-  const [data, setData] = useState([]);
+  const {
+    data,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<{ members: MemberType[] }>("/api/members", universalFetcher);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await universalFetcher("/api/members", "GET");
-        setData(data.members);
-      } catch (error) {
-        console.error("Fetch error:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const columns = [
+  const columns: ColumnDef<MemberType>[] = [
     {
       accessorKey: "id",
-      header: ({ column }: { column: any }) => (
+      header: ({ column }) => (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -36,13 +30,16 @@ export default function MembersPage() {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }: { row: any }) => <div>{row.original.id}</div>,
+      cell: ({ row }) => <div>{row.original.id}</div>,
     },
     {
       accessorKey: "name",
       header: "Name",
-      cell: ({ row }: { row: any }) => (
-        <Link href={`/admin/members/${row.original.id}/`} className="hover:underline">
+      cell: ({ row }) => (
+        <Link
+          href={`/admin/members/${row.original.id}/`}
+          className="hover:underline"
+        >
           {row.original.name}
         </Link>
       ),
@@ -50,11 +47,11 @@ export default function MembersPage() {
     {
       accessorKey: "number",
       header: "Phone Number",
-      cell: ({ row }: { row: any }) => <div>{row.original.number}</div>,
+      cell: ({ row }) => <div>{row.original.number}</div>,
     },
     {
       accessorKey: "balance",
-      header: ({ column }: { column: any }) => (
+      header: ({ column }) => (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -63,11 +60,11 @@ export default function MembersPage() {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }: { row: any }) => <div>₹{row.original.balance * -1}</div>,
+      cell: ({ row }) => <div>₹{row.original.balance * -1}</div>,
     },
     {
       id: "actions",
-      cell: ({ row }: { row: any }) => {
+      cell: ({ row }) => {
         const member = row.original;
 
         return (
@@ -83,14 +80,12 @@ export default function MembersPage() {
               onClick={async () => {
                 if (confirm("Are you sure you want to delete?")) {
                   try {
-                    await universalFetcher("/api/members", "DELETE", {
-                      id: member.id,
-                    });
+                    await universalFetcher("/api/members/" + member.id, "DELETE");
                     toast.success("Member deleted");
-                    const data = await universalFetcher("/api/members", "GET");
-                    setData(data.members);
+                    mutate();
                   } catch (error) {
                     console.error("Fetch error:", error);
+                    toast.error("Failed to delete member");
                   }
                 }
               }}
@@ -104,9 +99,15 @@ export default function MembersPage() {
     },
   ];
 
+  if (error) return <div>Failed to load</div>;
+
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
+      <DataTable
+        columns={columns}
+        data={data?.members ?? []}
+        isLoading={isLoading}
+      />
       <div className="m-3 flex justify-end">
         <Link
           href={"/admin/members/add"}
