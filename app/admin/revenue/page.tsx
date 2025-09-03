@@ -41,6 +41,15 @@ export default function Revenue() {
     bills: BillType[];
     canteen: ctnBllInt[];
     transactions: TransactionType[];
+    charts: {
+      totalRevenue: number;
+      canteenRevenue: number;
+      tableRevenueList: {name: string; revenue: number}[];
+      canteenRevenueList: {name: string; revenue: number}[];
+      canteenQuantityList: {name: string; quantity: number}[];
+      tableTimeList: {name: string; time: number}[];
+      payModeList: {id: string; value: number; color: string}[];
+    };
   }>(`revenue-data-${timeframe}-${startDate}-${endDate}`, async () => {
     const { startRange, endRange } = getDateRange(timeframe, startDate, endDate);
     
@@ -224,7 +233,7 @@ export default function Revenue() {
           </TabNavigation>
 
           <div className="mt-5">
-            {tab === "charts" && data && <Charts bills={data.bills} canteen={data.canteen} />}
+            {tab === "charts" && data && <Charts charts={data.charts} />}
             {tab === "bills" && data && <DataTable columns={billColumns} data={data.bills} />}
             {tab === "canteen" && data && <DataTable columns={canteenColumns} data={data.canteen} />}
             {tab === "transactions" && data && <DataTable columns={transactionColumns} data={data.transactions} />}

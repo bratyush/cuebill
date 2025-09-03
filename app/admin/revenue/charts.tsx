@@ -1,89 +1,30 @@
 import PieChart from "@/components/nivo/pie";
 import { BarChart } from "@/components/tremor/bar";
 import { Card } from "@/components/tremor/card";
-import { BillType, ctnBllInt } from "@/types/myTypes";
 import { formatElapsedRound } from "@/utils/common";
 
 
-export default function Charts({bills, canteen}: {bills: BillType[], canteen: ctnBllInt[]}) {
+export default function Charts({charts}: {
+  charts: {
+    totalRevenue: number;
+    canteenRevenue: number;
+    tableRevenueList: {name: string; revenue: number}[];
+    canteenRevenueList: {name: string; revenue: number}[];
+    canteenQuantityList: {name: string; quantity: number}[];
+    tableTimeList: {name: string; time: number}[];
+    payModeList: {id: string; value: number; color: string}[];
+  }
+}) {
 
-  const totalRevenue = bills.reduce((acc, bill) => acc + bill.totalAmount, 0).toFixed(2)
-
-  const canteenRevenue = bills.reduce((acc, bill) => acc + (bill.canteenMoney ?? 0), 0).toFixed(2)
-
-  const tableRevenue = bills.reduce((acc: { [key: string]: number }, bill: BillType) => {
-    if (!acc[bill?.table?.name??0]) {
-      const tableName = bill?.table?.name ?? 0;
-      if (!acc[tableName]) {
-        acc[tableName] = 0;
-      }
-      acc[tableName] += bill.totalAmount ?? 0;
-    }
-    return acc;
-  }, {});
-  
-  const tableRevenueList = Object.entries(tableRevenue).map(([name, revenue]) => ({ name, revenue }));
-
-  const ctn = canteen.reduce((acc: { [key: string]: number }, bill: ctnBllInt) => {
-      if (!acc[bill?.item?.name??0]) {
-        const itemName = bill?.item?.name ?? 0;
-        if (!acc[itemName]) {
-          acc[itemName] = 0;
-        }
-        acc[itemName] += bill.amount;
-      }
-    return acc;
-  }, {});
-
-  const canteenRevenueList = Object.entries(ctn).map(([name, revenue]) => ({ name, revenue }));
-
-  const canteenQuantity = canteen.reduce((acc: { [key: string]: number }, bill: ctnBllInt) => {
-    if (!acc[bill?.item?.name??0]) {
-      const itemName = bill?.item?.name ?? 0;
-      if (!acc[itemName]) {
-        acc[itemName] = 0;
-      }
-      acc[itemName] += bill.quantity;
-    }
-    return acc;
-  }, {});
-
-  const canteenQuantityList = Object.entries(canteenQuantity).map(([name, quantity]) => ({ name, quantity }));
-
-  const tableTime = bills.reduce((acc: { [key: string]: number }, bill: BillType) => {
-    if (!acc[bill?.table?.name??0]) {
-      const tableName = bill?.table?.name ?? 0;
-      if (!acc[tableName]) {
-        acc[tableName] = 0;
-      }
-      acc[tableName] += bill.timePlayed??0;
-    }
-    return acc;
-  }, {});
-  
-  const tableTimeList = Object.entries(tableTime).map(([name, timePlayed]) => ({ name, time: timePlayed }));
-  
-  const payMode = bills.reduce((acc: { [key: string]: number }, bill: BillType) => {
-    if (!acc[bill.paymentMode]) {
-      const paymentMode = bill.paymentMode ?? 0;
-      if (!acc[paymentMode]) {
-        acc[paymentMode] = 0;
-      }
-      acc[paymentMode] += 1;
-    }
-    return acc;
-  }, {});
-  
-  const payModeList = Object.entries(payMode).map(([mode, bills]) => ({ id:mode, value:bills, color: '' }));
-  payModeList.map((mode) => {
-    if (mode.id == 'cash') {
-      mode.color = '#10b981';
-    } else if (mode.id == 'upi') {
-      mode.color = '#3b82f6';
-    } else if (mode.id == 'both') {
-      mode.color = '#f59e0b';
-    }
-  });
+  const { 
+    totalRevenue, 
+    canteenRevenue, 
+    tableRevenueList, 
+    canteenRevenueList, 
+    canteenQuantityList, 
+    tableTimeList, 
+    payModeList 
+  } = charts;
 
   return (
     <div className="space-y-6">
@@ -92,11 +33,11 @@ export default function Charts({bills, canteen}: {bills: BillType[], canteen: ct
         <div className="grid grid-rows-2 lg:col-span-2 gap-6">
           <Card className="text-center p-6">
             <p className="text-gray-500 text-lg">Total Revenue</p>
-            <p className="my-3 text-4xl font-semibold">&#8377;{Intl.NumberFormat("en-IN").format(parseFloat(totalRevenue))}</p>
+            <p className="my-3 text-4xl font-semibold">&#8377;{Intl.NumberFormat("en-IN").format(totalRevenue)}</p>
           </Card>
           <Card className="text-center p-6">
             <p className="text-gray-500 text-lg">Canteen Revenue</p>
-            <p className="my-3 text-4xl font-semibold">&#8377;{Intl.NumberFormat("en-IN").format(parseFloat(canteenRevenue))}</p>
+            <p className="my-3 text-4xl font-semibold">&#8377;{Intl.NumberFormat("en-IN").format(canteenRevenue)}</p>
           </Card>
         </div>
 

@@ -80,9 +80,87 @@ export async function getRevenueData(startRange: string | null, endRange: string
     },
   });
 
+  // Calculate chart data aggregations
+  const totalRevenue = bls.reduce((acc, bill) => acc + (bill.totalAmount ?? 0), 0);
+  const canteenRevenue = bls.reduce((acc, bill) => acc + (bill.canteenMoney ?? 0), 0);
+
+  // Table revenue aggregation
+  const tableRevenue: { [key: string]: number } = {};
+  bls.forEach((bill) => {
+    const tableName = bill?.table?.name ?? 'Canteen';
+    if (!tableRevenue[tableName]) {
+      tableRevenue[tableName] = 0;
+    }
+    tableRevenue[tableName] += bill.totalAmount ?? 0;
+  });
+  const tableRevenueList = Object.entries(tableRevenue).map(([name, revenue]) => ({ name, revenue }));
+
+  // Canteen item revenue aggregation
+  const canteenItemRevenue: { [key: string]: number } = {};
+  filteredCanteen.forEach((bill) => {
+    const itemName = bill?.item?.name ?? 'Unknown';
+    if (!canteenItemRevenue[itemName]) {
+      canteenItemRevenue[itemName] = 0;
+    }
+    canteenItemRevenue[itemName] += bill.amount ?? 0;
+  });
+  const canteenRevenueList = Object.entries(canteenItemRevenue).map(([name, revenue]) => ({ name, revenue }));
+
+  // Canteen item quantity aggregation
+  const canteenItemQuantity: { [key: string]: number } = {};
+  filteredCanteen.forEach((bill) => {
+    const itemName = bill?.item?.name ?? 'Unknown';
+    if (!canteenItemQuantity[itemName]) {
+      canteenItemQuantity[itemName] = 0;
+    }
+    canteenItemQuantity[itemName] += bill.quantity ?? 0;
+  });
+  const canteenQuantityList = Object.entries(canteenItemQuantity).map(([name, quantity]) => ({ name, quantity }));
+
+  // Table time aggregation (exclude canteen bills)
+  const tableTime: { [key: string]: number } = {};
+  bls.forEach((bill) => {
+    if (bill?.table?.name) { // Only include bills with actual tables
+      const tableName = bill.table.name;
+      if (!tableTime[tableName]) {
+        tableTime[tableName] = 0;
+      }
+      tableTime[tableName] += bill.timePlayed ?? 0;
+    }
+  });
+  const tableTimeList = Object.entries(tableTime).map(([name, timePlayed]) => ({ name, time: timePlayed }));
+
+  // Payment mode aggregation with colors
+  const paymentMode: { [key: string]: number } = {};
+  bls.forEach((bill) => {
+    const mode = bill.paymentMode ?? 'Unknown';
+    if (!paymentMode[mode]) {
+      paymentMode[mode] = 0;
+    }
+    paymentMode[mode] += 1;
+  });
+  
+  const payModeList = Object.entries(paymentMode).map(([mode, bills]) => {
+    let color = '#6b7280'; // default gray
+    if (mode === 'cash') color = '#10b981';
+    else if (mode === 'upi') color = '#3b82f6';
+    else if (mode === 'both') color = '#f59e0b';
+    
+    return { id: mode, value: bills, color };
+  });
+
   return {
     bills: bls as BillType[],
     canteen: filteredCanteen as ctnBllInt[],
-    transactions: trs as TransactionType[]
+    transactions: trs as TransactionType[],
+    charts: {
+      totalRevenue: parseFloat(totalRevenue.toFixed(2)),
+      canteenRevenue: parseFloat(canteenRevenue.toFixed(2)),
+      tableRevenueList,
+      canteenRevenueList,
+      canteenQuantityList,
+      tableTimeList,
+      payModeList
+    }
   };
 }
