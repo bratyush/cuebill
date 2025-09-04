@@ -332,7 +332,7 @@ export default function Bill({
                                         setError(
                                           "Cash amount should be a number",
                                         );
-                                      } else if (x > bill.tableMoney) {
+                                      } else if (x > bill.tableMoney + canteenTotal) {
                                         setError(
                                           "Cash amount should be less than total amount",
                                         );
@@ -361,7 +361,7 @@ export default function Bill({
                                 UPI Amount
                               </td>
                               <td className="border border-slate-300 p-2">
-                                &#8377;{Math.round(bill.tableMoney - cashPaid)}
+                                &#8377;{Math.round(bill.tableMoney + canteenTotal - cashPaid)}
                               </td>
                             </tr>
                           </>

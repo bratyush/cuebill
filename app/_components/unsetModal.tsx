@@ -136,10 +136,10 @@ export default function Unset({
                                 const now = new Date();
                                 const elapsedMs = now.getTime() - createdAt.getTime();
 
-                                // if (elapsedMs > 2 * 60 * 1000) {
-                                //   toast.error("You can only delete a bill within 2 minutes of creation.");
-                                //   return;
-                                // }
+                                if (elapsedMs > 2 * 60 * 1000) {
+                                  toast.error("You can only delete a bill within 2 minutes of creation.");
+                                  return;
+                                }
 
                                 if (confirm("Sure you want to delete this bill?")) {
                                   console.log('asdf', canteen)
