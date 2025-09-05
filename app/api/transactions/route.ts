@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 
 export async function GET() {
     const user = await currentUser();
-    const club = user?.privateMetadata.org?? '';
+    const club = user?.publicMetadata.org as string ?? '';
 
     const trans = await db.select().from(transactions).where(eq(transactions.club, club));
     return Response.json({trans})
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const body = await request.json() as TransactionType
 
     const user = await currentUser();
-    const club = user?.privateMetadata.org?? '';
+    const club = user?.publicMetadata.org as string ?? '';
 
     await db.insert(transactions).values({...body, club:club});
 

@@ -1,14 +1,14 @@
 import { db } from "@/db";
 import { bills } from "@/db/schema";
 import { currentUser } from "@clerk/nextjs/server";
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export async function GET() {
   const user = await currentUser();
   
   if (!user) return Response.json({ bills: [] });
   
-  const club = user?.privateMetadata.org ?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   try {
     // Get unsettled bills with tableId = 0 (canteen-only bills)

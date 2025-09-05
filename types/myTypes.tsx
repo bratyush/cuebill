@@ -68,7 +68,7 @@ export type ItemType = {
 };
 
 declare global {
-    interface UserPrivateMetadata {
+    interface UserpublicMetadata {
       org: string;
     }
   }

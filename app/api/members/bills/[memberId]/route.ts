@@ -8,7 +8,7 @@ export async function GET(request: Request, props: { params: Promise<{ memberId:
   const { memberId } = params;
 
   const user = await currentUser();
-  const club = user?.privateMetadata.org?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   // Fetch bills for the member from the database or any data source
   const memberBills = await db.query.bills.findMany({

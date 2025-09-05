@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   const body = await request.json() as ItemType
 
   const user = await currentUser();
-  const club = user?.privateMetadata.org?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   console.log('body', body)
 
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 export async function GET() {
 
   const user = await currentUser();
-  const club = user?.privateMetadata.org?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   const itms = await db.query.items.findMany({
     columns: {club:false, active:false},

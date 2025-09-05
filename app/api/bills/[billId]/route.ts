@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { bills, canteenBills } from "@/db/schema";
 import { BillType } from "@/types/myTypes";
 import { currentUser } from "@clerk/nextjs/server";
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export async function DELETE(request: Request, props: { params: Promise<{ billId: string }> }) {
   const params = await props.params;
@@ -11,7 +11,7 @@ export async function DELETE(request: Request, props: { params: Promise<{ billId
   const id = parseInt(billId);
 
   const user = await currentUser();
-  const club = user?.privateMetadata.org ?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   try {
     // First delete all associated canteen bills

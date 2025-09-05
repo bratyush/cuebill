@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 export async function GET() {
 
   const user = await currentUser();
-  const club = user?.privateMetadata.org?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   const bls = await db.query.bills.findMany({
     columns: {
