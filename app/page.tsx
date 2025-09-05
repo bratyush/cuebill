@@ -18,18 +18,22 @@ export default function Pos() {
     },
     {
       onSuccess: (data) => {
-        localStorage.setItem("tables", JSON.stringify(data));
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("tables", JSON.stringify(data));
+        }
       },
     },
   );
 
-  const localTables = localStorage.getItem("tables");
+  const localTables = typeof window !== 'undefined' ? localStorage.getItem("tables") : null;
   const numTables = localTables ? JSON.parse(localTables).length : 0;
 
   useEffect(() => {
-    const a = localStorage.getItem("tables");
-    if (!a) {
-      localStorage.setItem("tables", JSON.stringify([]));
+    if (typeof window !== 'undefined') {
+      const a = localStorage.getItem("tables");
+      if (!a) {
+        localStorage.setItem("tables", JSON.stringify([]));
+      }
     }
   }, []);
 
