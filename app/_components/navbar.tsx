@@ -1,5 +1,6 @@
 "use client"
 
+import { titles } from "@/utils/consts";
 import { UserButton, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 
@@ -7,8 +8,16 @@ const NavBar = () => {
 
   const clerk = useClerk()
 
+  const user = clerk.user;
+  const club = user?.publicMetadata.org as string ?? '';
+
+  const title =
+    club && club in titles
+      ? titles[club as keyof typeof titles]
+      : 'Snooker Club';
+
   return (
-    <nav className="flex h-16 items-center justify-between bg-gray-50 px-10 text-black">
+    <nav className="flex h-16 items-center justify-between bg-gray-100 px-10 text-black">
       <div>
         {/* <button className="hover:bg-slate-200 rounded-md p-2  " onClick={()=>{router.back()}}>
           <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -23,7 +32,7 @@ const NavBar = () => {
       </div>
       <div className="flex items-center">
         {/* <Image className="h-8 mr-2" src={logo} alt="Logo" /> */}
-        <span className="text-2xl font-bold">Snooker Club</span>
+        <span className="text-2xl font-bold">{title}</span>
       </div>
       <div className="flex items-center space-x-4">
         <Link

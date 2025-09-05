@@ -10,7 +10,7 @@ export async function POST(request: NextRequest, props: { params: Promise<{ memb
   const { amount, paymentMode, cashPaid, upiPaid } = await request.json();
 
   const user = await currentUser();
-  const club = user?.privateMetadata.org?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   const member = await db.query.members.findFirst({
     where: eq(members.id, parseInt(memberId)),

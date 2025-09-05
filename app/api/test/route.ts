@@ -8,7 +8,7 @@ export async function GET() {
 
   if (!user) return Response.json({ tables: [] });
 
-  const club: string = user?.privateMetadata?.org ?? "";
+  const club = user?.publicMetadata.org as string ?? '';
 
   const tbls = await db.query.tables.findMany({
     columns: { club: false, active: false },

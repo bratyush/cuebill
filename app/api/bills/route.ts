@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
   const user = await currentUser();
   
-  const club = user?.privateMetadata.org?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   const isCanteenBill = body.table === 0;
   const now = Date.now();
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 export async function GET() {
 
   const user = await currentUser();
-  const club = user?.privateMetadata.org?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   const bls = await db.query.bills.findMany({
     with: {

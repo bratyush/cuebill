@@ -1,12 +1,12 @@
 import { db } from "@/db";
 import { bills, canteenBills, transactions } from "@/db/schema";
-import { currentUser } from "@clerk/nextjs/server";
-import { eq, and, gte, lte } from "drizzle-orm";
 import { BillType, ctnBllInt, TransactionType } from "@/types/myTypes";
+import { currentUser } from "@clerk/nextjs/server";
+import { and, eq, gte, lte } from "drizzle-orm";
 
 export async function getRevenueData(startRange: string | null, endRange: string | null) {
   const user = await currentUser();
-  const club = user?.privateMetadata.org ?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   // Parse date strings back to Date objects and convert to timestamps
   const startTimestamp = startRange ? new Date(startRange).getTime() : null;

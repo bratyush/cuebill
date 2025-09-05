@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   const body: CanteenBillType = await request.json()
 
   const user = await currentUser();
-  const club = user?.privateMetadata.org?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   await db.insert(canteenBills).values({...body, club:club});
 
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 export async function GET() {
 
   const user = await currentUser();
-  const club = user?.privateMetadata.org?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   const ctnbls = await db.query.canteenBills.findMany({
     where: eq(canteenBills.club, club)
@@ -35,7 +35,7 @@ export async function PATCH(request: Request) {
   const body: BillType = await request.json()
 
   const user = await currentUser();
-  const club = user?.privateMetadata.org?? '';
+  const club = user?.publicMetadata.org as string ?? '';
 
   // make a bill with body.bill time and tableId 0,
   // then update all canteenBills with -1 billId to this new billId
