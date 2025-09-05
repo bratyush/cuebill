@@ -27,7 +27,7 @@ const NavBar = () => {
       </div>
       <div className="flex items-center space-x-4">
         <Link
-          href={"/"}
+          href={"/admin/"}
           className="rounded-md px-3 py-2 text-lg font-semibold text-black hover:bg-slate-300"
         >
           POS

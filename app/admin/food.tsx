@@ -6,9 +6,9 @@ import { BillType, TableType } from "@/types/myTypes";
 import { universalFetcher } from "@/utils/fetches";
 import useSWR, { useSWRConfig } from "swr";
 
-import Bill from "./_components/billModal";
-import Unset from "./_components/unsetModal";
-import { toast } from "react-hot-toast";
+import Bill from "@/app/_components/billModal";
+import Unset from "@/app/_components/unsetModal";
+
 
 export default function FoodBill({ table }: { table: TableType }) {
   const { mutate } = useSWRConfig();

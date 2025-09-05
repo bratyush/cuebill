@@ -12,10 +12,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR, { useSWRConfig } from "swr";
-import type { BillType, TableType } from "../types/myTypes";
-import Food from "./_components/foodModal";
-import Note from "./_components/noteModal";
-import Unset from "./_components/unsetModal";
+import type { BillType, TableType } from "@/types/myTypes";
+import Food from "@/app/_components/foodModal";
+import Note from "@/app/_components/noteModal";
+import Unset from "@/app/_components/unsetModal";
 
 export default function Table({
   tableData,
