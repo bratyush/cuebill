@@ -6,9 +6,12 @@ import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "react-hot-toast";
 
 export const metadata = {
-  title: "Cuebill",
+  title: "CueBill",
   description: "Manage your bills with ease",
-  // icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [
+    // { rel: "icon", url: "/fav-white.ico" },
+    { rel: "icon", url: "/fav-white.png", type: "image/png" }
+  ],
 };
 
 export default function RootLayout({

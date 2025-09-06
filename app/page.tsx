@@ -1,5 +1,5 @@
 
-import { Play, Check, Star, ArrowRight, Shield, Zap, BarChart3 } from 'lucide-react';
+import { Check, Star, ArrowRight, Shield, Zap, BarChart3 } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -36,16 +36,21 @@ export default function Home() {
         </div>
         
         {/* Product Demo Video */}
-        <div className="relative max-w-4xl mx-auto">
+        <div className="relative max-w-5xl mx-auto">
           <div className="relative bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
-            <div className="aspect-video bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] flex items-center justify-center">
-              <button className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-full p-6 hover:bg-white/30 transition-all duration-200 group">
-                <Play className="w-12 h-12 text-white ml-1 group-hover:scale-110 transition-transform duration-200" />
-              </button>
-            </div>
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
-              <span className="text-white text-lg font-semibold">Watch Product Demo</span>
-            </div>
+            <video
+              className="w-full aspect-video object-cover"
+              controls
+              autoPlay
+              loop
+              muted
+              poster="/landing/cues_revenue.png"
+              preload="metadata"
+            >
+              <source src="/landing/cues_land.mov" type="video/quicktime" />
+              <source src="/landing/cues_land.mov" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
       </section>
@@ -68,30 +73,32 @@ export default function Home() {
                 <div className="bg-[var(--color-light)] p-2 rounded-lg">
                   <BarChart3 className="w-6 h-6 text-[var(--color-primary)]" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Real-Time Analytics</h3>
+                <h3 className="text-2xl font-bold text-gray-900">Revenue Analytics Dashboard</h3>
               </div>
               <p className="text-lg text-gray-600 mb-6">
-                Get instant insights with our advanced analytics dashboard. Track performance, identify trends, and make data-driven decisions effortlessly.
+                Track your business performance with comprehensive analytics. Monitor revenue streams, table utilization, payment modes, and canteen operations in real-time.
               </p>
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">Live data visualization</span>
+                  <span className="text-gray-700">Total revenue tracking (₹1,85,197+)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">Custom reporting tools</span>
+                  <span className="text-gray-700">Table & canteen revenue breakdown</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">Predictive analytics</span>
+                  <span className="text-gray-700">Payment mode analysis & insights</span>
                 </div>
               </div>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="aspect-video bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-primary)] rounded-lg flex items-center justify-center">
-                <span className="text-white font-semibold text-lg">Analytics Demo</span>
-              </div>
+              <img 
+                src="/landing/cues_revenue.png" 
+                alt="Revenue Analytics Dashboard" 
+                className="w-full aspect-video object-cover rounded-lg"
+              />
             </div>
           </div>
 
