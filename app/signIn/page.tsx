@@ -3,7 +3,7 @@
 import Image from "next/image"
 import UserLoginForm from "./authForm"
 
-import poolBg from '@/public/pool-bg.jpg';
+import poolBg from '@/public/signIn/pool-bg.jpg';
 import { useUser } from "@clerk/nextjs"
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"

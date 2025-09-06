@@ -158,17 +158,17 @@ export const getDateRange = (timeframe: string, startDate: string, endDate: stri
   }
 };
 
-import amber from '@/public/amber.svg';
-import pool from '@/public/pool.png';
-import ps from '@/public/ps.png';
-import red from '@/public/red.svg';
-import snooker from '@/public/snooker.png';
-import snookerDark from '@/public/snooker-dark.png';
-import stone from '@/public/stone.svg';
-import tv from '@/public/tv.png';
-import violet from '@/public/violet.svg';
-import windows from '@/public/windows.png';
-import xbox from '@/public/xbox.png';
+import amber from '@/public/tables/amber.svg';
+import pool from '@/public/tables/pool.png';
+import ps from '@/public/tables/ps.png';
+import red from '@/public/tables/red.svg';
+import snooker from '@/public/tables/snooker.png';
+import snookerDark from '@/public/tables/snooker-dark.png';
+import stone from '@/public/tables/stone.svg';
+import tv from '@/public/tables/tv.png';
+import violet from '@/public/tables/violet.svg';
+import windows from '@/public/tables/windows.png';
+import xbox from '@/public/tables/xbox.png';
 
 export const tableTheme = (theme: string) => {
   switch (theme) {
@@ -178,7 +178,7 @@ export const tableTheme = (theme: string) => {
       return windows;
     case 'xbox':
       return xbox;
-    case 'ps':
+    case 'playstation':
       return ps;
     case 'pool':
       return pool;

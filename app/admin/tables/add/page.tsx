@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import pool from "@/public/pool.png";
+import pool from "@/public/tables/pool.png";
 import { tableTheme } from "@/utils/common";
 import { themes } from "@/utils/consts";
 import { universalFetcher } from "@/utils/fetches";
