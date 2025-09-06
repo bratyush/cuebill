@@ -3,14 +3,21 @@ import { Play, Check, Star, ArrowRight, Shield, Zap, BarChart3 } from 'lucide-re
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div 
+      className="min-h-screen bg-white" 
+      style={{
+        '--color-primary': '#7293a0',
+        '--color-secondary': '#a0a4b8',
+        '--color-light': '#d8ddef'
+      } as React.CSSProperties}
+    >
       {/* Hero Section */}
       <section className="pt-20 pb-16 px-6 max-w-7xl mx-auto">
         <div className="text-center">
           <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
             Transform Your Business
             <br />
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">
               With Smart Automation
             </span>
           </h1>
@@ -18,7 +25,7 @@ export default function Home() {
             Streamline operations, boost productivity, and scale faster with our intelligent SaaS platform. See results in minutes, not months.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-2">
+            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-2">
               Start Free Trial
               <ArrowRight className="w-5 h-5" />
             </button>
@@ -31,7 +38,7 @@ export default function Home() {
         {/* Product Demo Video */}
         <div className="relative max-w-4xl mx-auto">
           <div className="relative bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
-            <div className="aspect-video bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center">
+            <div className="aspect-video bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] flex items-center justify-center">
               <button className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-full p-6 hover:bg-white/30 transition-all duration-200 group">
                 <Play className="w-12 h-12 text-white ml-1 group-hover:scale-110 transition-transform duration-200" />
               </button>
@@ -58,8 +65,8 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-blue-100 p-2 rounded-lg">
-                  <BarChart3 className="w-6 h-6 text-blue-600" />
+                <div className="bg-[var(--color-light)] p-2 rounded-lg">
+                  <BarChart3 className="w-6 h-6 text-[var(--color-primary)]" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900">Real-Time Analytics</h3>
               </div>
@@ -82,7 +89,7 @@ export default function Home() {
               </div>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="aspect-video bg-gradient-to-br from-green-400 to-blue-500 rounded-lg flex items-center justify-center">
+              <div className="aspect-video bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-primary)] rounded-lg flex items-center justify-center">
                 <span className="text-white font-semibold text-lg">Analytics Demo</span>
               </div>
             </div>
@@ -90,14 +97,14 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
             <div className="bg-white p-6 rounded-xl shadow-lg order-2 md:order-1">
-              <div className="aspect-video bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center">
+              <div className="aspect-video bg-gradient-to-br from-[var(--color-light)] to-[var(--color-secondary)] rounded-lg flex items-center justify-center">
                 <span className="text-white font-semibold text-lg">Automation Demo</span>
               </div>
             </div>
             <div className="order-1 md:order-2">
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-purple-100 p-2 rounded-lg">
-                  <Zap className="w-6 h-6 text-purple-600" />
+                <div className="bg-[var(--color-light)] p-2 rounded-lg">
+                  <Zap className="w-6 h-6 text-[var(--color-primary)]" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900">Smart Automation</h3>
               </div>
@@ -124,8 +131,8 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-green-100 p-2 rounded-lg">
-                  <Shield className="w-6 h-6 text-green-600" />
+                <div className="bg-[var(--color-light)] p-2 rounded-lg">
+                  <Shield className="w-6 h-6 text-[var(--color-primary)]" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900">Enterprise Security</h3>
               </div>
@@ -148,7 +155,7 @@ export default function Home() {
               </div>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="aspect-video bg-gradient-to-br from-red-400 to-orange-500 rounded-lg flex items-center justify-center">
+              <div className="aspect-video bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] rounded-lg flex items-center justify-center">
                 <span className="text-white font-semibold text-lg">Security Demo</span>
               </div>
             </div>
@@ -190,7 +197,7 @@ export default function Home() {
                 "This platform has revolutionized how we handle our operations. We've seen a 300% increase in efficiency and our team couldn't be happier."
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
                   <span className="text-white font-semibold">JS</span>
                 </div>
                 <div>
@@ -210,7 +217,7 @@ export default function Home() {
                 "The automation features have saved us countless hours. What used to take days now happens in minutes. Absolutely game-changing."
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-[var(--color-secondary)] rounded-full flex items-center justify-center">
                   <span className="text-white font-semibold">MJ</span>
                 </div>
                 <div>
@@ -230,7 +237,7 @@ export default function Home() {
                 "Security and compliance were our biggest concerns. This platform exceeded all our expectations with enterprise-grade protection."
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
                   <span className="text-white font-semibold">RW</span>
                 </div>
                 <div>
@@ -244,19 +251,19 @@ export default function Home() {
           {/* Stats */}
           <div className="grid md:grid-cols-4 gap-8 mt-16 text-center">
             <div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">10k+</div>
+              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">10k+</div>
               <div className="text-gray-600">Active Users</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-purple-600 mb-2">99.9%</div>
+              <div className="text-4xl font-bold text-[var(--color-secondary)] mb-2">99.9%</div>
               <div className="text-gray-600">Uptime SLA</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-green-600 mb-2">500+</div>
+              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">500+</div>
               <div className="text-gray-600">Integrations</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-red-600 mb-2">24/7</div>
+              <div className="text-4xl font-bold text-[var(--color-secondary)] mb-2">24/7</div>
               <div className="text-gray-600">Support</div>
             </div>
           </div>
@@ -274,7 +281,7 @@ export default function Home() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-2">
+            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-2">
               Start Free Trial
               <ArrowRight className="w-5 h-5" />
             </button>
