@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import pool from "@/public/pool.png";
+import pool from "@/public/tables/pool.png";
 
 import { type TableType } from "@/types/myTypes";
 import { tableTheme } from "@/utils/common";

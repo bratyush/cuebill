@@ -1,5 +1,5 @@
 export const themes = [
-  'tv', 'windows', 'xbox', 'ps', 'pool', 
+  'tv', 'windows', 'xbox', 'playstation', 'pool', 
   'snooker', 'snooker-dark', 'violet', 'amber', 'red', 
   'stone', 'canteen'
 ] as const;
