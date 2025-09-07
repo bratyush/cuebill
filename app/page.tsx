@@ -107,7 +107,7 @@ function HeroSection({ onGetStartedClick }: { onGetStartedClick: () => void }) {
               poster="/landing/cues_revenue.png"
               preload="metadata"
             >
-              <source src="/landing/cues_land.mp4" type="video/mp4" />
+              <source src="/landing/snook_land.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
             {/* Fallback image if video doesn't load */}
