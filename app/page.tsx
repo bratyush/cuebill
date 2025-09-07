@@ -1,15 +1,20 @@
-import { Check, Star, ArrowRight, Shield, Zap, BarChart3, Mail, Phone, Calculator, Users, Clock, TrendingUp, DollarSign, Smartphone } from 'lucide-react';
+'use client';
+
+import { Check, Star, ArrowRight, Shield, Zap, BarChart3, Mail, Phone, Calculator, Users, Clock, TrendingUp, DollarSign, Smartphone, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+
+// good colors - E88273, 7293a0, 646D98, 575D90, 60495A, 183339, 7A9B76, 7A633E
 
 export default function Home() {
   return (
     <div 
       className="min-h-screen bg-white" 
       style={{
-        '--color-primary': '#7293a0',
-        '--color-secondary': '#a0a4b8',
-        '--color-light': '#d8ddef'
+        '--color-primary': '#646D98'
       } as React.CSSProperties}
     >
+
+      <Navbar />
 
       <HeroSection />
 
@@ -35,12 +40,12 @@ function HeroSection() {
   return (
     <>
       {/* Hero Section */}
-      <section className="pt-20 pb-16 px-6 max-w-7xl mx-auto">
+      <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto">
         <div className="text-center">
           <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
             Stop Losing Money.
             <br />
-            <span className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary)] bg-clip-text text-transparent">
               Start Growing Your Club.
             </span>
           </h1>
@@ -50,30 +55,30 @@ function HeroSection() {
           
           {/* Stats Banner */}
           {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto">
-            <div className="bg-[var(--color-light)] p-4 rounded-lg">
+            <div className="bg-[var(--color-primary)]/10 p-4 rounded-lg">
               <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">15%</div>
               <div className="text-sm text-gray-600">Revenue Recovery</div>
             </div>
-            <div className="bg-[var(--color-light)] p-4 rounded-lg">
+            <div className="bg-[var(--color-primary)]/10 p-4 rounded-lg">
               <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">40%</div>
               <div className="text-sm text-gray-600">Staff Efficiency</div>
             </div>
-            <div className="bg-[var(--color-light)] p-4 rounded-lg">
+            <div className="bg-[var(--color-primary)]/10 p-4 rounded-lg">
               <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">0%</div>
               <div className="text-sm text-gray-600">Calculation Errors</div>
             </div>
-            <div className="bg-[var(--color-light)] p-4 rounded-lg">
+            <div className="bg-[var(--color-primary)]/10 p-4 rounded-lg">
               <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">24/7</div>
               <div className="text-sm text-gray-600">Business Insights</div>
             </div>
           </div> */}
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-2">
+            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-2">
               See Live Demo
               <ArrowRight className="w-5 h-5" />
             </button>
-            <button className="border border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200">
+            <button className="border border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-primary)] px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200">
               Get Started Free
             </button>
           </div>
@@ -81,7 +86,7 @@ function HeroSection() {
         
         {/* Product Demo Video */}
         <div className="relative max-w-5xl mx-auto">
-          <div className="relative bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
+          <div className="relative bg-[var(--color-primary)] rounded-xl overflow-hidden shadow-2xl">
             <video
               className="w-full aspect-video object-cover"
               controls
@@ -112,7 +117,7 @@ function ProblemsSection() {
   return (
     <>
       {/* Problems Section */}
-      <section className="py-20 px-6 bg-red-50">
+      <section id="problems" className="py-20 px-6 bg-red-50/60">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
             Are You Losing Money Every Day?
@@ -173,7 +178,7 @@ function SolutionSection() {
   return (
     <>
       {/* Solution Section */}
-      <section className="py-20 px-6 bg-green-50">
+      <section id="solution" className="py-20 px-6 bg-[var(--color-primary)]/5">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
             One System. Complete Control.
@@ -181,8 +186,8 @@ function SolutionSection() {
           
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                <Clock className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-[var(--color-primary)]/20 rounded-full flex items-center justify-center">
+                <Clock className="w-8 h-8 text-[var(--color-primary)]" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Real-time Table Management</h3>
               <ul className="text-left text-gray-600 space-y-2">
@@ -202,8 +207,8 @@ function SolutionSection() {
             </div>
             
             <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                <Smartphone className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-[var(--color-primary)]/20 rounded-full flex items-center justify-center">
+                <Smartphone className="w-8 h-8 text-[var(--color-primary)]" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Smart Canteen Integration</h3>
               <ul className="text-left text-gray-600 space-y-2">
@@ -223,8 +228,8 @@ function SolutionSection() {
             </div>
             
             <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                <TrendingUp className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-[var(--color-primary)]/20 rounded-full flex items-center justify-center">
+                <TrendingUp className="w-8 h-8 text-[var(--color-primary)]" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Member & Revenue Management</h3>
               <ul className="text-left text-gray-600 space-y-2">
@@ -336,7 +341,7 @@ function TestimonialSection() {
   return (
     <>
       {/* Testimonial Section */}
-      <section className="py-20 px-6 bg-white">
+      <section id="testimonials" className="py-20 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -346,7 +351,7 @@ function TestimonialSection() {
           </div>
 
           {/* Main Testimonial */}
-          <div className="bg-[var(--color-light)] p-12 rounded-xl mb-12 max-w-6xl mx-auto">
+          <div className="bg-gray-200 p-12 rounded-xl mb-12 max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               {/* Business Photo */}
               <div className="order-2 md:order-1">
@@ -383,18 +388,18 @@ function TestimonialSection() {
 
           {/* Results Stats */}
           <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div className="bg-green-50 p-8 rounded-xl">
-              <div className="text-4xl font-bold text-green-600 mb-2">18%</div>
+            <div className="bg-[var(--color-primary)]/10 p-8 rounded-xl">
+              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">18%</div>
               <div className="text-gray-700 font-semibold mb-2">Average Revenue Increase</div>
               <div className="text-gray-600">In first quarter</div>
             </div>
             <div className="bg-blue-50 p-8 rounded-xl">
-              <div className="text-4xl font-bold text-blue-600 mb-2">45min</div>
+              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">45min</div>
               <div className="text-gray-700 font-semibold mb-2">Time Saved Daily</div>
               <div className="text-gray-600">On billing tasks</div>
             </div>
             <div className="bg-purple-50 p-8 rounded-xl">
-              <div className="text-4xl font-bold text-purple-600 mb-2">99.9%</div>
+              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">99.9%</div>
               <div className="text-gray-700 font-semibold mb-2">Billing Accuracy</div>
               <div className="text-gray-600">Zero calculation errors</div>
             </div>
@@ -436,7 +441,7 @@ function ROICalculatorSection() {
               </div>
             </div>
 
-            <div className="text-center p-8 bg-green-50 rounded-lg">
+            <div className="text-center p-8 bg-[var(--color-primary)]/10 rounded-lg">
               <div className="text-3xl font-bold text-green-600 mb-2">₹18,000</div>
               <div className="text-lg text-gray-700 mb-1">Potential monthly recovery</div>
               <div className="text-sm text-gray-600">Based on 15% revenue recovery</div>
@@ -457,7 +462,7 @@ function ComparisonSection() {
   return (
     <>
       {/* Comparison Section */}
-      <section className="py-20 px-6 bg-gray-50">
+      <section id="comparison" className="py-20 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -478,8 +483,8 @@ function ComparisonSection() {
                 </div>
               </div>
               
-              <div className="p-6 bg-red-50">
-                <h3 className="text-lg font-semibold text-red-800 mb-4">Manual System</h3>
+              <div className="p-6 bg-red-50/60">
+                <h3 className="text-lg font-semibold text-red-700 mb-4">Manual System</h3>
                 <div className="space-y-4">
                   <div className="text-red-700">85-90%</div>
                   <div className="text-red-700">15+ minutes</div>
@@ -489,14 +494,14 @@ function ComparisonSection() {
                 </div>
               </div>
               
-              <div className="p-6 bg-green-50">
-                <h3 className="text-lg font-semibold text-green-800 mb-4">CueBill</h3>
+              <div className="p-6 bg-[var(--color-primary)]/10">
+                <h3 className="text-lg font-semibold text-[var(--color-primary)] mb-4">CueBill</h3>
                 <div className="space-y-4">
-                  <div className="text-green-700 font-semibold">100%</div>
-                  <div className="text-green-700 font-semibold">2 minutes</div>
-                  <div className="text-green-700 font-semibold">0%</div>
-                  <div className="text-green-700 font-semibold">Complete</div>
-                  <div className="text-green-700 font-semibold">Minimal</div>
+                  <div className="text-[var(--color-primary)] font-semibold">100%</div>
+                  <div className="text-[var(--color-primary)] font-semibold">2 minutes</div>
+                  <div className="text-[var(--color-primary)] font-semibold">0%</div>
+                  <div className="text-[var(--color-primary)] font-semibold">Complete</div>
+                  <div className="text-[var(--color-primary)] font-semibold">Minimal</div>
                 </div>
               </div>
             </div>
@@ -533,7 +538,7 @@ function ContactSection() {
   return (
     <>
           {/* Final CTA Section */}
-      <section className="py-20 px-6 bg-gray-900">
+      <section id="contact" className="py-20 px-6 bg-[#1F2033]">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Ready to Stop Losing Money?
@@ -542,14 +547,14 @@ function ContactSection() {
             Join club owners who recovered their lost revenue with CueBill. Start your free trial today.
           </p>
           
-          <div className="bg-[var(--color-light)] p-6 rounded-xl mb-8 max-w-2xl mx-auto">
+          <div className="bg-white border border-[var(--color-primary)]/20 p-6 rounded-xl mb-8 max-w-2xl mx-auto">
             <p className="text-lg text-gray-700 font-semibold">
               30-day free trial • No setup fees • Cancel anytime
             </p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] text-white px-10 py-5 rounded-lg font-semibold text-xl transition-colors duration-200 flex items-center gap-2">
+            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-10 py-5 rounded-lg font-semibold text-xl transition-colors duration-200 flex items-center gap-2">
               Start Free Trial
               <ArrowRight className="w-6 h-6" />
             </button>
@@ -585,4 +590,130 @@ function ContactSection() {
       </section>
     </>
   )
+}
+
+function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsMenuOpen(false);
+  };
+
+  return (
+    <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo and Brand */}
+          <div className="flex items-center gap-3">
+            <div className='rounded-lg bg-[var(--color-primary)]'>
+              <img 
+                src="/fav-white.png" 
+                alt="CueBill Logo" 
+                className="w-10 h-10 m-1"
+                />
+            </div>
+            <span className="text-2xl font-bold text-[var(--color-primary)]">CueBill</span>
+          </div>
+
+          {/* Desktop Navigation Links */}
+          <div className="hidden md:flex items-center space-x-8">
+            <button 
+              onClick={() => scrollToSection('problems')}
+              className="text-gray-700 hover:text-[var(--color-primary)] font-medium transition-colors"
+            >
+              Problems
+            </button>
+            <button 
+              onClick={() => scrollToSection('solution')}
+              className="text-gray-700 hover:text-[var(--color-primary)] font-medium transition-colors"
+            >
+              Solution
+            </button>
+            <button 
+              onClick={() => scrollToSection('testimonials')}
+              className="text-gray-700 hover:text-[var(--color-primary)] font-medium transition-colors"
+            >
+              Success Stories
+            </button>
+            <button 
+              onClick={() => scrollToSection('comparison')}
+              className="text-gray-700 hover:text-[var(--color-primary)] font-medium transition-colors"
+            >
+              Why CueBill
+            </button>
+            <button 
+              onClick={() => scrollToSection('contact')}
+              className="text-gray-700 hover:text-[var(--color-primary)] font-medium transition-colors"
+            >
+              Contact
+            </button>
+          </div>
+
+          {/* CTA Button */}
+          <div className="hidden md:block">
+            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200">
+              Start Free Trial
+            </button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-gray-700 hover:text-[var(--color-primary)] p-2"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-200">
+            <div className="py-4 space-y-2">
+              <button 
+                onClick={() => scrollToSection('problems')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-[var(--color-primary)]"
+              >
+                Problems
+              </button>
+              <button 
+                onClick={() => scrollToSection('solution')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-[var(--color-primary)]"
+              >
+                Solution
+              </button>
+              <button 
+                onClick={() => scrollToSection('testimonials')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-[var(--color-primary)]"
+              >
+                Success Stories
+              </button>
+              <button 
+                onClick={() => scrollToSection('comparison')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-[var(--color-primary)]"
+              >
+                Why CueBill
+              </button>
+              <button 
+                onClick={() => scrollToSection('contact')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-[var(--color-primary)]"
+              >
+                Contact
+              </button>
+              <div className="px-4 pt-2">
+                <button className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200">
+                  Start Free Trial
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
 }
