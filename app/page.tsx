@@ -128,7 +128,7 @@ function ProblemsSection() {
   return (
     <>
       {/* Problems Section */}
-      <section id="problems" className="py-20 px-6 bg-red-50/60">
+      <section id="problems" className="py-20 px-6 bg-red-300/50">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
             Are You Losing Money Every Day?
@@ -189,7 +189,7 @@ function SolutionSection() {
   return (
     <>
       {/* Solution Section */}
-      <section id="solution" className="py-20 px-6 bg-[var(--color-primary)]/5">
+      <section id="solution" className="py-20 px-6 bg-green-300/50">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
             One System. Complete Control.
@@ -197,8 +197,8 @@ function SolutionSection() {
           
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="w-16 h-16 mx-auto mb-4 bg-[var(--color-primary)]/20 rounded-full flex items-center justify-center">
-                <Clock className="w-8 h-8 text-[var(--color-primary)]" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-green-500/20 rounded-full flex items-center justify-center">
+                <Clock className="w-8 h-8 text-green-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Real-time Table Management</h3>
               <ul className="text-left text-gray-600 space-y-2">
@@ -218,8 +218,8 @@ function SolutionSection() {
             </div>
             
             <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="w-16 h-16 mx-auto mb-4 bg-[var(--color-primary)]/20 rounded-full flex items-center justify-center">
-                <Smartphone className="w-8 h-8 text-[var(--color-primary)]" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-green-500/20 rounded-full flex items-center justify-center">
+                <Smartphone className="w-8 h-8 text-green-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Smart Canteen Integration</h3>
               <ul className="text-left text-gray-600 space-y-2">
@@ -239,8 +239,8 @@ function SolutionSection() {
             </div>
             
             <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="w-16 h-16 mx-auto mb-4 bg-[var(--color-primary)]/20 rounded-full flex items-center justify-center">
-                <TrendingUp className="w-8 h-8 text-[var(--color-primary)]" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-green-500/20 rounded-full flex items-center justify-center">
+                <TrendingUp className="w-8 h-8 text-green-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Member & Revenue Management</h3>
               <ul className="text-left text-gray-600 space-y-2">
@@ -505,14 +505,14 @@ function ComparisonSection() {
                 </div>
               </div>
               
-              <div className="p-6 bg-[var(--color-primary)]/10">
-                <h3 className="text-lg font-semibold text-[var(--color-primary)] mb-4">CueBill</h3>
+              <div className="p-6 bg-green-50">
+                <h3 className="text-lg font-semibold text-green-700 mb-4">CueBill</h3>
                 <div className="space-y-4">
-                  <div className="text-[var(--color-primary)] font-semibold">100%</div>
-                  <div className="text-[var(--color-primary)] font-semibold">2 minutes</div>
-                  <div className="text-[var(--color-primary)] font-semibold">0%</div>
-                  <div className="text-[var(--color-primary)] font-semibold">Complete</div>
-                  <div className="text-[var(--color-primary)] font-semibold">Minimal</div>
+                  <div className="text-green-700 font-semibold">100%</div>
+                  <div className="text-green-700 font-semibold">2 minutes</div>
+                  <div className="text-green-700 font-semibold">0%</div>
+                  <div className="text-green-700 font-semibold">Complete</div>
+                  <div className="text-green-700 font-semibold">Minimal</div>
                 </div>
               </div>
             </div>
@@ -824,9 +824,9 @@ function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 
         {!formData.isSubmitted ? (
           <>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Get Started with CueBill</h2>
-            <p className="text-gray-600 mb-6">Enter your mobile number and we'll get in touch with you.</p>
-            
+            <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Get Started with CueBill</h2>
+            <p className="text-gray-600 mb-6">Enter your mobile number and we'll get in touch.</p>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
