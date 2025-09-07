@@ -9,8 +9,7 @@ export const metadata = {
   title: "CueBill",
   description: "Manage your bills with ease",
   icons: [
-    // { rel: "icon", url: "/fav-white.ico" },
-    { rel: "icon", url: "/fav-white.png", type: "image/png" }
+    { rel: "icon", url: "/favicon.ico" },
   ],
 };
 
@@ -22,6 +21,8 @@ export default function RootLayout({
   return (
     <ClerkProvider dynamic>
       <html lang="en">
+        <head>
+        </head>
         <body className={`font-sans `}>
           <div className="">
             <Toaster />

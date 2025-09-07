@@ -1,5 +1,4 @@
-
-import { Check, Star, ArrowRight, Shield, Zap, BarChart3 } from 'lucide-react';
+import { Check, Star, ArrowRight, Shield, Zap, BarChart3, Mail, Phone, Calculator, Users, Clock, TrendingUp, DollarSign, Smartphone } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -11,26 +10,71 @@ export default function Home() {
         '--color-light': '#d8ddef'
       } as React.CSSProperties}
     >
+
+      <HeroSection />
+
+      <ProblemsSection />
+
+      <SolutionSection />
+
+      {/* <FeaturesSection /> */}
+
+      <TestimonialSection />
+
+      {/* <ROICalculatorSection /> */}
+
+      <ComparisonSection />
+
+      <ContactSection />
+
+    </div>
+  );
+}
+
+function HeroSection() {
+  return (
+    <>
       {/* Hero Section */}
       <section className="pt-20 pb-16 px-6 max-w-7xl mx-auto">
         <div className="text-center">
           <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-            Transform Your Business
+            Stop Losing Money.
             <br />
             <span className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">
-              With Smart Automation
+              Start Growing Your Club.
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Streamline operations, boost productivity, and scale faster with our intelligent SaaS platform. See results in minutes, not months.
+            CueBill eliminates revenue leakage with automated table billing and seamless canteen integration. Transform your club operations today.
           </p>
+          
+          {/* Stats Banner */}
+          {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto">
+            <div className="bg-[var(--color-light)] p-4 rounded-lg">
+              <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">15%</div>
+              <div className="text-sm text-gray-600">Revenue Recovery</div>
+            </div>
+            <div className="bg-[var(--color-light)] p-4 rounded-lg">
+              <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">40%</div>
+              <div className="text-sm text-gray-600">Staff Efficiency</div>
+            </div>
+            <div className="bg-[var(--color-light)] p-4 rounded-lg">
+              <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">0%</div>
+              <div className="text-sm text-gray-600">Calculation Errors</div>
+            </div>
+            <div className="bg-[var(--color-light)] p-4 rounded-lg">
+              <div className="text-2xl font-bold text-[var(--color-primary)] mb-1">24/7</div>
+              <div className="text-sm text-gray-600">Business Insights</div>
+            </div>
+          </div> */}
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <button className="bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-2">
-              Start Free Trial
+              See Live Demo
               <ArrowRight className="w-5 h-5" />
             </button>
             <button className="border border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200">
-              Schedule Demo
+              Get Started Free
             </button>
           </div>
         </div>
@@ -41,284 +85,495 @@ export default function Home() {
             <video
               className="w-full aspect-video object-cover"
               controls
-              autoPlay
               loop
               muted
+              autoPlay
               poster="/landing/cues_revenue.png"
               preload="metadata"
             >
-              <source src="/landing/cues_land.mov" type="video/quicktime" />
-              <source src="/landing/cues_land.mov" type="video/mp4" />
+              <source src="/landing/cues_land.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
+            {/* Fallback image if video doesn't load */}
+            <img 
+              src="/landing/cues_revenue.png" 
+              alt="Product Demo Preview" 
+              className="w-full aspect-video object-cover absolute inset-0 -z-10"
+              loading="lazy"
+            />
           </div>
         </div>
       </section>
+    </>
+  )
+}
 
-      {/* Feature Demos Section */}
+function ProblemsSection() {
+  return (
+    <>
+      {/* Problems Section */}
+      <section className="py-20 px-6 bg-red-50">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
+            Are You Losing Money Every Day?
+          </h2>
+          
+          {/* First row - 3 cards */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-8">
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <Clock className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Manual Time Tracking</h3>
+              <p className="text-gray-600">Causes 10-15% revenue loss through human error and missed minutes</p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <DollarSign className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Forgotten Orders</h3>
+              <p className="text-gray-600">Food orders and billing mistakes reduce your profit margins</p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <Users className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Unpaid Balances</h3>
+              <p className="text-gray-600">Members leave with outstanding amounts, hurting cash flow</p>
+            </div>
+          </div>
+          
+          {/* Second row - 2 cards centered */}
+          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <BarChart3 className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">No Business Insights</h3>
+              <p className="text-gray-600">Can't identify your most profitable tables or peak hours</p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <Clock className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Manual Billing</h3>
+              <p className="text-gray-600">Staff spend hours on calculations instead of serving customers</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
+}
+
+function SolutionSection() {
+  return (
+    <>
+      {/* Solution Section */}
+      <section className="py-20 px-6 bg-green-50">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
+            One System. Complete Control.
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                <Clock className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Real-time Table Management</h3>
+              <ul className="text-left text-gray-600 space-y-2">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Automatic time tracking from check-in to check-out
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Dynamic hourly/minute pricing
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Instant bill generation with zero errors
+                </li>
+              </ul>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                <Smartphone className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Smart Canteen Integration</h3>
+              <ul className="text-left text-gray-600 space-y-2">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Orders linked directly to table sessions
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Popular item tracking for menu optimization
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Seamless payment processing
+                </li>
+              </ul>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                <TrendingUp className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Member & Revenue Management</h3>
+              <ul className="text-left text-gray-600 space-y-2">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Digital member profiles with credit tracking
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Comprehensive analytics dashboard
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  Excel reports for accounting
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
+}
+
+function FeaturesSection() {
+  return (
+    <>
+      {/* Features Showcase Section */}
       <section className="py-20 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Powerful Features in Action
+              Perfect for Gaming Clubs
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              See how our platform transforms the way you work with real-time demos and interactive examples.
+              Complete solution for pool halls, snooker clubs, gaming centers, and entertainment venues.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-[var(--color-light)] p-2 rounded-lg">
-                  <BarChart3 className="w-6 h-6 text-[var(--color-primary)]" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">Revenue Analytics Dashboard</h3>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">🎱</span>
               </div>
-              <p className="text-lg text-gray-600 mb-6">
-                Track your business performance with comprehensive analytics. Monitor revenue streams, table utilization, payment modes, and canteen operations in real-time.
-              </p>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">Total revenue tracking (₹1,85,197+)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">Table & canteen revenue breakdown</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">Payment mode analysis & insights</span>
-                </div>
-              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Pool & Snooker</h3>
+              <p className="text-gray-600">Multiple table themes and flexible hourly rates</p>
             </div>
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <img 
-                src="/landing/cues_revenue.png" 
-                alt="Revenue Analytics Dashboard" 
-                className="w-full aspect-video object-cover rounded-lg"
-              />
+            
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">🎮</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Gaming Stations</h3>
+              <p className="text-gray-600">Real-time occupancy and queue management</p>
             </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-            <div className="bg-white p-6 rounded-xl shadow-lg order-2 md:order-1">
-              <div className="aspect-video bg-gradient-to-br from-[var(--color-light)] to-[var(--color-secondary)] rounded-lg flex items-center justify-center">
-                <span className="text-white font-semibold text-lg">Automation Demo</span>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-yellow-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">🏆</span>
               </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Tournament Mode</h3>
+              <p className="text-gray-600">Organize competitions with automatic scoring</p>
             </div>
-            <div className="order-1 md:order-2">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-[var(--color-light)] p-2 rounded-lg">
-                  <Zap className="w-6 h-6 text-[var(--color-primary)]" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">Smart Automation</h3>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">📊</span>
               </div>
-              <p className="text-lg text-gray-600 mb-6">
-                Automate repetitive tasks and workflows with our intelligent automation engine. Save hours every day and eliminate human error.
-              </p>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">Workflow automation</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">Smart triggers</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">Integration hub</span>
-                </div>
-              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Peak Analytics</h3>
+              <p className="text-gray-600">Identify busy hours and optimize pricing</p>
             </div>
           </div>
-
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-[var(--color-light)] p-2 rounded-lg">
-                  <Shield className="w-6 h-6 text-[var(--color-primary)]" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">Enterprise Security</h3>
+          
+          <div className="mt-16 text-center">
+            <h3 className="text-3xl font-bold text-gray-900 mb-8">For All Club Types</h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <DollarSign className="w-12 h-12 mx-auto mb-4 text-[var(--color-primary)]" />
+                <h4 className="text-lg font-bold text-gray-900 mb-2">Multi-Payment Support</h4>
+                <p className="text-gray-600">Cash, UPI, Mixed payments</p>
               </div>
-              <p className="text-lg text-gray-600 mb-6">
-                Bank-level security with end-to-end encryption, compliance monitoring, and advanced threat protection to keep your data safe.
-              </p>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">SOC 2 Type II compliance</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">256-bit encryption</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-700">Multi-factor authentication</span>
-                </div>
+              
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <Users className="w-12 h-12 mx-auto mb-4 text-[var(--color-primary)]" />
+                <h4 className="text-lg font-bold text-gray-900 mb-2">Member Credit System</h4>
+                <p className="text-gray-600">Digital profiles and balance tracking</p>
               </div>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="aspect-video bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] rounded-lg flex items-center justify-center">
-                <span className="text-white font-semibold text-lg">Security Demo</span>
+              
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <TrendingUp className="w-12 h-12 mx-auto mb-4 text-[var(--color-primary)]" />
+                <h4 className="text-lg font-bold text-gray-900 mb-2">Real-time Revenue</h4>
+                <p className="text-gray-600">Live tracking and instant insights</p>
+              </div>
+              
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <Shield className="w-12 h-12 mx-auto mb-4 text-[var(--color-primary)]" />
+                <h4 className="text-lg font-bold text-gray-900 mb-2">Cloud-based</h4>
+                <p className="text-gray-600">Access anywhere, anytime</p>
               </div>
             </div>
           </div>
         </div>
       </section>
+    </>
+  )
+}
 
-      {/* Trust Section */}
+function TestimonialSection() {
+  return (
+    <>
+      {/* Testimonial Section */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Trusted by Industry Leaders
+              {/* Join 500+  */}
+              Club Owners Who Transformed Their Business
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Join thousands of companies that have transformed their operations with our platform.
-            </p>
           </div>
 
-          {/* Company Logos */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center mb-16 opacity-60">
-            <div className="text-2xl font-bold text-gray-400">COMPANY</div>
-            <div className="text-2xl font-bold text-gray-400">STARTUP</div>
-            <div className="text-2xl font-bold text-gray-400">TECH CO</div>
-            <div className="text-2xl font-bold text-gray-400">CORP</div>
-            <div className="text-2xl font-bold text-gray-400">BRAND</div>
-            <div className="text-2xl font-bold text-gray-400">FIRM</div>
-          </div>
-
-          {/* Testimonials */}
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gray-50 p-8 rounded-xl">
-              <div className="flex items-center gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                ))}
+          {/* Main Testimonial */}
+          <div className="bg-[var(--color-light)] p-12 rounded-xl mb-12 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              {/* Business Photo */}
+              <div className="order-2 md:order-1">
+                <img 
+                  src="/landing/cues_photo_cropped.png" 
+                  alt="GameZone Club Interior" 
+                  className="w-full object-cover rounded-xl shadow-lg"
+                  loading="lazy"
+                />
               </div>
-              <p className="text-gray-700 mb-6 italic">
-                "This platform has revolutionized how we handle our operations. We've seen a 300% increase in efficiency and our team couldn't be happier."
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold">JS</span>
+              
+              {/* Testimonial Content */}
+              <div className="order-1 md:order-2 text-center md:text-left">
+                <div className="flex items-center justify-center md:justify-start gap-1 mb-6">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-6 h-6 text-yellow-400 fill-current" />
+                  ))}
                 </div>
-                <div>
-                  <p className="font-semibold text-gray-900">John Smith</p>
-                  <p className="text-gray-600 text-sm">CEO, TechCorp</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-50 p-8 rounded-xl">
-              <div className="flex items-center gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <p className="text-gray-700 mb-6 italic">
-                "The automation features have saved us countless hours. What used to take days now happens in minutes. Absolutely game-changing."
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[var(--color-secondary)] rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold">MJ</span>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900">Maria Johnson</p>
-                  <p className="text-gray-600 text-sm">CTO, StartupXYZ</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-50 p-8 rounded-xl">
-              <div className="flex items-center gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                ))}
-              </div>
-              <p className="text-gray-700 mb-6 italic">
-                "Security and compliance were our biggest concerns. This platform exceeded all our expectations with enterprise-grade protection."
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold">RW</span>
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900">Robert Wilson</p>
-                  <p className="text-gray-600 text-sm">CISO, Enterprise Inc</p>
+                <p className="text-2xl text-gray-700 mb-6 italic">
+                  "CueBill helped us recover ₹5,000+ in lost revenue within the first month. The automatic billing alone pays for itself."
+                </p>
+                <div className="flex items-center justify-center md:justify-start gap-3">
+                  <div className="w-12 h-12 bg-[var(--color-primary)] rounded-full flex items-center justify-center">
+                    <span className="text-white font-semibold">SK</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Santa Kumar</p>
+                    <p className="text-gray-600">Owner, Cues N' Cushions, Vellore</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid md:grid-cols-4 gap-8 mt-16 text-center">
-            <div>
-              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">10k+</div>
-              <div className="text-gray-600">Active Users</div>
+          {/* Results Stats */}
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <div className="bg-green-50 p-8 rounded-xl">
+              <div className="text-4xl font-bold text-green-600 mb-2">18%</div>
+              <div className="text-gray-700 font-semibold mb-2">Average Revenue Increase</div>
+              <div className="text-gray-600">In first quarter</div>
             </div>
-            <div>
-              <div className="text-4xl font-bold text-[var(--color-secondary)] mb-2">99.9%</div>
-              <div className="text-gray-600">Uptime SLA</div>
+            <div className="bg-blue-50 p-8 rounded-xl">
+              <div className="text-4xl font-bold text-blue-600 mb-2">45min</div>
+              <div className="text-gray-700 font-semibold mb-2">Time Saved Daily</div>
+              <div className="text-gray-600">On billing tasks</div>
             </div>
-            <div>
-              <div className="text-4xl font-bold text-[var(--color-primary)] mb-2">500+</div>
-              <div className="text-gray-600">Integrations</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-[var(--color-secondary)] mb-2">24/7</div>
-              <div className="text-gray-600">Support</div>
+            <div className="bg-purple-50 p-8 rounded-xl">
+              <div className="text-4xl font-bold text-purple-600 mb-2">99.9%</div>
+              <div className="text-gray-700 font-semibold mb-2">Billing Accuracy</div>
+              <div className="text-gray-600">Zero calculation errors</div>
             </div>
           </div>
         </div>
       </section>
+    </>
+  )
+}
 
-      {/* Contact Us Section */}
+function ROICalculatorSection() {
+  return (
+    <>
+      {/* ROI Calculator Section */}
+      <section className="py-20 px-6 bg-blue-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Calculate Your Potential Savings
+            </h2>
+            <p className="text-xl text-gray-600">
+              See how much revenue you could recover with CueBill
+            </p>
+          </div>
+
+          <div className="bg-white p-8 rounded-xl shadow-lg">
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Number of Tables</label>
+                <input type="number" placeholder="5" className="w-full p-3 border border-gray-300 rounded-lg" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Average Hourly Rate (₹)</label>
+                <input type="number" placeholder="200" className="w-full p-3 border border-gray-300 rounded-lg" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Daily Operating Hours</label>
+                <input type="number" placeholder="12" className="w-full p-3 border border-gray-300 rounded-lg" />
+              </div>
+            </div>
+
+            <div className="text-center p-8 bg-green-50 rounded-lg">
+              <div className="text-3xl font-bold text-green-600 mb-2">₹18,000</div>
+              <div className="text-lg text-gray-700 mb-1">Potential monthly recovery</div>
+              <div className="text-sm text-gray-600">Based on 15% revenue recovery</div>
+              
+              <div className="mt-6 text-center">
+                <div className="text-xl font-bold text-[var(--color-primary)] mb-1">ROI Timeline: 2 weeks</div>
+                <div className="text-gray-600">System pays for itself</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
+}
+
+function ComparisonSection() {
+  return (
+    <>
+      {/* Comparison Section */}
+      <section className="py-20 px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Manual System vs CueBill
+            </h2>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x">
+              <div className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Feature</h3>
+                <div className="space-y-4">
+                  <div className="text-gray-700">Revenue Accuracy</div>
+                  <div className="text-gray-700">Billing Time</div>
+                  <div className="text-gray-700">Food Order Errors</div>
+                  <div className="text-gray-700">Business Insights</div>
+                  <div className="text-gray-700">Staff Training</div>
+                </div>
+              </div>
+              
+              <div className="p-6 bg-red-50">
+                <h3 className="text-lg font-semibold text-red-800 mb-4">Manual System</h3>
+                <div className="space-y-4">
+                  <div className="text-red-700">85-90%</div>
+                  <div className="text-red-700">15+ minutes</div>
+                  <div className="text-red-700">10-15%</div>
+                  <div className="text-red-700">None</div>
+                  <div className="text-red-700">Extensive</div>
+                </div>
+              </div>
+              
+              <div className="p-6 bg-green-50">
+                <h3 className="text-lg font-semibold text-green-800 mb-4">CueBill</h3>
+                <div className="space-y-4">
+                  <div className="text-green-700 font-semibold">100%</div>
+                  <div className="text-green-700 font-semibold">2 minutes</div>
+                  <div className="text-green-700 font-semibold">0%</div>
+                  <div className="text-green-700 font-semibold">Complete</div>
+                  <div className="text-green-700 font-semibold">Minimal</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Modern Technology. Simple Implementation.</h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="flex items-center gap-2">
+                <Check className="w-5 h-5 text-green-500" />
+                <span className="text-gray-700">Cloud-based - No hardware investment</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-5 h-5 text-green-500" />
+                <span className="text-gray-700">Mobile responsive</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-5 h-5 text-green-500" />
+                <span className="text-gray-700">Real-time syncing</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-5 h-5 text-green-500" />
+                <span className="text-gray-700">99.9% uptime guarantee</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
+}
+
+function ContactSection() {
+  return (
+    <>
+          {/* Final CTA Section */}
       <section className="py-20 px-6 bg-gray-900">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Ready to Get Started?
+            Ready to Stop Losing Money?
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join thousands of companies already using our platform. Start your free trial today or speak with our team to learn more.
+            Join club owners who recovered their lost revenue with CueBill. Start your free trial today.
           </p>
           
+          <div className="bg-[var(--color-light)] p-6 rounded-xl mb-8 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-700 font-semibold">
+              30-day free trial • No setup fees • Cancel anytime
+            </p>
+          </div>
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-2">
+            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-secondary)] text-white px-10 py-5 rounded-lg font-semibold text-xl transition-colors duration-200 flex items-center gap-2">
               Start Free Trial
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-6 h-6" />
             </button>
-            <button className="border border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200">
+            <button className="border border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white px-10 py-5 rounded-lg font-semibold text-xl transition-colors duration-200">
               Schedule Demo
             </button>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 text-left">
-            <div className="bg-gray-800 p-8 rounded-xl">
-              <h3 className="text-2xl font-bold text-white mb-4">Sales Inquiries</h3>
+          <div className="flex justify-center">
+            <div className="bg-gray-800 p-8 rounded-xl max-w-md">
+              <h3 className="text-2xl font-bold text-white mb-4">Contact Us</h3>
               <p className="text-gray-300 mb-4">
-                Ready to see how we can transform your business? Our sales team is here to help.
+                Ready to see how we can transform your business? Our team is here to help.
               </p>
               <div className="space-y-2 text-gray-400">
-                <p>📧 sales@example.com</p>
-                <p>📞 +1 (555) 123-4567</p>
-                <p>🕒 Mon-Fri, 9 AM - 6 PM EST</p>
-              </div>
-            </div>
-
-            <div className="bg-gray-800 p-8 rounded-xl">
-              <h3 className="text-2xl font-bold text-white mb-4">Technical Support</h3>
-              <p className="text-gray-300 mb-4">
-                Need help with implementation or have technical questions? Our experts are ready to assist.
-              </p>
-              <div className="space-y-2 text-gray-400">
-                <p>📧 support@example.com</p>
-                <p>📞 +1 (555) 123-4568</p>
-                <p>🕒 24/7 Support Available</p>
+                <a href="mailto:cue.bill.25@gmail.com" className="flex items-center justify-center gap-2 hover:text-gray-200 transition-colors">
+                  <Mail className="w-4 h-4" />
+                  cue.bill.25@gmail.com
+                </a>
+                <a href="tel:+919870437084" className="flex items-center justify-center gap-2 hover:text-gray-200 transition-colors">
+                  <Phone className="w-4 h-4" />
+                  +91 98704 37084
+                </a>
+                {/* <p>🕒 Mon-Fri, 9 AM - 6 PM EST</p> */}
               </div>
             </div>
           </div>
@@ -328,6 +583,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </div>
-  );
+    </>
+  )
 }
