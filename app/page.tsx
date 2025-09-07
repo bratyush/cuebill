@@ -1,11 +1,14 @@
 'use client';
 
 import { Check, Star, ArrowRight, Shield, Zap, BarChart3, Mail, Phone, Calculator, Users, Clock, TrendingUp, DollarSign, Smartphone, Menu, X } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 // good colors - E88273, 7293a0, 646D98, 575D90, 60495A, 183339, 7A9B76, 7A633E
 
 export default function Home() {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <div 
       className="min-h-screen bg-white" 
@@ -16,7 +19,7 @@ export default function Home() {
 
       <Navbar />
 
-      <HeroSection />
+      <HeroSection onGetStartedClick={() => setIsContactModalOpen(true)} />
 
       <ProblemsSection />
 
@@ -30,13 +33,18 @@ export default function Home() {
 
       <ComparisonSection />
 
-      <ContactSection />
+      <ContactSection onGetStartedClick={() => setIsContactModalOpen(true)} />
+
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
 
     </div>
   );
 }
 
-function HeroSection() {
+function HeroSection({ onGetStartedClick }: { onGetStartedClick: () => void }) {
   return (
     <>
       {/* Hero Section */}
@@ -74,13 +82,16 @@ function HeroSection() {
           </div> */}
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-2">
-              See Live Demo
+            <button 
+              onClick={onGetStartedClick}
+              className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center gap-2"
+            >
+              Get Started
               <ArrowRight className="w-5 h-5" />
             </button>
-            <button className="border border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-primary)] px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200">
+            {/* <button className="border border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-primary)] px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200">
               Get Started Free
-            </button>
+            </button> */}
           </div>
         </div>
         
@@ -534,10 +545,10 @@ function ComparisonSection() {
   )
 }
 
-function ContactSection() {
+function ContactSection({ onGetStartedClick }: { onGetStartedClick: () => void }) {
   return (
     <>
-          {/* Final CTA Section */}
+      {/* Final CTA Section */}
       <section id="contact" className="py-20 px-6 bg-[#1F2033]">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -554,11 +565,17 @@ function ContactSection() {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-10 py-5 rounded-lg font-semibold text-xl transition-colors duration-200 flex items-center gap-2">
+            <button 
+              onClick={onGetStartedClick}
+              className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-10 py-5 rounded-lg font-semibold text-xl transition-colors duration-200 flex items-center gap-2"
+            >
               Start Free Trial
               <ArrowRight className="w-6 h-6" />
             </button>
-            <button className="border border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white px-10 py-5 rounded-lg font-semibold text-xl transition-colors duration-200">
+            <button 
+              onClick={onGetStartedClick}
+              className="border border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white px-10 py-5 rounded-lg font-semibold text-xl transition-colors duration-200"
+            >
               Schedule Demo
             </button>
           </div>
@@ -598,7 +615,14 @@ function Navbar() {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const navbarHeight = 42; // 16 * 4 = 64px (h-16)
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - navbarHeight - 20; // Extra 20px padding
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
     setIsMenuOpen(false);
   };
@@ -655,9 +679,9 @@ function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <button className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200">
-              Start Free Trial
-            </button>
+            <Link href="/admin" className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200">
+              {"Dashboard →"}
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -706,14 +730,171 @@ function Navbar() {
                 Contact
               </button>
               <div className="px-4 pt-2">
-                <button className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200">
-                  Start Free Trial
-                </button>
+                <Link href="/admin" className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200">
+                  Dashboard
+                </Link>
               </div>
             </div>
           </div>
         )}
       </div>
     </nav>
+  );
+}
+
+function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [formData, setFormData] = useState({
+    countryCode: '+91',
+    mobileNumber: '',
+    isSubmitted: false,
+    isSubmitting: false,
+    error: ''
+  });
+
+  const isValidPhone = () => {
+    const phoneNumber = formData.mobileNumber.replace(/\D/g, '');
+    return phoneNumber.length === 10;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const phoneNumber = formData.mobileNumber.replace(/\D/g, '');
+    if (!phoneNumber || phoneNumber.length !== 10) return;
+
+    setFormData(prev => ({ ...prev, isSubmitting: true, error: '' }));
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          countryCode: formData.countryCode,
+          mobileNumber: phoneNumber,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setFormData(prev => ({ 
+          ...prev, 
+          isSubmitted: true, 
+          isSubmitting: false 
+        }));
+      } else {
+        setFormData(prev => ({ 
+          ...prev, 
+          error: result.error || 'Something went wrong. Please try again.',
+          isSubmitting: false 
+        }));
+      }
+    } catch (error) {
+      setFormData(prev => ({ 
+        ...prev, 
+        error: 'Network error. Please check your connection and try again.',
+        isSubmitting: false 
+      }));
+    }
+  };
+
+  const handleClose = () => {
+    setFormData({
+      countryCode: '+91',
+      mobileNumber: '',
+      isSubmitted: false,
+      isSubmitting: false,
+      error: ''
+    });
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/70 bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl max-w-md w-full p-8 relative animate-in fade-in zoom-in duration-300">
+        <button 
+          onClick={handleClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+        >
+          <X className="w-6 h-6" />
+        </button>
+
+        {!formData.isSubmitted ? (
+          <>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Get Started with CueBill</h2>
+            <p className="text-gray-600 mb-6">Enter your mobile number and we'll get in touch with you.</p>
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Mobile Number
+                </label>
+                <div className="flex">
+                  <input
+                    type="text"
+                    value={formData.countryCode}
+                    onChange={(e) => setFormData(prev => ({ ...prev, countryCode: e.target.value }))}
+                    placeholder="+91"
+                    className="w-20 border border-gray-300 rounded-l-lg px-3 py-3 text-center focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                  />
+                  <input
+                    type="tel"
+                    value={formData.mobileNumber}
+                    onChange={(e) => setFormData(prev => ({ ...prev, mobileNumber: e.target.value }))}
+                    placeholder="Enter 10-digit mobile number"
+                    className={`flex-1 border border-l-0 rounded-r-lg px-4 py-3 focus:outline-none focus:ring-2 focus:border-transparent ${
+                      formData.mobileNumber && !isValidPhone()
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-gray-300 focus:ring-[var(--color-primary)]'
+                    }`}
+                    required
+                  />
+                </div>
+                {formData.mobileNumber && !isValidPhone() && (
+                  <p className="text-red-500 text-sm mt-1">Please enter a valid 10-digit mobile number</p>
+                )}
+                {formData.error && (
+                  <p className="text-red-500 text-sm mt-1">{formData.error}</p>
+                )}
+              </div>
+              
+              <button
+                type="submit"
+                disabled={!isValidPhone() || formData.isSubmitting}
+                className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center gap-2 ${
+                  isValidPhone() && !formData.isSubmitting
+                    ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-white'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                {formData.isSubmitting ? 'Submitting...' : 'Get Started'}
+                {!formData.isSubmitting && <ArrowRight className="w-4 h-4" />}
+              </button>
+            </form>
+
+            <p className="text-sm text-gray-500 mt-4 text-center">
+              We'll contact you within 24 hours to get you started.
+            </p>
+          </>
+        ) : (
+          <div className="text-center">
+            <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+              <Check className="w-8 h-8 text-green-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h2>
+            <p className="text-gray-600 mb-2">We received your details:</p>
+            <p className="font-semibold text-[var(--color-primary)] mb-4">
+              {formData.countryCode} {formData.mobileNumber}
+            </p>
+            <p className="text-gray-600">
+              We'll get in touch with you within 24 hours to get started.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

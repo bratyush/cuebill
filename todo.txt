@@ -1,0 +1,6 @@
+make video-
+  1. snooker_club account, make 8 tables,
+  2. capture checkin, checkout, bill creation, revenue
+
+ - get started form.
+ - automation on form, get whatsapp message.
