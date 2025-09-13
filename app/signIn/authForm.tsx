@@ -39,7 +39,8 @@ export default function UserLoginForm() {
       if (result.status === "complete") {
         console.log(result);
         await setActive({ session: result.createdSessionId });
-        router.push("/")
+        const redirectUrl = new URLSearchParams(window.location.search).get('redirect_url') || '/';
+        router.push(redirectUrl);
       }
       else {
         /*Investigate why the sign-in hasn't completed */
