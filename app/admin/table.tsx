@@ -67,108 +67,193 @@ export default function Table({
   function checkIn() {
     const NOW = Date.now();
 
-    const updatedData = tableData.map((t: TableType) => {
-      if (t.id === table.id) {
-        return { ...t, checked_in_at: NOW };
-      } else {
-        return t;
-      }
-    });
-
-    mutate(
-      "/api/tables",
-      async () => {
-        try {
-          // await checkInTable(table.id, NOW);
-          await universalFetcher("/api/tables/" + table.id, "PATCH", {
-            checked_in_at: NOW,
+    // First create the bill, then update the table
+    universalFetcher("/api/bills", "POST", {
+      table: table.id,
+    })
+      .then(data => {
+        if (data.bill.id) {
+          // Bill created successfully, now update the table
+          const updatedData = tableData.map((t: TableType) => {
+            if (t.id === table.id) {
+              return { ...t, checked_in_at: NOW };
+            } else {
+              return t;
+            }
           });
 
-          const data = await universalFetcher("/api/bills", "POST", {
-            table: table.id,
-          });
-          if (data.bill.id) {
-            setCurrentBillId(data.bill.id);
-            localStorage.setItem(
-              "tableBill" + table.id.toString(),
-              data.bill.id.toString(),
-            );
-            // set billId to localstorage
-          }
-
-          return updatedData;
-        } catch (error) {
-          toast.error("Table check in failed");
+          mutate(
+            "/api/tables",
+            async () => {
+              await universalFetcher("/api/tables/" + table.id, "PATCH", {
+                checked_in_at: NOW,
+              });
+              
+              setCurrentBillId(data.bill.id);
+              localStorage.setItem(
+                "tableBill" + table.id.toString(),
+                data.bill.id.toString(),
+              );
+              
+              return updatedData;
+            },
+            {
+              optimisticData: updatedData,
+            },
+          );
+        } else {
+          throw new Error("Failed to create bill: no ID returned");
         }
-      },
-      {
-        optimisticData: updatedData,
-      },
-    );
+      })
+      .catch(error => {
+        console.error("Error during check-in:", error);
+        toast.error("Failed to create bill. Table check-in cancelled.");
+      });
   }
 
-  function checkOut() {
+  async function checkOut() {
     if (elapsedTime < 5 * 1000) {
       toast.error("Minimum time for billing is 5 seconds");
       return;
     }
 
     if (!currentBillId) {
-      toast.error("Bill not created");
-      universalFetcher("/api/tables/" + table.id, "PATCH", {
-        checked_in_at: null,
-      });
-      return;
-    }
-    const tempBill: BillType = {
-      id: currentBillId,
-      tableId: table.id,
-      checkOut: Date.now(),
-      timePlayed: elapsedTime,
-      tableMoney: parseFloat(generatedRevenue),
-      paymentMode: "upi",
-      upiPaid: parseFloat(generatedRevenue),
-      totalAmount: parseFloat(generatedRevenue),
-      settled: false,
-      memberId: null,
-    };
-    if (table.checked_in_at) {
-      tempBill.checkIn = table.checked_in_at;
-    }
-
-    const updatedData = tableData.map((t: TableType) => {
-      if (t.id === table.id) {
-        return {
-          ...t,
-          checked_in_at: null,
-          unsettled: [...t.unsettled, tempBill],
-        };
-      } else {
-        return t;
-      }
-    });
-
-    mutate(
-      "/api/tables",
-      async () => {
-        await universalFetcher("/api/tables/" + table.id, "PATCH", {
-          checked_in_at: null,
+      // This should rarely happen now due to our improved checkIn flow,
+      // but we'll handle it gracefully as a backup
+      console.warn("No bill ID found during checkout, attempting to resolve...");
+      
+      // Show a temporary message to the user
+      const toastId = toast.loading("Resolving billing issue...");
+      
+      try {
+        // Try to create a bill now
+        const data = await universalFetcher("/api/bills", "POST", {
+          table: table.id,
         });
-        await universalFetcher(
-          "/api/bills/" + currentBillId,
-          "PATCH",
-          tempBill,
-        );
-        // delete from localStorage
-        localStorage.removeItem("tableBill" + table.id.toString());
-        toast.success("Bill Saved");
-        return updatedData;
-      },
-      {
-        revalidate: false,
-        optimisticData: updatedData,
-      },
-    );
+        
+        if (data.bill.id) {
+          // Update our state and localStorage
+          const billId = data.bill.id;
+          setCurrentBillId(billId);
+          localStorage.setItem(
+            "tableBill" + table.id.toString(),
+            billId.toString(),
+          );
+          
+          toast.success("Bill created successfully", { id: toastId });
+          
+          // Continue with checkout using the newly created bill
+          const tempBill: BillType = {
+            id: billId,
+            tableId: table.id,
+            checkOut: Date.now(),
+            timePlayed: elapsedTime,
+            tableMoney: parseFloat(generatedRevenue),
+            paymentMode: "upi",
+            upiPaid: parseFloat(generatedRevenue),
+            totalAmount: parseFloat(generatedRevenue),
+            settled: false,
+            memberId: null,
+          };
+          
+          if (table.checked_in_at) {
+            tempBill.checkIn = table.checked_in_at;
+          }
+
+          const updatedData = tableData.map((t: TableType) => {
+            if (t.id === table.id) {
+              return {
+                ...t,
+                checked_in_at: null,
+                unsettled: [...t.unsettled, tempBill],
+              };
+            } else {
+              return t;
+            }
+          });
+
+          mutate(
+            "/api/tables",
+            async () => {
+              await universalFetcher("/api/tables/" + table.id, "PATCH", {
+                checked_in_at: null,
+              });
+              await universalFetcher(
+                "/api/bills/" + billId,
+                "PATCH",
+                tempBill,
+              );
+              // delete from localStorage
+              localStorage.removeItem("tableBill" + table.id.toString());
+              toast.success("Bill Saved");
+              return updatedData;
+            },
+            {
+              revalidate: false,
+              optimisticData: updatedData,
+            },
+          );
+        } else {
+          throw new Error("Failed to create bill: no ID returned");
+        }
+      } catch (error) {
+        console.error("Error during checkout:", error);
+        toast.error("Checkout failed. Please refresh the page.", { id: toastId });
+        return;
+      }
+    } else {
+      // Normal flow when bill ID exists
+      const tempBill: BillType = {
+        id: currentBillId,
+        tableId: table.id,
+        checkOut: Date.now(),
+        timePlayed: elapsedTime,
+        tableMoney: parseFloat(generatedRevenue),
+        paymentMode: "upi",
+        upiPaid: parseFloat(generatedRevenue),
+        totalAmount: parseFloat(generatedRevenue),
+        settled: false,
+        memberId: null,
+      };
+      
+      if (table.checked_in_at) {
+        tempBill.checkIn = table.checked_in_at;
+      }
+
+      const updatedData = tableData.map((t: TableType) => {
+        if (t.id === table.id) {
+          return {
+            ...t,
+            checked_in_at: null,
+            unsettled: [...t.unsettled, tempBill],
+          };
+        } else {
+          return t;
+        }
+      });
+
+      mutate(
+        "/api/tables",
+        async () => {
+          await universalFetcher("/api/tables/" + table.id, "PATCH", {
+            checked_in_at: null,
+          });
+          await universalFetcher(
+            "/api/bills/" + currentBillId,
+            "PATCH",
+            tempBill,
+          );
+          // delete from localStorage
+          localStorage.removeItem("tableBill" + table.id.toString());
+          toast.success("Bill Saved");
+          return updatedData;
+        },
+        {
+          revalidate: false,
+          optimisticData: updatedData,
+        },
+      );
+    }
   }
 
   useEffect(() => {
