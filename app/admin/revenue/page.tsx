@@ -108,106 +108,118 @@ export default function Revenue() {
   };
 
   return (
-    <div className="container mx-auto py-2">
+    <div className="container mx-auto py-2 px-2 sm:px-4">
       {error && <div>Error: {error.message}</div>}      
         <>
-          <TabNavigation>
-            <TabNavigationLink
-              onClick={() => setTab("charts")}
-              active={tab === "charts"}
-            >
-              Charts
-            </TabNavigationLink>
-            <TabNavigationLink
-              onClick={() => setTab("bills")}
-              active={tab === "bills"}
-            >
-              Table Bills
-            </TabNavigationLink>
-            <TabNavigationLink
-              onClick={() => setTab("canteen")}
-              active={tab === "canteen"}
-            >
-              Canteen Bills
-            </TabNavigationLink>
-            <TabNavigationLink
-              onClick={() => setTab("transactions")}
-              active={tab === "transactions"}
-            >
-              Transactions
-            </TabNavigationLink>
-            <TabNavigationLink
-              onClick={() => setTab("breakdown")}
-              active={tab === "breakdown"}
-            >
-              Breakdown
-            </TabNavigationLink>
-
-            <div className="m-2 ml-auto flex flex-row gap-4">
-              {showCustom && (
-                <div className="flex flex-row rounded-md border border-gray-200 px-2">
-                  <p className="my-auto mr-4">from :</p>
-                  <input
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    type="date"
-                  ></input>
-                  <p className="mx-4 my-auto">to :</p>
-                  <input
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    type="date"
-                  ></input>
-                </div>
-              )}
-
-              {showOne && (
-                <div className="flex flex-row rounded-md border border-gray-200 px-2">
-                  <p className="my-auto mr-4"></p>
-                  <input
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    type="date"
-                  ></input>
-                </div>
-              )}
-
-              {/* timeframe select */}
-              <Select
-                onValueChange={(e) => {
-                  if (e === "c") {
-                    setShowCustom(true);
-                    setShowOne(false);
-                    setTimeframe(e);
-                    setStartDate("");
-                  } else if (e === "od") {
-                    setShowOne(true);
-                    setShowCustom(false);
-                    setTimeframe(e);
-                    setStartDate("");
-                    setEndDate("");
-                  } else {
-                    setShowCustom(false);
-                    setShowOne(false);
-                    setTimeframe(e);
-                  }
-                }}
-                value={timeframe}
+          <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <TabNavigation>
+              <TabNavigationLink
+                onClick={() => setTab("charts")}
+                active={tab === "charts"}
+                className="text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2"
               >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Timeframe" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="td">This Day</SelectItem>
-                  <SelectItem value="tm">This Month</SelectItem>
-                  <SelectItem value="lm">Last Month</SelectItem>
-                  <SelectItem value="ty">This Year</SelectItem>
-                  <SelectItem value="ly">Last Year</SelectItem>
-                  <SelectItem value="c">Custom</SelectItem>
-                  <SelectItem value="od">One Day</SelectItem>{" "}
-                  {/* New option for One Day */}
-                </SelectContent>
-              </Select>
+                Charts
+              </TabNavigationLink>
+              <TabNavigationLink
+                onClick={() => setTab("bills")}
+                active={tab === "bills"}
+                className="text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2"
+              >
+                Table Bills
+              </TabNavigationLink>
+              <TabNavigationLink
+                onClick={() => setTab("canteen")}
+                active={tab === "canteen"}
+                className="text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2"
+              >
+                Canteen Bills
+              </TabNavigationLink>
+              <TabNavigationLink
+                onClick={() => setTab("transactions")}
+                active={tab === "transactions"}
+                className="text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2"
+              >
+                Transactions
+              </TabNavigationLink>
+              <TabNavigationLink
+                onClick={() => setTab("breakdown")}
+                active={tab === "breakdown"}
+                className="text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2"
+              >
+                Breakdown
+              </TabNavigationLink>
+            </TabNavigation>
+
+            {/* Controls - moved below tabs on mobile */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                {showCustom && (
+                  <div className="flex flex-col sm:flex-row rounded-md border border-gray-200 px-2 py-2 gap-2">
+                    <p className="mr-2 text-sm">from:</p>
+                    <input
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      type="date"
+                      className="text-sm"
+                    ></input>
+                    <p className="mx-2 my-auto text-sm">to:</p>
+                    <input
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      type="date"
+                      className="text-sm"
+                    ></input>
+                  </div>
+                )}
+
+                {showOne && (
+                  <div className="flex flex-col sm:flex-row rounded-md border border-gray-200 px-2 py-2 gap-2">
+                    <p className="mr-2 text-sm">date:</p>
+                    <input
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      type="date"
+                      className="text-sm"
+                    ></input>
+                  </div>
+                )}
+
+                {/* timeframe select */}
+                <Select
+                  onValueChange={(e) => {
+                    if (e === "c") {
+                      setShowCustom(true);
+                      setShowOne(false);
+                      setTimeframe(e);
+                      setStartDate("");
+                    } else if (e === "od") {
+                      setShowOne(true);
+                      setShowCustom(false);
+                      setTimeframe(e);
+                      setStartDate("");
+                      setEndDate("");
+                    } else {
+                      setShowCustom(false);
+                      setShowOne(false);
+                      setTimeframe(e);
+                    }
+                  }}
+                  value={timeframe}
+                >
+                  <SelectTrigger className="w-full sm:w-[180px]">
+                    <SelectValue placeholder="Timeframe" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="td">This Day</SelectItem>
+                    <SelectItem value="tm">This Month</SelectItem>
+                    <SelectItem value="lm">Last Month</SelectItem>
+                    <SelectItem value="ty">This Year</SelectItem>
+                    <SelectItem value="ly">Last Year</SelectItem>
+                    <SelectItem value="c">Custom</SelectItem>
+                    <SelectItem value="od">One Day</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
               {/* Download Report Button */}
               <DropdownMenu>
@@ -226,7 +238,7 @@ export default function Revenue() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          </TabNavigation>
+          </div>
 
           <div className="mt-5">
             {isLoading && <ChartSkeleton />}

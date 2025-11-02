@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export function TableSkeleton() {
   return (
-    <Skeleton className="m-3 h-[268px] w-[350px]" />
+    <Skeleton className="m-2 h-[268px] w-full max-w-[350px]" />
   )
 }
 

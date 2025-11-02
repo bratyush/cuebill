@@ -22,7 +22,7 @@ export const billColumns: ColumnDef<BillType>[] = [
     },
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>{bill.id}</div>;
+      return <div className="text-xs sm:text-sm">{bill.id}</div>;
     },
   },
   {
@@ -30,7 +30,7 @@ export const billColumns: ColumnDef<BillType>[] = [
     header: "Table",
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>{bill.table?.name ?? "Canteen"}</div>;
+      return <div className="text-xs sm:text-sm">{bill.table?.name ?? "Canteen"}</div>;
     },
   },
   {
@@ -39,9 +39,9 @@ export const billColumns: ColumnDef<BillType>[] = [
     cell: ({ row }) => {
       const bill = row.original;
       return bill.checkIn ? (
-        <div>{new Date(bill.checkIn).toLocaleDateString('en-GB')}</div>
+        <div className="text-xs sm:text-sm">{new Date(bill.checkIn).toLocaleDateString('en-GB')}</div>
       ) : (
-        <div>Not Checked In</div>
+        <div className="text-xs sm:text-sm">Not Checked In</div>
       );
     },
   },
@@ -50,7 +50,7 @@ export const billColumns: ColumnDef<BillType>[] = [
     header: "Start Time",
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>{formatTime(bill.checkIn)}</div>;
+      return <div className="text-xs sm:text-sm">{formatTime(bill.checkIn)}</div>;
     },
   },
   {
@@ -69,7 +69,7 @@ export const billColumns: ColumnDef<BillType>[] = [
     },
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>{formatElapsed(bill.timePlayed)}</div>;
+      return <div className="text-xs sm:text-sm">{formatElapsed(bill.timePlayed)}</div>;
     },
   },
   {
@@ -82,7 +82,7 @@ export const billColumns: ColumnDef<BillType>[] = [
       console.log(bill.checkIn, bill.timePlayed);
       console.log(endTime);
 
-      return <div>{formatTime(endTime)}</div>;
+      return <div className="text-xs sm:text-sm">{formatTime(endTime)}</div>;
     },
   },
   {
@@ -91,7 +91,7 @@ export const billColumns: ColumnDef<BillType>[] = [
     cell: ({ row }) => {
       const bill = row.original;
       return (
-        <div>
+        <div className="text-xs sm:text-sm">
           {bill.paymentMode == "upi" && "UPI"}
           {bill.paymentMode == "cash" && "Cash"}
           {bill.paymentMode == "both" && "Cash + UPI"}
@@ -115,7 +115,7 @@ export const billColumns: ColumnDef<BillType>[] = [
     },
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>&#8377;{bill.tableMoney}</div>;
+      return <div className="text-xs sm:text-sm">&#8377;{bill.tableMoney}</div>;
     },
   },
   {
@@ -134,7 +134,7 @@ export const billColumns: ColumnDef<BillType>[] = [
     },
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>&#8377;{bill.canteenMoney}</div>;
+      return <div className="text-xs sm:text-sm">&#8377;{bill.canteenMoney}</div>;
     },
   },
   {
@@ -153,7 +153,7 @@ export const billColumns: ColumnDef<BillType>[] = [
     },
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>&#8377;{bill.discount}</div>;
+      return <div className="text-xs sm:text-sm">&#8377;{bill.discount}</div>;
     },
   },
   {
@@ -172,7 +172,7 @@ export const billColumns: ColumnDef<BillType>[] = [
     },
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>&#8377;{bill.totalAmount}</div>;
+      return <div className="text-xs sm:text-sm">&#8377;{bill.totalAmount}</div>;
     },
   },
   {
@@ -182,9 +182,9 @@ export const billColumns: ColumnDef<BillType>[] = [
       const bill = row.original;
 
       if (!bill.member) {
-        return <div>-</div>;
+        return <div className="text-xs sm:text-sm">-</div>;
       } else {
-        return <Link href={`/admin/members/${bill.memberId}`} className="hover:underline">{bill.member?.name}</Link>;
+        return <Link href={`/admin/members/${bill.memberId}`} className="hover:underline text-xs sm:text-sm">{bill.member?.name}</Link>;
       }
     },
   },
@@ -208,7 +208,7 @@ export const canteenColumns: ColumnDef<CanteenBillType>[] = [
     },
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>{bill.id}</div>;
+      return <div className="text-xs sm:text-sm">{bill.id}</div>;
     },
   },
   {
@@ -217,7 +217,7 @@ export const canteenColumns: ColumnDef<CanteenBillType>[] = [
     cell: ({ row }) => {
       const bill = row.original;
       const checkOutDate = bill.bill?.checkOut !== undefined ? bill.bill.checkOut : 0;
-      return <div>{new Date(checkOutDate).toDateString()}</div>;
+      return <div className="text-xs sm:text-sm">{new Date(checkOutDate).toDateString()}</div>;
     },
   },
   {
@@ -226,7 +226,7 @@ export const canteenColumns: ColumnDef<CanteenBillType>[] = [
     cell: ({ row }) => {
       const bill = row.original;
       const checkOutDate = bill.bill?.checkOut !== undefined ? bill.bill.checkOut : 0;
-      return <div>{formatTime(checkOutDate)}</div>;
+      return <div className="text-xs sm:text-sm">{formatTime(checkOutDate)}</div>;
     },
   },
   {
@@ -234,7 +234,7 @@ export const canteenColumns: ColumnDef<CanteenBillType>[] = [
     header: "Item",
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>{bill.item?.name}</div>;
+      return <div className="text-xs sm:text-sm">{bill.item?.name}</div>;
     },
   },
   {
@@ -242,7 +242,7 @@ export const canteenColumns: ColumnDef<CanteenBillType>[] = [
     header: "Price",
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>&#8377;{bill.item?.price}</div>;
+      return <div className="text-xs sm:text-sm">&#8377;{bill.item?.price}</div>;
     },
   },
   {
@@ -250,7 +250,7 @@ export const canteenColumns: ColumnDef<CanteenBillType>[] = [
     header: "Quantity",
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>{bill.quantity}</div>;
+      return <div className="text-xs sm:text-sm">{bill.quantity}</div>;
     },
   },
   {
@@ -258,7 +258,7 @@ export const canteenColumns: ColumnDef<CanteenBillType>[] = [
     header: "Amount",
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>&#8377;{bill.amount}</div>;
+      return <div className="text-xs sm:text-sm">&#8377;{bill.amount}</div>;
     },
   },
   {
@@ -266,7 +266,7 @@ export const canteenColumns: ColumnDef<CanteenBillType>[] = [
     header: "Bill ID",
     cell: ({ row }) => {
       const bill = row.original;
-      return <div>{bill.billId}</div>;
+      return <div className="text-xs sm:text-sm">{bill.billId}</div>;
     },
   },
 ];
@@ -287,7 +287,7 @@ export const transactionColumns: ColumnDef<TransactionType>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div>{row.index + 1}</div>;
+      return <div className="text-xs sm:text-sm">{row.index + 1}</div>;
     },
   },
   {
@@ -295,8 +295,7 @@ export const transactionColumns: ColumnDef<TransactionType>[] = [
     header: "Date",
     cell: ({ row }) => {
       const transaction = row.original;
-      return <div>{transaction.createdAt ? new Date(transaction.createdAt).toDateString() : '-'}</div>;
-
+      return <div className="text-xs sm:text-sm">{transaction.createdAt ? new Date(transaction.createdAt).toDateString() : '-'}</div>;
     },
   },
   {
@@ -304,7 +303,7 @@ export const transactionColumns: ColumnDef<TransactionType>[] = [
     header: "Time",
     cell: ({ row }) => {
       const transaction = row.original;
-      return <div>{formatTime(transaction.createdAt)}</div>;
+      return <div className="text-xs sm:text-sm">{formatTime(transaction.createdAt)}</div>;
     },
   },
   {
@@ -312,7 +311,7 @@ export const transactionColumns: ColumnDef<TransactionType>[] = [
     header: "Amount",
     cell: ({ row }) => {
       const transaction = row.original;
-      return <div>&#8377;{transaction.amount}</div>;
+      return <div className="text-xs sm:text-sm">&#8377;{transaction.amount}</div>;
     },
   },
   {
@@ -320,23 +319,15 @@ export const transactionColumns: ColumnDef<TransactionType>[] = [
     header: "Mode",
     cell: ({ row }) => {
       const transaction = row.original;
-      return <div>{transaction.paymentMode}</div>;
+      return <div className="text-xs sm:text-sm">{transaction.paymentMode}</div>;
     },  
-  },
-  {
-    accessorKey: "date",
-    header: "Date",
-    cell: ({ row }) => {
-      const transaction = row.original;
-      return <div>{transaction.createdAt ? new Date(transaction.createdAt).toDateString() : '-'}</div>;
-    },
   },
   {
     accessorKey: "member",
     header: "Member",
     cell: ({ row }) => {
       const transaction = row.original;
-      return <div>{transaction.member?.name}</div>;
+      return <div className="text-xs sm:text-sm">{transaction.member?.name}</div>;
     },
   },
 ];

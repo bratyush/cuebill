@@ -17,7 +17,7 @@ export default function Home() {
       } as React.CSSProperties}
     >
 
-      <Navbar />
+      <HomeNavBar />
 
       <HeroSection onGetStartedClick={() => setIsContactModalOpen(true)} />
 
@@ -609,7 +609,7 @@ function ContactSection({ onGetStartedClick }: { onGetStartedClick: () => void }
   )
 }
 
-function Navbar() {
+function HomeNavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const scrollToSection = (sectionId: string) => {

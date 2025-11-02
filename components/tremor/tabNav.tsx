@@ -34,7 +34,7 @@ const TabNavigation = React.forwardRef<
     <NavigationMenuPrimitives.List
       className={cx(
         // base
-        "flex items-center justify-start whitespace-nowrap border-b [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        "flex items-center justify-start whitespace-nowrap border-b [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overflow-x-auto",
         // border color
         "border-gray-200 dark:border-gray-800",
         className,
@@ -53,7 +53,7 @@ const TabNavigationLink = React.forwardRef<
     "onSelect"
   > & { disabled?: boolean }
 >(({ asChild, disabled, className, children, ...props }, forwardedRef) => (
-  <NavigationMenuPrimitives.Item className="flex" aria-disabled={disabled}>
+  <NavigationMenuPrimitives.Item className="flex flex-shrink-0" aria-disabled={disabled}>
     <NavigationMenuPrimitives.Link
       aria-disabled={disabled}
       className={cx(
@@ -69,7 +69,7 @@ const TabNavigationLink = React.forwardRef<
         <span
           className={cx(
             // base
-            "-mb-px flex items-center justify-center whitespace-nowrap border-b-2 border-transparent px-3 pb-2 text-sm font-medium transition-all",
+            "-mb-px flex items-center justify-center whitespace-nowrap border-b-2 border-transparent px-2 pb-2 text-xs sm:px-3 sm:pb-2 sm:text-sm font-medium transition-all",
             // text color
             "text-gray-500 dark:text-gray-500",
             // hover

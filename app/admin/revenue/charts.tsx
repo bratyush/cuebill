@@ -28,23 +28,24 @@ export default function Charts({charts}: {
 
   return (
     <div className="space-y-6">
-      {/* Revenue Summary & Table Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
-        <div className="grid grid-rows-2 lg:col-span-2 gap-6">
-          <Card className="text-center p-6">
-            <p className="text-gray-500 text-lg">Total Revenue</p>
-            <p className="my-3 text-4xl font-semibold">&#8377;{Intl.NumberFormat("en-IN").format(totalRevenue)}</p>
-          </Card>
-          <Card className="text-center p-6">
-            <p className="text-gray-500 text-lg">Canteen Revenue</p>
-            <p className="my-3 text-4xl font-semibold">&#8377;{Intl.NumberFormat("en-IN").format(canteenRevenue)}</p>
-          </Card>
-        </div>
+      {/* Revenue Summary Cards - Single column on mobile */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Card className="text-center p-4 sm:p-6">
+          <p className="text-gray-500 text-base sm:text-lg">Total Revenue</p>
+          <p className="my-3 text-2xl sm:text-4xl font-semibold">&#8377;{Intl.NumberFormat("en-IN").format(totalRevenue)}</p>
+        </Card>
+        <Card className="text-center p-4 sm:p-6">
+          <p className="text-gray-500 text-base sm:text-lg">Canteen Revenue</p>
+          <p className="my-3 text-2xl sm:text-4xl font-semibold">&#8377;{Intl.NumberFormat("en-IN").format(canteenRevenue)}</p>
+        </Card>
+      </div>
 
-        <Card className="lg:col-span-4">
-          <p className="text-gray-500 mb-4">Tables Revenue</p>
+      {/* Charts - Stack on mobile, grid on larger screens */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <p className="text-gray-500 mb-4 text-sm sm:text-base">Tables Revenue</p>
           <BarChart
-            className="h-60"
+            className="h-52 sm:h-60"
             data={tableRevenueList}
             index="name"
             categories={["revenue"]}
@@ -56,10 +57,10 @@ export default function Charts({charts}: {
           />
         </Card>
 
-        <Card className="lg:col-span-4">
-          <p className="text-gray-500 mb-4">Table Time</p>
+        <Card>
+          <p className="text-gray-500 mb-4 text-sm sm:text-base">Table Time</p>
           <BarChart
-            className="h-60"
+            className="h-52 sm:h-60"
             data={tableTimeList}
             index="name"
             categories={["time"]}
@@ -72,18 +73,18 @@ export default function Charts({charts}: {
       </div>
 
       {/* Canteen & Payment Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
-          <p className="text-gray-500 mb-4">Payment Mode</p>
-          <div className="h-60">
+          <p className="text-gray-500 mb-4 text-sm sm:text-base">Payment Mode</p>
+          <div className="h-52 sm:h-60">
             <PieChart data={payModeList}/>
           </div>
         </Card>
 
         <Card>
-          <p className="text-gray-500 mb-4">Canteen Item Revenue</p>
+          <p className="text-gray-500 mb-4 text-sm sm:text-base">Canteen Item Revenue</p>
           <BarChart
-            className="h-60"
+            className="h-52 sm:h-60"
             data={canteenRevenueList}
             index="name"
             categories={["revenue"]}
@@ -95,9 +96,9 @@ export default function Charts({charts}: {
         </Card>
 
         <Card>
-          <p className="text-gray-500 mb-4">Canteen Item Quantity</p>
+          <p className="text-gray-500 mb-4 text-sm sm:text-base">Canteen Item Quantity</p>
           <BarChart
-            className="h-60"
+            className="h-52 sm:h-60"
             data={canteenQuantityList}
             index="name"
             categories={["quantity"]}

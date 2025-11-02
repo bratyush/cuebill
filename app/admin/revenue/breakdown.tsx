@@ -222,40 +222,40 @@ export default function Breakdown({ bills, timeframe, startDate }: BreakdownProp
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">{getBreakdownTitle()}</h2>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+        <h2 className="text-xl sm:text-2xl font-bold text-wrap break-words">{getBreakdownTitle()}</h2>
       </div>
       
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <Card className="p-3 sm:p-4">
           <div className="text-center">
-            <p className="text-gray-500 text-sm">Total Revenue</p>
-            <p className="text-2xl font-semibold">₹{Intl.NumberFormat("en-IN").format(totalRevenue)}</p>
+            <p className="text-gray-500 text-xs sm:text-sm">Total Revenue</p>
+            <p className="text-lg sm:text-2xl font-semibold">₹{Intl.NumberFormat("en-IN").format(totalRevenue)}</p>
           </div>
         </Card>
-        <Card className="p-4">
+        <Card className="p-3 sm:p-4">
           <div className="text-center">
-            <p className="text-gray-500 text-sm">Total {getPeriodUnit()}</p>
-            <p className="text-2xl font-semibold">{breakdownData.length}</p>
+            <p className="text-gray-500 text-xs sm:text-sm">Total {getPeriodUnit()}</p>
+            <p className="text-lg sm:text-2xl font-semibold">{breakdownData.length}</p>
           </div>
         </Card>
-        <Card className="p-4">
+        <Card className="p-3 sm:p-4">
           <div className="text-center">
-            <p className="text-gray-500 text-sm">Total Bills</p>
-            <p className="text-2xl font-semibold">{totalBills}</p>
+            <p className="text-gray-500 text-xs sm:text-sm">Total Bills</p>
+            <p className="text-lg sm:text-2xl font-semibold">{totalBills}</p>
           </div>
         </Card>
-        <Card className="p-4">
+        <Card className="p-3 sm:p-4">
           <div className="text-center">
-            <p className="text-gray-500 text-sm">Average Revenue per Bill</p>
-            <p className="text-2xl font-semibold">₹{Intl.NumberFormat("en-IN").format(Math.round(averageRevenue * 100) / 100)}</p>
+            <p className="text-gray-500 text-xs sm:text-sm">Avg Revenue/Bill</p>
+            <p className="text-lg sm:text-2xl font-semibold">₹{Intl.NumberFormat("en-IN").format(Math.round(averageRevenue * 100) / 100)}</p>
           </div>
         </Card>
       </div>
       
       {/* Breakdown Table */}
-      <Card className="p-6">
+      <Card className="p-4 sm:p-6">
         <DataTable columns={breakdownColumns} data={breakdownData} />
       </Card>
     </div>

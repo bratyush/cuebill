@@ -46,15 +46,15 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div>
+    <div className="w-full overflow-x-auto">
       <div className="rounded-md border bg-slate-100">
-        <Table>
+        <Table className="min-w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="whitespace-nowrap px-2 py-3 text-xs sm:px-4 sm:py-4 sm:text-sm">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -83,7 +83,7 @@ export function DataTable<TData, TValue>({
                   className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

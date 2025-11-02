@@ -135,12 +135,12 @@ export default function TablePage() {
   if (error) return <div>Failed to load</div>;
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto py-4 px-2 sm:px-4">
       <DataTable isLoading={isLoading} columns={columns} data={tables?.tables ?? []} />
-      <div className="m-3 flex justify-end">
+      <div className="m-3 mt-4 flex justify-end">
         <Link
           href={"/admin/tables/add"}
-          className="mb-2 me-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+          className="mb-2 me-2 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 sm:px-5 sm:py-3"
         >
           Add Table
         </Link>
