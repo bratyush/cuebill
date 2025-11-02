@@ -38,7 +38,7 @@ export default function Pos() {
 
   return (
     <div>
-      <div className="m-2 flex flex-row flex-wrap justify-center gap-2 text-white sm:gap-3 md:gap-4">
+      <div className="m-2 flex flex-row flex-wrap gap-2 text-white justify-center sm:justify-start sm:gap-3 md:gap-4">
         {isLoading &&
           Array(numTables)
             .fill(null)
