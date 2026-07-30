@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { bills, canteenBills, transactions } from "@/db/schema";
+import { bills, canteenBills, transactions, items, tables, members } from "@/db/schema";
 import { BillType, ctnBllInt, TransactionType } from "@/types/myTypes";
 import { currentUser } from "@clerk/nextjs/server";
 import { and, eq, gte, lte } from "drizzle-orm";
@@ -13,72 +13,90 @@ export async function getRevenueData(startRange: string | null, endRange: string
   const endTimestamp = endRange ? new Date(endRange).getTime() : null;
 
   // Fetch bills with date filtering
-  const bls = await db.query.bills.findMany({
-    columns: {
-      tableId: false,
-      checkOut: false,
-      note: false,
-      club: false,
+  const blsQuery = await db.select({
+    id: bills.id,
+    tableId: bills.tableId,
+    checkIn: bills.checkIn,
+    timePlayed: bills.timePlayed,
+    tableMoney: bills.tableMoney,
+    canteenMoney: bills.canteenMoney,
+    paymentMode: bills.paymentMode,
+    discount: bills.discount,
+    totalAmount: bills.totalAmount,
+    cashPaid: bills.cashPaid,
+    upiPaid: bills.upiPaid,
+    settled: bills.settled,
+    memberId: bills.memberId,
+    table: {
+      name: tables.name,
+      rate: tables.rate,
     },
-    with: {
-      table: {
-        columns: {name:true, rate:true}
-      },
-      member: {
-        columns: {name:true}
-      },
-    },
-    where: and(
+    member: {
+      name: members.name,
+    }
+  })
+  .from(bills)
+  .leftJoin(tables, eq(bills.tableId, tables.id))
+  .leftJoin(members, eq(bills.memberId, members.id))
+  .where(
+    and(
       eq(bills.club, club),
       startTimestamp ? gte(bills.checkIn, startTimestamp) : undefined,
       endTimestamp ? lte(bills.checkIn, endTimestamp) : undefined
-    ),
-  });
+    )
+  );
 
-  // Fetch canteen bills with club filtering
-  const ctnBls = await db.query.canteenBills.findMany({
-    columns: {
-      club: false,
-      itemId: false,
-    },
-    where: eq(canteenBills.club, club),
-    with: {
-      bill: {
-        columns: { checkOut: true },
-      },
-      item: {
-        columns: { name: true, price: true},
-      },
-    },
-  });
+  const bls = blsQuery as unknown as BillType[];
 
-  // Filter canteen bills by checkout date
-  const filteredCanteen = ctnBls.filter((canteenItem) => {
-    if (canteenItem.bill?.checkOut) {
-      const checkOutTimestamp = canteenItem.bill.checkOut;
-      if (startTimestamp && checkOutTimestamp < startTimestamp) return false;
-      if (endTimestamp && checkOutTimestamp > endTimestamp) return false;
-      return true;
-    }
-    return false;
-  });
+  // Fetch and filter canteen bills using database joins
+  const filteredCanteenQuery = await db.select({
+    id: canteenBills.id,
+    quantity: canteenBills.quantity,
+    amount: canteenBills.amount,
+    billId: canteenBills.billId,
+    item: {
+      name: items.name,
+      price: items.price,
+    },
+    bill: {
+      checkOut: bills.checkOut,
+    },
+  })
+  .from(canteenBills)
+  .innerJoin(bills, eq(canteenBills.billId, bills.id))
+  .innerJoin(items, eq(canteenBills.itemId, items.id))
+  .where(
+    and(
+      eq(canteenBills.club, club),
+      startTimestamp ? gte(bills.checkOut, startTimestamp) : undefined,
+      endTimestamp ? lte(bills.checkOut, endTimestamp) : undefined
+    )
+  );
+
+  const filteredCanteen = filteredCanteenQuery as unknown as ctnBllInt[];
 
   // Fetch transactions with date filtering
-  const trs = await db.query.transactions.findMany({
-    columns: {
-      club: false,
-    },
-    where: and(
+  const trsQuery = await db.select({
+    id: transactions.id,
+    memberId: transactions.memberId,
+    amount: transactions.amount,
+    paymentMode: transactions.paymentMode,
+    createdAt: transactions.createdAt,
+    member: {
+      name: members.name,
+    }
+  })
+  .from(transactions)
+  .leftJoin(members, eq(transactions.memberId, members.id))
+  .where(
+    and(
       eq(transactions.club, club),
       startTimestamp ? gte(transactions.createdAt, startTimestamp) : undefined,
       endTimestamp ? lte(transactions.createdAt, endTimestamp) : undefined
-    ),
-    with: {
-      member: {
-        columns: { name: true },
-      },
-    },
-  });
+    )
+  );
+
+  const trs = trsQuery as unknown as TransactionType[];
 
   // Calculate chart data aggregations
   const totalRevenue = bls.reduce((acc, bill) => acc + (bill.totalAmount ?? 0), 0);
