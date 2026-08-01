@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { bills } from "@/db/schema";
+import { bills, tables } from "@/db/schema";
 import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 
@@ -39,12 +39,18 @@ export async function GET() {
   const user = await currentUser();
   const club = user?.publicMetadata.org as string ?? '';
 
-  const bls = await db.query.bills.findMany({
-    with: {
-      table: true
-    },
-    where: eq(bills.club, club)
+  const queryResult = await db.select({
+    bill: bills,
+    table: tables
   })
+  .from(bills)
+  .leftJoin(tables, eq(bills.tableId, tables.id))
+  .where(eq(bills.club, club));
+
+  const bls = queryResult.map(row => ({
+    ...row.bill,
+    table: row.table
+  }));
   
   return Response.json({bills: bls})
 

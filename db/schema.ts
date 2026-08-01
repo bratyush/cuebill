@@ -2,7 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { relations } from "drizzle-orm";
-import { integer, real, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
+import { integer, real, sqliteTableCreator, text, index } from "drizzle-orm/sqlite-core";
 import { themes } from "@/utils/consts";
 
 export const createTable = sqliteTableCreator((name) => `${name}`);
@@ -15,7 +15,10 @@ export const members = createTable(
     number: integer("number"),
     balance: real("balance").notNull().default(0),
     club: text("club").notNull(),
-  }
+  },
+  (table) => ({
+    clubIdx: index("member_club_idx").on(table.club),
+  })
 )
  
 export const tables = createTable(
@@ -28,7 +31,10 @@ export const tables = createTable(
     checked_in_at: integer("checkedInAt"),
     active: integer("active", {mode: 'boolean'}).default(true),
     club: text("club").notNull(),
-  }
+  },
+  (table) => ({
+    clubIdx: index("table_club_idx").on(table.club),
+  })
 )
 
 export const transactions = createTable(
@@ -40,7 +46,11 @@ export const transactions = createTable(
     paymentMode: text("paymentMode", {enum: ['cash', 'upi', 'both']}).default('upi'),
     createdAt: integer("createdAt").default(Date.now()),
     club: text("club").notNull(),
-  }
+  },
+  (table) => ({
+    clubIdx: index("transaction_club_idx").on(table.club),
+    memberIdx: index("transaction_member_idx").on(table.memberId),
+  })
 )
 
 export const bills = createTable(
@@ -62,7 +72,12 @@ export const bills = createTable(
     memberId: integer("memberId"),
     note: text("note"),
     club: text("club").notNull(),
-  }
+  },
+  (table) => ({
+    clubIdx: index("bill_club_idx").on(table.club),
+    tableIdx: index("bill_table_idx").on(table.tableId),
+    memberIdx: index("bill_member_idx").on(table.memberId),
+  })
 )
 
 export const items = createTable(
@@ -73,7 +88,10 @@ export const items = createTable(
     price: real("price"),
     active: integer("active", {mode: 'boolean'}).default(true),
     club: text("club").notNull(),
-  }
+  },
+  (table) => ({
+    clubIdx: index("item_club_idx").on(table.club),
+  })
 )
 
 export const canteenBills = createTable(
@@ -85,7 +103,12 @@ export const canteenBills = createTable(
     quantity: integer("quantity"),
     amount: real("amount"),
     club: text("club").notNull(),
-  }
+  },
+  (table) => ({
+    clubIdx: index("cb_club_idx").on(table.club),
+    billIdx: index("cb_bill_idx").on(table.billId),
+    itemIdx: index("cb_item_idx").on(table.itemId),
+  })
 )
 
 
